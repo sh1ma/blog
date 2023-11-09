@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className="bg-stone-50 text-stone-900">
       <body>
-        <div className="container mx-auto py-4 max-w-3xl">
+        <div className="container mx-auto py-4 max-w-3xl p-2">
           <header className="my-10">
             <div className="my-6">
               <h1 className="text-3xl my-2">sh1ma.dev</h1>

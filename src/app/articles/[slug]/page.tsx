@@ -1,3 +1,4 @@
+import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import dayjs from "dayjs"
 
 const Page = async ({ params }: { params: { slug: string } }) => {
@@ -13,18 +14,13 @@ const Page = async ({ params }: { params: { slug: string } }) => {
           <span className="text-sm">
             {dayjs(meta.publishedAt).format("YYYY-MM-DD")}
           </span>
-          <h2 className="text-2xl">{meta.title}</h2>
+          <h2 className="text-xl font-bold">{meta.title}</h2>
         </div>
       </header>
-      <main
-        className="
-        prose 
-        prose-headings:font-normal
-        prose-p:leading-relaxed
-        prose-a:text-red-800 
-        prose-a:font-normal"
-      >
-        <Content />
+      <main>
+        <MarkdownContent>
+          <Content />
+        </MarkdownContent>
       </main>
     </div>
   )
