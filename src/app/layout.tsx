@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from "@/components/GoogleAnalytics/GoogleAnalytics"
 import dayjs from "dayjs"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -18,6 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body>
         <div className="bg-stone-50 text-stone-900 min-h-screen flex flex-col justify-between gap-16">
           <div className="container mx-auto py-4 max-w-3xl p-2">
