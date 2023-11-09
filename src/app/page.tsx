@@ -5,6 +5,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return {
     title: "blog.sh1ma.dev",
     description: "sh1maのブログ",
+    metadataBase: new URL("https://blog.sh1ma.dev/"),
   }
 }
 
