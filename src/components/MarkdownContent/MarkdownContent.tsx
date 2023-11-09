@@ -9,7 +9,7 @@ export const MarkdownContent = ({ children }: React.PropsWithChildren) => {
     prose
   prose-li:marker:text-black
   prose-a:text-red-800
-    prose-h2:font-normal"
+    prose-headings:font-normal"
     >
       {children}
     </div>
