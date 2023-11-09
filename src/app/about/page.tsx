@@ -1,12 +1,19 @@
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import About from "@/markdown/about.mdx"
+import { Metadata } from "next"
 
-const customComponents = {
-  li: ({ children }: React.PropsWithChildren) => {
-    return <li className="list-disc list-inside">{children}</li>
+export const metadata: Metadata = {
+  title: "About - blog.sh1ma.dev",
+  metadataBase: new URL("https://blog.sh1ma.dev"),
+  description: "私について",
+  openGraph: {
+    title: "About - blog.sh1ma.dev",
+    description: "私について",
   },
-  h2: ({ children }: React.PropsWithChildren) => {
-    return <h2 className="text-xl font-bold">{children}</h2>
+  twitter: {
+    title: "About - blog.sh1ma.dev",
+    description: "私について",
+    card: "summary",
   },
 }
 
