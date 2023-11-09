@@ -1,5 +1,6 @@
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import dayjs from "dayjs"
+import { Metadata } from "next"
 
 const getContent = async (slug: string) => {
   const { default: Content, meta } = (await import(
@@ -13,7 +14,9 @@ interface Params {
   params: { slug: string }
 }
 
-export const generateMetadata = async ({ params }: Params) => {
+export const generateMetadata = async ({
+  params,
+}: Params): Promise<Metadata> => {
   const { slug } = params
   const { meta } = (await import(`@/markdown/posts/${slug}.mdx`)) as {
     default: React.FC
@@ -24,14 +27,30 @@ export const generateMetadata = async ({ params }: Params) => {
     title: meta.title,
     metadataBase: new URL("https://blog.sh1ma.dev"),
     description: "ブログ記事",
+
     openGraph: {
       title: meta.title,
       description: "ブログ記事",
+      type: "article",
+      images: [
+        {
+          url: "https://blog.sh1ma.dev/anon-icon.png",
+          width: 600,
+          height: 600,
+        },
+      ],
     },
     twitter: {
       title: meta.title,
       description: "ブログ記事",
       card: "summary",
+      images: [
+        {
+          url: "https://blog.sh1ma.dev/anon-icon.png",
+          width: 600,
+          height: 600,
+        },
+      ],
     },
   }
 }
