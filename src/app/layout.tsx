@@ -25,7 +25,7 @@ export default function RootLayout({
       </head>
       <body>
         <div className="bg-stone-50 text-stone-900 min-h-screen flex flex-col justify-between gap-16">
-          <div className="container mx-auto py-4 max-w-3xl p-2">
+          <div className="container mx-auto py-4 max-w-3xl p-4">
             <header className="my-10">
               <div className="my-6">
                 <Link href="/">
