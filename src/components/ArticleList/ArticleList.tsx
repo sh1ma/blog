@@ -8,12 +8,15 @@ export const ArticleList = async () => {
   const postFilePaths = await readdir(postDirPath)
 
   const postMetas = await Promise.all(
-    postFilePaths.map(async (filePath) => {
-      const { meta } = (await import(`@/markdown/posts/${filePath}`)) as {
-        meta: { title: string; publishedAt: string }
-      }
-      return { ...meta, id: filePath.replace(/\.mdx$/, "") }
-    }),
+    postFilePaths
+      .map(async (filePath) => {
+        const { meta } = (await import(`@/markdown/posts/${filePath}`)) as {
+          meta: { title: string; publishedAt: string }
+        }
+        return { ...meta, id: filePath.replace(/\.mdx$/, "") }
+      })
+      .sort()
+      .reverse(),
   )
 
   return (
