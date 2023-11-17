@@ -1,11 +1,9 @@
 import { GoogleAnalytics } from "@/components/GoogleAnalytics/GoogleAnalytics"
 import dayjs from "dayjs"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import Link from "next/link"
 import "./globals.css"
-
-const inter = Inter({ subsets: ["latin"] })
+import React from "react"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.sh1ma.dev/"),

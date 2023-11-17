@@ -1,6 +1,7 @@
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import dayjs from "dayjs"
 import { Metadata } from "next"
+import React from "react"
 
 const getContent = async (slug: string) => {
   const { default: Content, meta } = (await import(

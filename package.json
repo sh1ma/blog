@@ -17,14 +17,8 @@
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.0.1",
     "@tailwindcss/typography": "^0.5.10",
-    "@types/mdx": "^2.0.10",
-    "@types/node": "20.6.5",
-    "@types/react": "18.2.22",
-    "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.16",
     "dayjs": "^1.11.10",
-    "eslint": "8.50.0",
-    "eslint-config-next": "14.0.0",
     "gray-matter": "^4.0.3",
     "next": "14.0.0",
     "postcss": "8.4.30",
@@ -40,8 +34,18 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/mdx": "^2.0.10",
+    "@types/node": "20.6.5",
+    "@types/react": "18.2.22",
+    "@types/react-dom": "18.2.7",
     "@types/rss": "^0.0.32",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "8.50.0",
+    "eslint-config-next": "14.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "prettier": "^3.0.3"
   }
 }

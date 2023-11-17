@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { MDXProvider, useMDXComponents } from "@mdx-js/react"
 
 export const MarkdownContent = ({ children }: React.PropsWithChildren) => {
   return (

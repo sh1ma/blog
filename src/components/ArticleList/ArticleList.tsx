@@ -1,8 +1,6 @@
 import { getArticles } from "@/utils/getArticles"
 import dayjs from "dayjs"
-import { readdir } from "fs/promises"
 import Link from "next/link"
-import path from "path"
 
 export const ArticleList = async () => {
   const postMetas = await getArticles()
