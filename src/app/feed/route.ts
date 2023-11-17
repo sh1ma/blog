@@ -14,7 +14,7 @@ const getRssFeed = async () => {
     feed.item({
       title: post.title,
       description: "",
-      url: `https://blog.sh1ma.dev/posts/${post.id}`,
+      url: `https://blog.sh1ma.dev/articles/${post.id}`,
       date: dayjs(post.publishedAt).toDate(),
     })
   })
