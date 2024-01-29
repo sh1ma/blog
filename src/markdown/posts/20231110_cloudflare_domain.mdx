@@ -1,6 +1,7 @@
 export const meta = {
-    title: "Cloudflareで管理しているドメインをvercelで使おうとするとリダイレクトループが発生する",
-    publishedAt: "2023-11-10",
+  title:
+    "Cloudflareで管理しているドメインをvercelで使おうとするとリダイレクトループが発生する",
+  publishedAt: "2023-11-10",
 }
 
 Vercel上にデプロイしたブログをcloudflareで管理している`sh1ma.dev`のサブドメインである`blog.sh1ma.dev`と紐付けようとしたときに嵌りました。  
@@ -23,4 +24,4 @@ Vercel上にデプロイしたブログをcloudflareで管理している`sh1ma.
 
 Cloudflareのダッシュボードにいき、「SSL/TLS」ページ -> 「overview」ページに行き、
 下の画像のようにSSL/TLS encryption modeを`Full`にすることで解決しました。
-![](https://cdn.sh1ma.dev/20231110.png)
+![Cloudflareのダッシュボードのスクリーンショット](https://cdn.sh1ma.dev/20231110.png)
