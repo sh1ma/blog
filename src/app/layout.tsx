@@ -4,6 +4,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import "./globals.css"
 import React from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faRssSquare } from "@fortawesome/free-solid-svg-icons"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.sh1ma.dev/"),
@@ -27,9 +29,12 @@ export default function RootLayout({
             <header className="my-10">
               <div className="my-6">
                 <Link href="/">
-                  <h1 className="text-3xl my-2">sh1ma.dev</h1>
+                  <h1 className="text-3xl my-2">blog.sh1ma.dev</h1>
                 </Link>
-                <div>プログラムが好きです</div>
+
+                <div>
+                  <div>プログラムが好きです</div>
+                </div>
               </div>
               <nav className="text-red-800 flex gap-4 font-bold">
                 <Link href="/">Home</Link>
@@ -43,6 +48,9 @@ export default function RootLayout({
               <p className="text-sm">
                 <small>{`© ${dayjs().format("YYYY")} sh1ma`}</small>
               </p>
+              <Link href="/feed">
+                <FontAwesomeIcon width={"24px"} icon={faRssSquare} />
+              </Link>
             </div>
           </footer>
         </div>
