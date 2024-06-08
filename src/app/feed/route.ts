@@ -1,29 +1,26 @@
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
-import RSS from "rss"
+import { Feed } from "feed"
 
-const getRssFeed = async () => {
-  const feed = new RSS({
+export const GET = async () => {
+  const feed = new Feed({
     title: "blog.sh1ma.dev",
-    feed_url: "https://blog.sh1ma.dev/feed",
-    site_url: "https://blog.sh1ma.dev",
+    feedLinks: "https://blog.sh1ma.dev/feed",
+    link: "https://blog.sh1ma.dev",
+    id: "https://blog.sh1ma.dev",
+    copyright: `All rights reserved ${dayjs().format("YYYY")}, sh1ma`,
   })
 
   allArticles.forEach((article) => {
-    feed.item({
+    feed.addItem({
       title: article.title,
       description: "",
-      url: `https://blog.sh1ma.dev/articles/${article.id}`,
+      link: `https://blog.sh1ma.dev/articles/${article.id}`,
       date: dayjs(article.publishedAt).toDate(),
     })
   })
 
-  return feed.xml()
-}
-
-export const GET = async () => {
-  const feed = await getRssFeed()
-  return new Response(feed, {
+  return new Response(feed.rss2(), {
     headers: {
       "content-type": "application/xml;charset=UTF-8",
     },
