@@ -1,4 +1,4 @@
-import { getArticles } from "@/utils/getArticles"
+import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import RSS from "rss"
 
@@ -9,13 +9,12 @@ const getRssFeed = async () => {
     site_url: "https://blog.sh1ma.dev",
   })
 
-  const postsMetas = await getArticles()
-  postsMetas.forEach((post) => {
+  allArticles.forEach((article) => {
     feed.item({
-      title: post.title,
+      title: article.title,
       description: "",
-      url: `https://blog.sh1ma.dev/articles/${post.id}`,
-      date: dayjs(post.publishedAt).toDate(),
+      url: `https://blog.sh1ma.dev/articles/${article.id}`,
+      date: dayjs(article.publishedAt).toDate(),
     })
   })
 

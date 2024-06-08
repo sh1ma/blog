@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 }
 
 const AboutPage = () => {
-  const aboutMdx = allAbouts.find(() => true)
+  const aboutMd = allAbouts.find(() => true)
 
-  if (!aboutMdx) {
+  if (!aboutMd) {
     return <div>Not found</div>
   }
 
@@ -29,7 +29,7 @@ const AboutPage = () => {
       <h2 className="text-2xl font-bold border-b border-b-stone-200 pb-2 mb-10">
         About
       </h2>
-      <MarkdownContent post={aboutMdx}></MarkdownContent>
+      <MarkdownContent post={aboutMd}></MarkdownContent>
     </div>
   )
 }

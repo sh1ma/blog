@@ -1,4 +1,5 @@
 import { defineDocumentType, makeSource } from "contentlayer/source-files"
+import rehypePrettyCode from "rehype-pretty-code"
 
 export const Article = defineDocumentType(() => ({
   name: "Article",
@@ -25,4 +26,7 @@ export const About = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: "./src/markdown/",
   documentTypes: [Article, About],
+  markdown: {
+    rehypePlugins: [[rehypePrettyCode, { theme: "github-dark" }]],
+  },
 })

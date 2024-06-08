@@ -2,8 +2,6 @@ import React from "react"
 import { Markdown } from "contentlayer/core"
 
 export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
-  // const MDXConetnt = useMDXComponent(post.body.html)
-
   return (
     <div
       className="
