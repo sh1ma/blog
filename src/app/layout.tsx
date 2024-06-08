@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "sh1maのブログです",
 }
 
+export const runtime = "edge"
+
 export default function RootLayout({
   children,
 }: {

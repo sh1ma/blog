@@ -1,8 +1,6 @@
 import { ArticleList } from "@/components/ArticleList/ArticleList"
 import { Metadata } from "next"
 
-export const runtime = "edge"
-
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
     title: "blog.sh1ma.dev",

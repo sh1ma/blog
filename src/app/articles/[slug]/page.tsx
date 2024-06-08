@@ -4,8 +4,6 @@ import dayjs from "dayjs"
 import { Metadata } from "next"
 import React from "react"
 
-export const runtime = "edge"
-
 interface Params {
   params: { slug: string }
 }
@@ -58,6 +56,7 @@ export const generateMetadata = async ({
 
 const Page = async ({ params }: Params) => {
   const { slug } = params
+  console.log(slug)
   const post = allArticles.find((post) => post.id === slug)
 
   if (!post) {
@@ -69,9 +68,9 @@ const Page = async ({ params }: Params) => {
       <header className="border-b border-b-stone-200 pb-2 mb-10">
         <div className="flex flex-col gap-y-2">
           <span className="text-sm">
-            {dayjs(post?.publishedAt).format("YYYY-MM-DD")}
+            {dayjs(post.publishedAt).format("YYYY-MM-DD")}
           </span>
-          <h2 className="text-2xl font-bold">{post?.title}</h2>
+          <h2 className="text-2xl font-bold">{post.title}</h2>
         </div>
       </header>
       <main>

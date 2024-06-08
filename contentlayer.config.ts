@@ -12,7 +12,7 @@ export const Article = defineDocumentType(() => ({
   computedFields: {
     id: {
       type: "string",
-      resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, ""),
+      resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, ""),
     },
   },
 }))
