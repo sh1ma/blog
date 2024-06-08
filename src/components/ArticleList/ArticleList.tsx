@@ -1,13 +1,11 @@
-import { getArticles } from "@/utils/getArticles"
+import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import Link from "next/link"
 
 export const ArticleList = async () => {
-  const postMetas = await getArticles()
-
   return (
     <ul className="flex flex-col gap-6">
-      {postMetas.map(({ id, title, publishedAt }) => {
+      {allArticles.toReversed().map(({ id, title, publishedAt }) => {
         return (
           <li key={id}>
             <article>

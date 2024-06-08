@@ -1,15 +1,10 @@
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
+import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { Metadata } from "next"
 import React from "react"
 
-const getContent = async (slug: string) => {
-  const { default: Content, meta } = (await import(
-    `@/markdown/posts/${slug}.mdx`
-  )) as { default: React.FC; meta: { title: string; publishedAt: string } }
-
-  return { Content, meta }
-}
+export const runtime = "edge"
 
 interface Params {
   params: { slug: string }
@@ -19,18 +14,23 @@ export const generateMetadata = async ({
   params,
 }: Params): Promise<Metadata> => {
   const { slug } = params
-  const { meta } = (await import(`@/markdown/posts/${slug}.mdx`)) as {
-    default: React.FC
-    meta: { title: string; publishedAt: string }
+  const post = allArticles.find((post) => post.id === slug)
+
+  if (!post) {
+    return {
+      title: "404",
+      metadataBase: new URL("https://blog.sh1ma.dev"),
+      description: "404",
+    }
   }
 
   return {
-    title: meta.title,
+    title: post.title,
     metadataBase: new URL("https://blog.sh1ma.dev"),
     description: "ブログ記事",
 
     openGraph: {
-      title: meta.title,
+      title: post.title,
       description: "ブログ記事",
       type: "article",
       images: [
@@ -42,7 +42,7 @@ export const generateMetadata = async ({
       ],
     },
     twitter: {
-      title: meta.title,
+      title: post.title,
       description: "ブログ記事",
       card: "summary",
       images: [
@@ -58,22 +58,24 @@ export const generateMetadata = async ({
 
 const Page = async ({ params }: Params) => {
   const { slug } = params
-  const { Content, meta } = await getContent(slug)
+  const post = allArticles.find((post) => post.id === slug)
+
+  if (!post) {
+    return <div>404</div>
+  }
 
   return (
     <div>
       <header className="border-b border-b-stone-200 pb-2 mb-10">
         <div className="flex flex-col gap-y-2">
           <span className="text-sm">
-            {dayjs(meta.publishedAt).format("YYYY-MM-DD")}
+            {dayjs(post?.publishedAt).format("YYYY-MM-DD")}
           </span>
-          <h2 className="text-2xl font-bold">{meta.title}</h2>
+          <h2 className="text-2xl font-bold">{post?.title}</h2>
         </div>
       </header>
       <main>
-        <MarkdownContent>
-          <Content />
-        </MarkdownContent>
+        <MarkdownContent post={post} />
       </main>
     </div>
   )

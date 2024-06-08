@@ -1,8 +1,9 @@
-"use client"
-
 import React from "react"
+import { Markdown } from "contentlayer/core"
 
-export const MarkdownContent = ({ children }: React.PropsWithChildren) => {
+export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
+  // const MDXConetnt = useMDXComponent(post.body.html)
+
   return (
     <div
       className="
@@ -16,7 +17,7 @@ export const MarkdownContent = ({ children }: React.PropsWithChildren) => {
     prose-h3:text-base
     "
     >
-      {children}
+      <div dangerouslySetInnerHTML={{ __html: post.body.html }}></div>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
-import About from "@/markdown/about.mdx"
+import { allAbouts } from "contentlayer/generated"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -18,14 +18,18 @@ export const metadata: Metadata = {
 }
 
 const AboutPage = () => {
+  const aboutMdx = allAbouts.find(() => true)
+
+  if (!aboutMdx) {
+    return <div>Not found</div>
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold border-b border-b-stone-200 pb-2 mb-10">
         About
       </h2>
-      <MarkdownContent>
-        <About />
-      </MarkdownContent>
+      <MarkdownContent post={aboutMdx}></MarkdownContent>
     </div>
   )
 }

@@ -1,8 +1,7 @@
-export const meta = {
-  title:
-    "Cloudflareで管理しているドメインをvercelで使おうとするとリダイレクトループが発生する",
-  publishedAt: "2023-11-10",
-}
+---
+  title: "Cloudflareで管理しているドメインをvercelで使おうとするとリダイレクトループが発生する"
+  publishedAt: "2023-11-10"
+---
 
 Vercel上にデプロイしたブログをcloudflareで管理している`sh1ma.dev`のサブドメインである`blog.sh1ma.dev`と紐付けようとしたときに嵌りました。  
 具体的には多数のリダイレクトが発生してしまい、転送設定がうまくいかなかったのでその解決方法を書きます。
