@@ -2,7 +2,7 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics/GoogleAnalytics"
 import dayjs from "dayjs"
 import type { Metadata } from "next"
 import Link from "next/link"
-import "./globals.css"
+import "./globals.scss"
 import React from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRssSquare } from "@fortawesome/free-solid-svg-icons"
@@ -45,8 +45,8 @@ export default function RootLayout({
             </header>
             <div>{children}</div>
           </div>
-          <footer className="py-10 bg-stone-800 text-stone-50">
-            <div className="flex justify-center items-center gap-4">
+          <footer className="py-10 bg-stone-800 text-stone-50 flex items-center flex-col">
+            <div className="flex justify-center items-center gap-4 p-4">
               <p className="text-sm">
                 <small>{`© ${dayjs().format("YYYY")} sh1ma`}</small>
               </p>
@@ -54,6 +54,7 @@ export default function RootLayout({
                 <FontAwesomeIcon width={"24px"} icon={faRssSquare} />
               </Link>
             </div>
+            <small className="">This website uses Google Analytics</small>
           </footer>
         </div>
       </body>

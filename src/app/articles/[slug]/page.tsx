@@ -56,7 +56,6 @@ export const generateMetadata = async ({
 
 const Page = async ({ params }: Params) => {
   const { slug } = params
-  console.log(slug)
   const post = allArticles.find((post) => post.id === slug)
 
   if (!post) {

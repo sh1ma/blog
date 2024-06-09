@@ -13,6 +13,7 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     prose-h2:border-b-2
     prose-h2:pb-2
     prose-h3:text-base
+    prose-headings:relative
     "
     >
       <div dangerouslySetInnerHTML={{ __html: post.body.html }}></div>
