@@ -1,0 +1,33 @@
+name: Register Articles to D1
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Migration
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          command: d1 migrations apply
+      - name: Make Register Query
+        run: |
+          QUERY=""
+          FILENAMES=$(for file in src/markdown/posts/*.md;do if [ -f "$file" ]; then base=$(basename "$file" .md); echo $base; fi;done)
+          for filename in $FILENAMES; do
+            QUERY="$QUERY\nINSERT INTO articles (id) VALUES ('$filename')";
+          done
+          echo "query=$QUERY" >> $GITHUB_ENV
+      - name: Register Articles to D1
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          command: d1 execute --command ${{ env.query }}

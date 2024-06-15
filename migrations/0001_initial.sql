@@ -1,0 +1,15 @@
+-- Migration number: 0001 	 2024-06-13T11:35:51.763Z
+
+PRAGMA defer_foreign_keys = on;
+
+CREATE TABLE IF NOT EXISTS articles (
+    id text PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_id text NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(id)
+);
