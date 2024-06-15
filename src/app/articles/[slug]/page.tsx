@@ -1,4 +1,6 @@
+import { LikeButton } from "@/components/LikeButton/LikeButton"
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
+import { countLike } from "@/db"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { Metadata } from "next"
@@ -62,6 +64,9 @@ const Page = async ({ params }: Params) => {
     return <div>404</div>
   }
 
+  const likeCount = await countLike(post.id)
+  console.log(likeCount?.["count(*)"] ?? 0)
+
   return (
     <div>
       <header className="border-b border-b-stone-200 pb-2 mb-10">
@@ -75,6 +80,9 @@ const Page = async ({ params }: Params) => {
       <main>
         <MarkdownContent post={post} />
       </main>
+      <footer>
+        <LikeButton articleId={post.id} />
+      </footer>
     </div>
   )
 }

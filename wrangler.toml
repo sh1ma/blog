@@ -1,10 +1,11 @@
-name = "blog-iine"
-compatibility_date = "2024-04-05"
+name = "blog"
+compatibility_date = "2024-06-09"
 compatibility_flags = [ "nodejs_compat" ]
 
-pages_build_output_dir = ".vercel/output/static"
+# pages_build_output_dir = ".vercel/output/static"
 
-# [[d1_databases]]
-# binding = "DB" # i.e. available in your Worker on env.DB
-# database_name = "blog-iine-counter"
-# database_id = "9b8830aa-c033-436e-8e32-ed7e3630af05"
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "blog-iine-counter"
+database_id = "63fa4c1b-5b4c-46e2-b2de-e412ae5deca9"
+

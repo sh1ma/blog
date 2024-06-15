@@ -13,21 +13,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Run Migration
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
-          command: d1 migrations apply
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply blog-iine-counter
       - name: Make Register Query
         run: |
           QUERY=""
           FILENAMES=$(for file in src/markdown/posts/*.md;do if [ -f "$file" ]; then base=$(basename "$file" .md); echo $base; fi;done)
           for filename in $FILENAMES; do
-            QUERY="$QUERY\nINSERT INTO articles (id) VALUES ('$filename')";
+            QUERY="$QUERY INSERT IGNORE INTO articles (id) VALUES ('$filename');";
           done
           echo "query=$QUERY" >> $GITHUB_ENV
       - name: Register Articles to D1
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
-          command: d1 execute --command ${{ env.query }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 execute blog-iine-counter --command "${{ env.query }}"
+          packageManager: pnpm

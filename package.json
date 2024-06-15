@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.11.3",
+    "@cloudflare/workers-types": "^4.20240605.0",
     "@types/node": "20.6.5",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
@@ -52,7 +53,8 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.2.5",
     "prettier": "^3.3.1",
-    "sass": "^1.77.4"
+    "sass": "^1.77.4",
+    "wrangler": "^3.60.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
