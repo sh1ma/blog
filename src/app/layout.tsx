@@ -26,27 +26,27 @@ export default function RootLayout({
         <GoogleAnalytics />
       </head>
       <body>
-        <div className="bg-stone-50 text-stone-900 min-h-screen flex flex-col justify-between gap-16">
-          <div className="container mx-auto py-4 max-w-3xl p-4">
+        <div className="flex min-h-screen flex-col justify-between gap-16 bg-stone-50 text-stone-900">
+          <div className="container mx-auto max-w-3xl p-4">
             <header className="my-10">
               <div className="my-6">
                 <Link href="/">
-                  <h1 className="text-3xl my-2">blog.sh1ma.dev</h1>
+                  <h1 className="my-2 text-3xl">blog.sh1ma.dev</h1>
                 </Link>
 
                 <div>
                   <div>プログラムが好きです</div>
                 </div>
               </div>
-              <nav className="text-red-800 flex gap-4 font-bold">
+              <nav className="flex gap-4 font-bold text-red-800">
                 <Link href="/">Home</Link>
                 <Link href="/about">About</Link>
               </nav>
             </header>
             <div>{children}</div>
           </div>
-          <footer className="py-10 bg-stone-800 text-stone-50 flex items-center flex-col">
-            <div className="flex justify-center items-center gap-4 p-4">
+          <footer className="flex flex-col items-center bg-stone-800 py-10 text-stone-50">
+            <div className="flex items-center justify-center gap-4 p-4">
               <p className="text-sm">
                 <small>{`© ${dayjs().format("YYYY")} sh1ma`}</small>
               </p>

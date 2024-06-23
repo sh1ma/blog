@@ -16,7 +16,7 @@ export const getAllArticles = async () => {
   return results
 }
 
-export const countLike = async (articleId: string) => {
+export const countLikes = async (articleId: string) => {
   const result = await env.DB.prepare(
     "select count(*) from likes where article_id = ?",
   )

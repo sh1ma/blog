@@ -26,7 +26,7 @@ const AboutPage = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold border-b border-b-stone-200 pb-2 mb-10">
+      <h2 className="mb-10 border-b border-b-stone-200 pb-2 text-2xl font-bold">
         About
       </h2>
       <MarkdownContent post={aboutMd}></MarkdownContent>

@@ -34,7 +34,7 @@ export default makeSource({
       [
         rehypeAutoLinkHeadings,
         {
-          behavior: "prepend",
+          behavior: "append",
           properties: {
             className: ["heading-link"],
           },
