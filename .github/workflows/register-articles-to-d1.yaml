@@ -28,7 +28,7 @@ jobs:
           QUERY=""
           FILENAMES=$(for file in src/markdown/posts/*.md;do if [ -f "$file" ]; then base=$(basename "$file" .md); echo $base; fi;done)
           for filename in $FILENAMES; do
-            QUERY="$QUERY INSERT IGNORE INTO articles (id) VALUES ('$filename');";
+            QUERY="$QUERY INSERT OR IGNORE INTO articles (id) VALUES ('$filename');";
           done
           echo "query=$QUERY" >> $GITHUB_ENV
       - name: Register Articles to D1

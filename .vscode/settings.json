@@ -4,8 +4,9 @@
     "source.fixAll.eslint": "explicit"
   },
   "eslint.format.enable": true,
+  "eslint.useFlatConfig": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "eslint.run": "onType",
+  "eslint.run": "onSave",
   "github.copilot.enable": {
     "*": true,
     "plaintext": false,
