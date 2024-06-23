@@ -5,9 +5,10 @@ export const GoogleAnalytics = () => {
     <>
       <Script
         async
+        strategy="lazyOnload"
         src="https://www.googletagmanager.com/gtag/js?id=G-LZYCBK9WJY"
       ></Script>
-      <Script id="gtag-init">
+      <Script id="gtag-init" async strategy="lazyOnload">
         {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
