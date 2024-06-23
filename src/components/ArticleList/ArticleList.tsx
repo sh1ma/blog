@@ -15,7 +15,7 @@ export const ArticleList = async () => {
                 </time>
               </div>
               <Link href={`/articles/${id}`}>
-                <h3 className="text-red-800 underline">{title}</h3>
+                <h2 className="text-red-800 underline">{title}</h2>
               </Link>
             </article>
           </li>
