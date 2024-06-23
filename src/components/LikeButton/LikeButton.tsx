@@ -3,14 +3,10 @@
 import { useState } from "react"
 import { likeArticle } from "@/db"
 
-type LikeState =
-  | {
-      likes: number
-      liked: false
-    }
-  | {
-      liked: true
-    }
+type LikeState = {
+  likes: number
+  liked: boolean
+}
 
 export const LikeButton = ({
   articleId,
@@ -23,7 +19,7 @@ export const LikeButton = ({
 
   const [likes, setLikes] = useState<LikeState>(
     isLiked
-      ? { liked: true }
+      ? { liked: true, likes: initialLikes }
       : {
           liked: false,
           likes: initialLikes,
@@ -32,7 +28,7 @@ export const LikeButton = ({
 
   const onClick = async () => {
     likeArticle(articleId)
-    setLikes({ liked: true })
+    setLikes({ liked: true, likes: likes.likes + 1 })
     localStorage.setItem(`like-${articleId}`, "true")
   }
 
@@ -42,7 +38,7 @@ export const LikeButton = ({
       onClick={onClick}
       disabled={likes.liked}
     >
-      {likes.liked ? "Liked!" : `🎉 ${likes.likes}`}
+      {likes.liked ? `${likes.likes} Liked!` : `🎉 ${likes.likes}`}
     </button>
   )
 }
