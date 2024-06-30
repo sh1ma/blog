@@ -1,5 +1,5 @@
 import React from "react"
-import { Markdown } from "contentlayer/core"
+import { type Markdown } from "contentlayer/core"
 
 export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
   return (

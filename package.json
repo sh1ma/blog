@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.4",

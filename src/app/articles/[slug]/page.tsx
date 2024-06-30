@@ -28,35 +28,10 @@ export const generateMetadata = async ({
     title: post.title,
     metadataBase: new URL("https://blog.sh1ma.dev"),
     description: "ブログ記事",
-
-    openGraph: {
-      title: post.title,
-      description: "ブログ記事",
-      type: "article",
-      images: [
-        {
-          url: "https://blog.sh1ma.dev/anon-icon.png",
-          width: 600,
-          height: 600,
-        },
-      ],
-    },
-    twitter: {
-      title: post.title,
-      description: "ブログ記事",
-      card: "summary",
-      images: [
-        {
-          url: "https://blog.sh1ma.dev/anon-icon.png",
-          width: 600,
-          height: 600,
-        },
-      ],
-    },
   }
 }
 
-const Page = async ({ params }: Params) => {
+const ArticlePage = async ({ params }: Params) => {
   const { slug } = params
   const post = allArticles.find((post) => post.id === slug)
 
@@ -86,4 +61,4 @@ const Page = async ({ params }: Params) => {
   )
 }
 
-export default Page
+export default ArticlePage
