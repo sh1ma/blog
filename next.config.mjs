@@ -1,5 +1,6 @@
-import { withContentlayer } from "next-contentlayer"
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev"
+import bundleAnalyzer from "@next/bundle-analyzer"
+import { withContentlayer } from "next-contentlayer"
 
 // note: the if statement is present because you
 //       only need to use the function during development
@@ -14,4 +15,8 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-export default withContentlayer(nextConfig)
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+})
+
+export default withBundleAnalyzer(withContentlayer(nextConfig))

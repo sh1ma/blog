@@ -5,13 +5,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
+    "next-on-pages": "next-on-pages",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky"
   },
   "dependencies": {
-    "@heroicons/react": "^2.1.4",
     "@next/mdx": "^14.2.3",
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "10.4.16",
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.11.3",
     "@cloudflare/workers-types": "^4.20240605.0",
+    "@next/bundle-analyzer": "^14.2.4",
     "@types/node": "20.6.5",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
