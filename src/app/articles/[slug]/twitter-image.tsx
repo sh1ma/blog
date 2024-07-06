@@ -6,7 +6,7 @@ export const runtime = "edge"
 export const alt = "OGP画像"
 export const size = {
   width: 1200,
-  height: 630,
+  height: 627,
 }
 export const contentType = "image/png"
 

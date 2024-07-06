@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { likeArticle } from "@/db"
 
 type LikeState = {
@@ -15,16 +15,18 @@ export const LikeButton = ({
   initialLikes: number
   articleId: string
 }) => {
-  const isLiked = localStorage.getItem(`like-${articleId}`) === "true"
+  const [likes, setLikes] = useState<LikeState>({
+    liked: false,
+    likes: initialLikes,
+  })
 
-  const [likes, setLikes] = useState<LikeState>(
-    isLiked
-      ? { liked: true, likes: initialLikes }
-      : {
-          liked: false,
-          likes: initialLikes,
-        },
-  )
+  useEffect(() => {
+    const isLiked = localStorage.getItem(`like-${articleId}`) === "true"
+    setLikes({
+      liked: isLiked,
+      likes: initialLikes,
+    })
+  }, [setLikes, articleId, initialLikes])
 
   const onClick = async () => {
     likeArticle(articleId)

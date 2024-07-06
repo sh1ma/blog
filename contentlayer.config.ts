@@ -6,7 +6,6 @@ import rehypeSlug from "rehype-slug"
 export const Article = defineDocumentType(() => ({
   name: "Article",
   filePathPattern: `**/posts/*.md`,
-  // contentType: "mdx",
   fields: {
     title: { type: "string", required: true },
     publishedAt: { type: "date", required: true },
