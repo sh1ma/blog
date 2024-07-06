@@ -31,9 +31,7 @@ const fontURLs = [
 const loadFonts = async () => {
   const fontBuffers = await Promise.all(
     fontURLs.map(async ({ url, weight }) => {
-      const fontBuffer = await (
-        await fetch(url, { cache: "no-cache" })
-      ).arrayBuffer()
+      const fontBuffer = await (await fetch(url)).arrayBuffer()
       return { name: "IBM Plex Sans JP", data: fontBuffer, weight }
     }),
   )
