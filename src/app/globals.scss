@@ -1,15 +1,8 @@
-@import url("https://fonts.gstatic.com/s/ibmplexsansjp/v5/Z9XKDn9KbTDf6_f7dISNqYf_tvPT7PLWrNpVuw5_BAM.ttf");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import "./syntax-highlight.css";
-
-html,
-body {
-  font-family: "IBM Plex Sans JP", sans-serif;
-}
 
 h2,
 h3,
