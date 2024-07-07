@@ -1,4 +1,3 @@
-import { GoogleAnalytics } from "@/components/GoogleAnalytics/GoogleAnalytics"
 import dayjs from "dayjs"
 import type { Metadata } from "next"
 import Link from "next/link"
@@ -20,9 +19,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head>
-        <GoogleAnalytics />
-      </head>
       <body>
         <div className="flex min-h-screen flex-col justify-between gap-16 bg-stone-50 text-stone-900">
           <div className="container mx-auto max-w-3xl p-4">
@@ -63,7 +59,7 @@ export default function RootLayout({
               <small>{`© ${dayjs().format("YYYY")} sh1ma`}</small>
             </p>
 
-            <small className="">This website uses Google Analytics</small>
+            {/* <small className="">This website uses Google Analytics</small> */}
           </footer>
         </div>
       </body>
