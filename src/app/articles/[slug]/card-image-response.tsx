@@ -39,7 +39,8 @@ const loadFonts = async () => {
 }
 
 const fontFamily = "IBM Plex Sans JP"
-const rootBorderColor = "linear-gradient(to left bottom , #1e293b, #f8fafc)"
+const rootBorderColor =
+  "linear-gradient(to left bottom , #6365f7 20%, #f8dbe9 , #afdee8)"
 
 const titleBackgroundColor = "white"
 const titleBorderRadius = "8px"
@@ -47,10 +48,10 @@ const titleFontSize = "60px"
 const titleFontWeight = 600
 
 const textColors = {
-  title: "#0f172a",
-  meta: "#4b5563",
-  like: "#f43f5e",
-  time: "#1d4ed8",
+  title: "#303036",
+  meta: "#6365f7",
+  like: "#fa8999",
+  time: "#b8bdf2",
 }
 
 // satoriではborderにgradientを使うことができないため、borderを使わないような実装にしている
@@ -206,7 +207,6 @@ const MetaField = ({
             display: "flex",
             fontSize: "48px",
             fontFamily: "IBM Plex Sans JP",
-            fontWeight: 400,
             alignItems: "flex-end",
             height: "100%",
             color: `${color ? color : "#FF7AA2"}`,
@@ -230,7 +230,7 @@ const HeartIconOutlined = ({
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth={1.5}
+    strokeWidth={2}
     stroke={stroke}
     style={style}
   >
@@ -253,7 +253,7 @@ const TimeIconOutlined = ({
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth={1.5}
+    strokeWidth={2}
     stroke={stroke}
     style={style}
   >
