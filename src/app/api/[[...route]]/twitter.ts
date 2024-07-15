@@ -31,7 +31,7 @@ export const twitterAPI = new Hono<{ Bindings: Bindings }>()
     return c.text("Created", 201)
   })
 
-type Tweet = {
+export type Tweet = {
   content: string
   created_at: string
   id: number

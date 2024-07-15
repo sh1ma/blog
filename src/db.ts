@@ -2,6 +2,7 @@
 
 import { D1Database } from "@cloudflare/workers-types"
 import { env } from "process"
+import { Tweet } from "./app/api/[[...route]]/twitter"
 
 declare global {
   namespace NodeJS {
@@ -29,4 +30,11 @@ export const likeArticle = async (articleId: string) => {
   await env.DB.prepare("insert into likes (article_id) values (?)")
     .bind(articleId)
     .run()
+}
+
+export const getAllTweets = async () => {
+  const { results } = await env.DB.prepare(
+    "select * from tweets order by created_at desc",
+  ).all<Tweet>()
+  return results
 }

@@ -9,5 +9,12 @@ const config: Config = {
   ],
 
   plugins: [typography],
+  theme: {
+    extend: {
+      fontFamily: {
+        system: ["system-ui"],
+      },
+    },
+  },
 }
 export default config
