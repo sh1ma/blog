@@ -1,0 +1,9 @@
+-- Migration number: 0002 	 2024-07-12T12:18:49.578Z
+
+PRAGMA defer_foreign_keys = on;
+
+CREATE TABLE IF NOT EXISTS tweets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    content TEXT NOT NULL
+);
