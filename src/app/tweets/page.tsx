@@ -63,22 +63,30 @@ const TweetFeedPage = async () => {
       <ul className="flex flex-col">
         {feed.map((e) => (
           <li
-            className="flex gap-2 border-b border-b-gray-600 px-8 py-6"
+            className="flex gap-2 border-b border-b-gray-600 px-4 py-6 sm:px-6 sm:py-8"
             key={e.id}
           >
-            <div className="relative h-10 w-10 overflow-hidden rounded-full">
-              <Image src="/anon-icon.png" alt="アイコン" fill={true} />
+            <div className="flex shrink items-start overflow-hidden">
+              <div className="relative h-10 w-10">
+                <Image
+                  src="/anon-icon-200x200.webp"
+                  alt="アイコン"
+                  fill
+                  className="rounded-full"
+                  unoptimized={true}
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               <div className="flex flex-col gap-2">
-                <div className="flex gap-2">
+                <div className="flex items-end gap-2">
                   {e.author.name}
                   <span className="text-slate-400">@{e.author.username}</span>
                   <time
-                    className="text-sm"
+                    className="ml-1 text-slate-400"
                     dateTime={e.createdAt.machineReadable}
                   >
-                    <pre>{e.createdAt.relative}</pre>
+                    <span className="text-sm">{e.createdAt.relative}</span>
                   </time>
                 </div>
               </div>
