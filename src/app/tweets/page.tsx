@@ -63,10 +63,10 @@ const TweetFeedPage = async () => {
       <ul className="flex flex-col">
         {feed.map((e) => (
           <li
-            className="flex gap-2 border-b border-b-gray-600 px-4 py-6 sm:px-6 sm:py-8"
+            className="grid grid-cols-[auto_1fr] gap-2 border-b border-b-gray-600 px-4 py-6 sm:px-6 sm:py-8"
             key={e.id}
           >
-            <div className="flex shrink items-start overflow-hidden">
+            <div className="flex items-start">
               <div className="relative h-10 w-10">
                 <Image
                   src="/anon-icon-200x200.webp"
@@ -90,7 +90,11 @@ const TweetFeedPage = async () => {
                   </time>
                 </div>
               </div>
-              <pre className="font-sans">{e.content}</pre>
+              <div className="w-full">
+                <pre className="w-full whitespace-pre-wrap break-all">
+                  {e.content}
+                </pre>
+              </div>
             </div>
           </li>
         ))}
