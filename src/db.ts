@@ -8,6 +8,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       DB: D1Database
+      DISCORD_WEBHOOK_URL: string
     }
   }
 }
@@ -30,6 +31,14 @@ export const likeArticle = async (articleId: string) => {
   await env.DB.prepare("insert into likes (article_id) values (?)")
     .bind(articleId)
     .run()
+
+  await fetch(env.DISCORD_WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: `いいねされました: ${articleId}`,
+    }),
+  })
 }
 
 export const getAllTweets = async () => {

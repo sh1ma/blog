@@ -60,10 +60,10 @@ const TweetFeedPage = async () => {
   const feed = await getFeed()
   return (
     <div className="rounded-md bg-gray-700 text-white">
-      <ul className="flex flex-col">
+      <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600">
         {feed.map((e) => (
           <li
-            className="grid grid-cols-[auto_1fr] gap-2 border-b border-b-gray-600 px-4 py-6 sm:px-6 sm:py-8"
+            className="grid grid-cols-[auto_1fr] gap-2  px-4 py-6 sm:px-6 sm:py-8 "
             key={e.id}
           >
             <div className="flex items-start">
@@ -91,7 +91,7 @@ const TweetFeedPage = async () => {
                 </div>
               </div>
               <div className="w-full">
-                <pre className="w-full whitespace-pre-wrap break-all">
+                <pre className="w-full whitespace-pre-wrap break-all font-sans">
                   {e.content}
                 </pre>
               </div>

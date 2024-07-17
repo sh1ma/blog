@@ -39,3 +39,7 @@ next-env.d.ts
 .wrangler
 
 analyze
+
+tmp
+
+.dev.vars
