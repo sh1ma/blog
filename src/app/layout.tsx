@@ -1,8 +1,7 @@
-import dayjs from "dayjs"
 import type { Metadata } from "next"
-import Link from "next/link"
 import "./globals.scss"
 import React from "react"
+import { BlogHeader } from "./header"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.sh1ma.dev/"),
@@ -20,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <div className="flex min-h-screen flex-col justify-between gap-16 bg-stone-50 text-stone-900">
+        <div className="grid w-full place-items-center [&>header]:h-20 [&>header]:w-full [&>main]:mt-12 [&>main]:w-full">
+          <BlogHeader />
+          {children}
+        </div>
+        {/* <div className="flex min-h-screen flex-col justify-between gap-16 bg-stone-50 text-stone-900">
           <div className="container mx-auto max-w-3xl p-4">
             <header className="my-10">
               <div className="my-6">
@@ -59,10 +62,8 @@ export default function RootLayout({
             <p className="text-sm">
               <small>{`© ${dayjs().format("YYYY")} sh1ma`}</small>
             </p>
-
-            {/* <small className="">This website uses Google Analytics</small> */}
           </footer>
-        </div>
+        </div> */}
       </body>
     </html>
   )
