@@ -6,6 +6,7 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     <div
       className="
     prose
+    prose-lg
     prose-headings:relative
     prose-headings:font-bold
     prose-h2:border-b
