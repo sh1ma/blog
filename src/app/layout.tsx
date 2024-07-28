@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <div className="mb-20 grid w-full place-items-center [&>:not(header)]:w-full [&>header]:mb-12 [&>header]:h-20 [&>header]:w-full [&>main]:mt-12">
+        <div className="mb-20 grid w-full place-items-center [&>:not(header)]:w-full [&>header]:mb-12 [&>header]:h-20 [&>header]:w-full">
           <BlogHeader />
           {children}
         </div>
