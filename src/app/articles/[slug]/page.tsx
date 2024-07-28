@@ -44,7 +44,7 @@ const ArticlePage = async ({ params }: Params) => {
 
   return (
     <div className="grid max-w-7xl grid-cols-1 sm:grid-cols-[2fr_1fr]">
-      <div className="bg-white p-2">
+      <div className="bg-white p-6">
         <header className="mb-10 border-b border-b-primary-default pb-2">
           <div className="flex flex-col gap-y-2">
             <span className="flex items-center gap-1 text-sm">
