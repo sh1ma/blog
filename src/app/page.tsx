@@ -3,8 +3,11 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Calendar, ThumbsUp } from "lucide-react"
 import dayjs from "dayjs"
-import { getRecentTweets } from "@/db"
 import Image from "next/image"
+import {
+  getRecentTweets,
+  relativeDatetimeTextFromTweet,
+} from "@/tweets/tweetDomain"
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -113,9 +116,9 @@ export default async function Home() {
               最新のつぶやき
             </h2>
             <ul className="bg-white [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50 ">
-              {recentTweets.map(({ content, id, created_at }) => (
+              {recentTweets.map((tweet) => (
                 <li
-                  key={id}
+                  key={tweet.id}
                   className="grid grid-cols-[auto_1fr] gap-2 px-4 py-6 sm:px-6 sm:py-8 "
                 >
                   <div className="flex items-start">
@@ -136,15 +139,19 @@ export default async function Home() {
                         <span className="text-slate-400">@{"sh1ma"}</span>
                         <time
                           className="ml-1 text-slate-400"
-                          dateTime={created_at}
+                          dateTime={tweet.createdAt
+                            .locale("ja")
+                            .format("YYYY-MM-DD")}
                         >
-                          <span className="text-sm">{created_at}</span>
+                          <span className="text-sm">
+                            {relativeDatetimeTextFromTweet(tweet)}
+                          </span>
                         </time>
                       </div>
                     </div>
                     <div className="w-full">
                       <pre className="w-full whitespace-pre-wrap break-all font-sans">
-                        {content}
+                        {tweet.text}
                       </pre>
                     </div>
                   </div>
