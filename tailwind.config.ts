@@ -11,6 +11,17 @@ const config: Config = {
   plugins: [typography],
   theme: {
     extend: {
+      colors: {
+        primary: {
+          default: "#514fc9",
+          dark: "#3a38a0",
+          light: "#7a79d9",
+          bg: "#f0f2ff",
+        },
+        accent: {
+          default: "#ff6b6b",
+        },
+      },
       fontFamily: {
         system: ["system-ui"],
       },

@@ -47,3 +47,10 @@ export const getAllTweets = async () => {
   ).all<Tweet>()
   return results
 }
+
+export const getRecentTweets = async () => {
+  const { results } = await env.DB.prepare(
+    "select * from tweets order by created_at desc limit 4",
+  ).all<Tweet>()
+  return results
+}

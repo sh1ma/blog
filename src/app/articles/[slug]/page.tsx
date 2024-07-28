@@ -3,6 +3,7 @@ import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import { countLikes } from "@/db"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
+import { Calendar } from "lucide-react"
 import { Metadata } from "next"
 import React from "react"
 
@@ -42,21 +43,24 @@ const ArticlePage = async ({ params }: Params) => {
   const likeCount = parseInt((await countLikes(post.id))?.["count(*)"] ?? "0")
 
   return (
-    <div>
-      <header className="mb-10 border-b border-b-stone-200 pb-2">
-        <div className="flex flex-col gap-y-2">
-          <span className="text-sm">
-            {dayjs(post.publishedAt).format("YYYY-MM-DD")}
-          </span>
-          <h2 className="text-2xl font-bold">{post.title}</h2>
-        </div>
-      </header>
-      <main>
-        <MarkdownContent post={post} />
-      </main>
-      <footer>
-        <LikeButton articleId={post.id} initialLikes={likeCount}></LikeButton>
-      </footer>
+    <div className="grid max-w-7xl grid-cols-1 px-4 sm:grid-cols-[2fr_1fr]">
+      <div>
+        <header className="mb-10 border-b border-b-primary-default pb-2">
+          <div className="flex flex-col gap-y-2">
+            <span className="flex items-center gap-1 text-sm">
+              <Calendar size={16} className="inline" />
+              {dayjs(post.publishedAt).format("YYYY-MM-DD")}
+            </span>
+            <h2 className="pb-2 text-2xl font-bold">{post.title}</h2>
+          </div>
+        </header>
+        <main>
+          <MarkdownContent post={post} />
+        </main>
+        <footer>
+          <LikeButton articleId={post.id} initialLikes={likeCount}></LikeButton>
+        </footer>
+      </div>
     </div>
   )
 }

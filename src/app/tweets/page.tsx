@@ -63,11 +63,11 @@ const TweetFeedPage = async () => {
       <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600">
         {feed.map((e) => (
           <li
-            className="grid grid-cols-[auto_1fr] gap-2  px-4 py-6 sm:px-6 sm:py-8 "
+            className="grid grid-cols-[auto_1fr] gap-2  px-4 py-6 sm:px-6 sm:py-8"
             key={e.id}
           >
             <div className="flex items-start">
-              <div className="relative h-10 w-10">
+              <div className="relative size-10">
                 <Image
                   src="/anon-icon-200x200.webp"
                   alt="アイコン"

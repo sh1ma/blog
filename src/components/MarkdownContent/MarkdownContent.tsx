@@ -8,11 +8,10 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     prose
     prose-headings:relative
     prose-headings:font-bold
-    prose-h2:border-b-2
+    prose-h2:border-b
+    prose-h2:border-primary-default
     prose-h2:pb-2
-    prose-h2:text-xl
-    prose-h3:text-base
-    prose-a:text-red-800
+    prose-a:text-primary-default
     prose-code:rounded-sm
     prose-code:bg-gray-700
     prose-code:px-1
