@@ -42,7 +42,7 @@ const ArticlePage = async ({ params }: Params) => {
   const likeCount = parseInt((await countLikes(post.id))?.["count(*)"] ?? "0")
 
   return (
-    <div>
+    <main className="max-w-7xl px-4">
       <header className="mb-10 border-b border-b-stone-200 pb-2">
         <div className="flex flex-col gap-y-2">
           <span className="text-sm">
@@ -57,7 +57,7 @@ const ArticlePage = async ({ params }: Params) => {
       <footer>
         <LikeButton articleId={post.id} initialLikes={likeCount}></LikeButton>
       </footer>
-    </div>
+    </main>
   )
 }
 

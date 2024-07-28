@@ -57,7 +57,7 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
-          theme: "github-dark",
+          theme: "one-dark-pro",
           defaultLang: {
             block: "plaintext",
           },
