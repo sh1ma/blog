@@ -43,8 +43,8 @@ const ArticlePage = async ({ params }: Params) => {
   const likeCount = parseInt((await countLikes(post.id))?.["count(*)"] ?? "0")
 
   return (
-    <div className="grid max-w-7xl grid-cols-1 px-4 sm:grid-cols-[2fr_1fr]">
-      <div>
+    <div className="grid max-w-7xl grid-cols-1 sm:grid-cols-[2fr_1fr]">
+      <div className="bg-white p-2">
         <header className="mb-10 border-b border-b-primary-default pb-2">
           <div className="flex flex-col gap-y-2">
             <span className="flex items-center gap-1 text-sm">

@@ -1,104 +1,37 @@
-import { getAllTweets } from "@/db"
-import dayjs from "dayjs"
-import Image from "next/image"
+import { TweetCard } from "@/tweets/TweetCard"
+import { getAllTweets } from "@/tweets/tweetDomain"
 
-type TweetRow = {
-  id: string
-  content: string
-  createdAt: {
-    relative: string
-    machineReadable: string
-  }
-  author: {
-    name: string
-    username: string
-  }
-}
-
-const getFeed = async (): Promise<TweetRow[]> => {
-  const tweets = await getAllTweets()
-  return tweets.map((tweet) => ({
-    id: tweet.id.toString(),
-    content: tweet.content,
-    createdAt: {
-      relative: relativeDateTimeText(tweet.created_at),
-      machineReadable: dayjs(tweet.created_at).format(),
-    },
-    author: {
-      name: "sh1ma",
-      username: "sh1ma",
-    },
-  }))
-}
-
-const relativeDateTimeText = (time: string) => {
-  // 2024-07-15 11:55:23 のようなフォーマットの文字列を受け取る想定
-  const date = dayjs(time)
-  const now = dayjs()
-
-  const dayDiff = now.diff(date, "day")
-  // もし6日以内ならば、相対時間で表示
-  if (dayDiff < 7) {
-    // 同日ならば相対時刻
-    if (dayDiff === 0) {
-      const hourDiff = now.diff(date, "hour")
-      if (hourDiff === 0) {
-        const minuteDiff = now.diff(date, "minute")
-        if (minuteDiff === 0) {
-          return "たった今"
-        }
-        return `${minuteDiff}分前`
-      }
-      return `${hourDiff}時間前`
-    }
-  }
-  // 7日以上ならば、YYYY/MM/DD形式で表示
-  return date.format("YYYY/MM/DD")
-}
+// const getFeed = async (): Promise<TweetRow[]> => {
+//   const tweets = await getAllTweets()
+//   return tweets.map((tweet) => ({
+//     id: tweet.id.toString(),
+//     content: tweet.content,
+//     createdAt: {
+//       relative: relativeDateTimeText(tweet.created_at),
+//       machineReadable: dayjs(tweet.created_at).format(),
+//     },
+//     author: {
+//       name: "sh1ma",
+//       username: "sh1ma",
+//     },
+//   }))
+// }
 
 const TweetFeedPage = async () => {
-  const feed = await getFeed()
+  const tweets = await getAllTweets()
+  console.log(tweets[1].createdAt)
+
   return (
-    <div className="rounded-md bg-gray-700 text-white">
-      <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600">
-        {feed.map((e) => (
-          <li
-            className="grid grid-cols-[auto_1fr] gap-2  px-4 py-6 sm:px-6 sm:py-8"
-            key={e.id}
-          >
-            <div className="flex items-start">
-              <div className="relative size-10">
-                <Image
-                  src="/anon-icon-200x200.webp"
-                  alt="アイコン"
-                  fill
-                  className="rounded-full"
-                  unoptimized={true}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-end gap-2">
-                  {e.author.name}
-                  <span className="text-slate-400">@{e.author.username}</span>
-                  <time
-                    className="ml-1 text-slate-400"
-                    dateTime={e.createdAt.machineReadable}
-                  >
-                    <span className="text-sm">{e.createdAt.relative}</span>
-                  </time>
-                </div>
-              </div>
-              <div className="w-full">
-                <pre className="w-full whitespace-pre-wrap break-all font-sans">
-                  {e.content}
-                </pre>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="max-w-7xl">
+      <div className="rounded-md bg-white text-black">
+        <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50">
+          {tweets.map((e) => (
+            <li key={e.id}>
+              <TweetCard tweet={e} />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

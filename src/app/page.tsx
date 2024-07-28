@@ -34,7 +34,7 @@ const friendLinks = [
 ]
 
 export default async function Home() {
-  const articles = allArticles.toReversed().slice(0, 10)
+  const articles = allArticles.toReversed()
   const likes = await getArticleLikes(articles)
   const recentTweets = await getRecentTweets()
 
@@ -91,12 +91,32 @@ export default async function Home() {
               もっと知る
             </Link>
           </div>
-          <div className="grid bg-primary-default">
-            <ul className="[&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50">
+          <div className="grid bg-primary-default p-6 text-white">
+            <h2 className="border-b-2 border-primary-default pb-2 text-xl">
+              フレンドリンク
+            </h2>
+            <ul className="grid gap-4">
+              {friendLinks.map(({ name, href }) => (
+                <li key={href} className="flex">
+                  <Link
+                    href={href}
+                    className=" w-full bg-white px-4 py-2 text-primary-default"
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="grid gap-4">
+            <h2 className="border-b-2 border-primary-default pb-2 text-2xl text-primary-dark">
+              最新のつぶやき
+            </h2>
+            <ul className="bg-white [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50 ">
               {recentTweets.map(({ content, id, created_at }) => (
                 <li
                   key={id}
-                  className="grid grid-cols-[auto_1fr] gap-2  bg-white px-4 py-6 sm:px-6 sm:py-8 "
+                  className="grid grid-cols-[auto_1fr] gap-2 px-4 py-6 sm:px-6 sm:py-8 "
                 >
                   <div className="flex items-start">
                     <div className="relative size-10">
@@ -130,23 +150,11 @@ export default async function Home() {
                   </div>
                 </li>
               ))}
-            </ul>
-          </div>
-          <div className="grid bg-primary-default p-6 text-white">
-            <h2 className="border-b-2 border-primary-default pb-2 text-xl">
-              フレンドリンク
-            </h2>
-            <ul className="grid gap-4">
-              {friendLinks.map(({ name, href }) => (
-                <li key={href} className="flex">
-                  <Link
-                    href={href}
-                    className=" w-full bg-white px-4 py-2 text-primary-default"
-                  >
-                    {name}
-                  </Link>
-                </li>
-              ))}
+              <li className="p-4">
+                <Link href="/tweets" className="text-primary-default">
+                  もっと見る(ツイート一覧に移動)
+                </Link>
+              </li>
             </ul>
           </div>
         </aside>

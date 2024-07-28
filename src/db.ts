@@ -1,17 +1,7 @@
 "use server"
 
-import { D1Database } from "@cloudflare/workers-types"
 import { env } from "process"
 import { Tweet } from "./app/api/[[...route]]/twitter"
-
-declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-      DB: D1Database
-      DISCORD_WEBHOOK_URL: string
-    }
-  }
-}
 
 export const getAllArticles = async () => {
   const { results } = await env.DB.prepare("select * from articles").all()
