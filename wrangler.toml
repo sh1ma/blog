@@ -8,3 +8,7 @@ pages_build_output_dir = ".vercel/output/static"
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "blog-iine-counter"
 database_id = "63fa4c1b-5b4c-46e2-b2de-e412ae5deca9"
+
+[[r2_buckets]]
+binding = "CDN"
+bucket_name = "sh1madev-cdn"
