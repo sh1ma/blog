@@ -6,16 +6,29 @@ export const exifCutterFromFormData = async (formData: FormData) => {
     body: formData.get("file"),
   })
 
-  console.log(exifCutted.status)
+  const result = await exifCutted.clone().arrayBuffer()
 
-  const result = await exifCutted.text()
+  const encoder = new TextEncoder()
+  const blobStr = new Uint8Array(result).toString()
+  const encoded = encoder.encode(blobStr)
+  const key = await crypto.subtle.digest("SHA-256", encoded)
+  const keyArray = Array.from(new Uint8Array(key))
+  const keyStr = keyArray
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("")
 
-  return result
+  await putObject(`${keyStr.toString()}.webp`, result)
+
+  return keyStr
 }
 
 export const putObject = async (key: string, file: ArrayBuffer) => {
   const CDN = process.env.CDN
-  const obj = await CDN.put(key, file)
-  console.log(obj)
-  return "ok"
+  await CDN.put(key, file, {
+    httpMetadata: {
+      contentType: "image/webp",
+    },
+  })
+
+  return
 }
