@@ -1,10 +1,13 @@
 "use server"
 
 export const exifCutterFromFormData = async (formData: FormData) => {
+  const fileData = formData.get("file")
   const exifCutted = await fetch(process.env.EXIFCUTTER_URL, {
     method: "POST",
-    body: formData.get("file"),
+    body: fileData,
   })
+
+  const fileExt = fileData instanceof File ? fileData.name.split(".").pop() : ""
 
   const result = await exifCutted.clone().arrayBuffer()
 
@@ -17,9 +20,11 @@ export const exifCutterFromFormData = async (formData: FormData) => {
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("")
 
-  await putObject(`${keyStr.toString()}.webp`, result)
+  const fileName = `${keyStr.toString()}.${fileExt}`
 
-  return keyStr
+  await putObject(fileName, result)
+
+  return fileName
 }
 
 export const putObject = async (key: string, file: ArrayBuffer) => {

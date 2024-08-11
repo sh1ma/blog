@@ -9,9 +9,8 @@ export const FileUploadInputForm = () => {
 
   const upload = (formData: FormData) => {
     startTransition(async () => {
-      const keyStr = await exifCutterFromFormData(formData)
-
-      setFileName(`https://cdn.sh1ma.dev/${keyStr}.webp`)
+      const fileName = await exifCutterFromFormData(formData)
+      setFileName(`https://cdn.sh1ma.dev/${fileName}`)
     })
   }
 
