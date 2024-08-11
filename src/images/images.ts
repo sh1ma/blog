@@ -29,11 +29,7 @@ export const exifCutterFromFormData = async (formData: FormData) => {
 
 export const putObject = async (key: string, file: ArrayBuffer) => {
   const CDN = process.env.CDN
-  await CDN.put(key, file, {
-    httpMetadata: {
-      contentType: "image/webp",
-    },
-  })
+  await CDN.put(key, file)
 
   return
 }
