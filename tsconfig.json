@@ -31,7 +31,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "eslint.config.mjs"
+    "eslint.config.mjs",
+    "src/app/console/tweet/page.txs"
   ],
   "exclude": ["node_modules"]
 }
