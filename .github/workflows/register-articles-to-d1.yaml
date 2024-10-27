@@ -36,5 +36,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 execute blog-iine-counter --command "${{ env.query }}"
+          command: d1 execute blog-iine-counter --remote --command "${{ env.query }}"
           packageManager: pnpm
