@@ -4,7 +4,6 @@ import dayjs from "dayjs"
 import { ImageResponse } from "next/og"
 import React, { CSSProperties } from "react"
 import { ArticlePageParams } from "./params"
-import { Metadata } from "next"
 
 export const runtime = "edge"
 
@@ -62,23 +61,23 @@ const titleContainerSize = {
   height: `${size.height - borderSize}px`,
 }
 
-const CardImageResponseMetadata = async (slug: string): Promise<Metadata> => {
-  const post = allArticles.find((post) => post.id === slug)
+// const CardImageResponseMetadata = async (slug: string): Promise<Metadata> => {
+//   const post = allArticles.find((post) => post.id === slug)
 
-  if (!post) {
-    return {
-      title: "404",
-      metadataBase: new URL("https://blog.sh1ma.dev"),
-      description: "404",
-    }
-  }
+//   if (!post) {
+//     return {
+//       title: "404",
+//       metadataBase: new URL("https://blog.sh1ma.dev"),
+//       description: "404",
+//     }
+//   }
 
-  return {
-    title: post.title,
-    metadataBase: new URL("https://blog.sh1ma.dev"),
-    description: "ブログ記事",
-  }
-}
+//   return {
+//     title: post.title,
+//     metadataBase: new URL("https://blog.sh1ma.dev"),
+//     description: "ブログ記事",
+//   }
+// }
 
 export const CardImageResponse = async ({ params }: ArticlePageParams) => {
   const { slug } = params
