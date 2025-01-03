@@ -23,7 +23,6 @@ export const Article = defineDocumentType(() => ({
 export const About = defineDocumentType(() => ({
   name: "About",
   filePathPattern: `**/about.md`,
-  // contentType: "mdx",
 }))
 
 export default makeSource({
