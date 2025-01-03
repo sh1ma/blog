@@ -1,6 +1,6 @@
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev"
 import bundleAnalyzer from "@next/bundle-analyzer"
-import { withContentlayer } from "next-contentlayer"
+import { withContentlayer } from "next-contentlayer2"
 
 // note: the if statement is present because you
 //       only need to use the function during development
