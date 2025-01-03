@@ -13,7 +13,7 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     prose-h2:border-primary-default
     prose-h2:pb-2
     prose-a:text-primary-default
-    prose-code:rounded-sm
+    prose-code:rounded-md
     prose-code:bg-gray-700
     prose-code:px-1
     prose-code:py-0.5
