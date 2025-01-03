@@ -7,6 +7,7 @@
     "dev": "next dev",
     "next-on-pages": "next-on-pages",
     "build": "next build",
+    "build:content": "contentlayer2 build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky"
