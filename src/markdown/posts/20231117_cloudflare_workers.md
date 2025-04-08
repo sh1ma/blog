@@ -20,19 +20,19 @@
 
 ビルドターゲットに`wasm32-wasi`を使うので、`wasm32-wasi`をインストールします。
 
-```sh
+```bash
 rustup target add wasm32-wasi
 ```
 
 まず`cargo new`でプロジェクトつくります
 
-```sh
+```bash
 cargo new hello_world
 ```
 
 一度実行してみます
 
-```sh
+```bash
 cargo run
 ```
 
@@ -44,7 +44,7 @@ Hello, world!
 
 これをwasmにビルドします
 
-```sh
+```bash
 cargo build --target wasm32-wasi --release
 ```
 
@@ -54,13 +54,13 @@ cargo build --target wasm32-wasi --release
 
 まずはwasmtimeのインストール
 
-```sh
+```bash
 curl https://wasmtime.dev/install.sh -sSf | bash
 ```
 
 次にwasmを実行してみます。
 
-```sh
+```bash
 wasmtime target/wasm32-wasi/release/hello_world.wasm
 ```
 
@@ -68,7 +68,7 @@ wasmtime target/wasm32-wasi/release/hello_world.wasm
 
 ### Cloudflare Workersで動かす
 
-```sh
+```bash
 npx wrangler@wasm dev target/wasm32-wasi/release/hello_world.wasm
 ```
 
@@ -95,14 +95,14 @@ fn main() {
 
 これを再度ビルドして、wranlgerで実行します。
 
-```sh
+```bash
 cargo build --target wasm32-wasi --release
 npx wrangler@wasm dev target/wasm32-wasi/release/hello_world.wasm
 ```
 
 curlでPOSTリクエストを送ってみます。
 
-```sh
+```bash
 curl -X POST -d sh1ma https://localhost:8787
 ```
 

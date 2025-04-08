@@ -2,7 +2,7 @@
 
 ## 開発
 
-```sh
+```bash
 pnpm next-on-pages
 wrangler pages dev
 # デバッグしたかったら別に以下を実行する

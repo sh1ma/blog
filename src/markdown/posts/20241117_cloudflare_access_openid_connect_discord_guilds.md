@@ -30,7 +30,7 @@ Cloudflare Workers + DiscordのOauthを使ってOpenID Connectに使える認証
 
 まずは`git clone`などを使いリポジトリをダウンロードします。
 
-```sh
+```bash
 git clone https://github.com/Erisa/discord-oidc-worker
 ```
 
@@ -39,7 +39,7 @@ git clone https://github.com/Erisa/discord-oidc-worker
 
 まずはnpmを使って依存関係をダウンロードします。
 
-```sh
+```bash
 cd discord-oidc-worker
 npm install
 ```
@@ -50,7 +50,7 @@ npm install
 
 wranglerのバージョンが3.60.0以上であれば`kv:namespace`ではなく`kv namespace`に読み替えてください。
 
-```sh
+```bash
 npx wrangler kv:namespace create "discord_oidc_keys"
 ```
 
@@ -78,7 +78,7 @@ kv_namespaces = [
 
 次はconfig.sample.jsonをもとにconfig.jsonを作成します。
 
-```sh
+```bash
 cp config.sample.json config.json
 ```
 
@@ -100,13 +100,13 @@ config.jsonを編集します。1でメモしたclient idとclient secretを使�
 
 最後にデプロイします
 
-```sh
+```bash
 npx wrangler publish
 ```
 
 wranglerのバージョンが新しければ以下を実行します
 
-```sh
+```bash
 npx wrangler deploy
 ```
 

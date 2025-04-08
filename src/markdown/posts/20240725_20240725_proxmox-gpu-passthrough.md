@@ -29,7 +29,7 @@ pve-manager/8.2.4/faa83925c9641325 (running kernel: 6.8.8-3-pve)
 `lspci{:sh}`はPCIデバイスを一覧するコマンド。
 `lspci -nn{:sh}`でデバイス名とデバイスIDが出力される。
 
-```sh
+```bash
 lspci -nn | grep -i nvidia
 ```
 
@@ -49,7 +49,7 @@ lspci -nn | grep -i nvidia
 確認コマンドは以下の通り。
 `dmesg{:sh}`はカーネルの起動時の出力を見るコマンド。そこにIOMMUに関する情報がでていなかったら有効になってなさそう。
 
-```sh
+```bash
 dmesg | grep -e DMAR -e IOMMU
 ```
 
@@ -69,38 +69,38 @@ IOMMUを有効化するにはカーネルパラメータを弄る必要があっ
 
 好きなエディタで`/etc/default/grub`を開く
 
-```sh
+```bash
 vim /etc/default/grub
 ```
 
 以下のようになっている行を見つける
 
-```sh
+```bash
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 ```
 
 ここを編集するのだが、Intel CPUを使っているかAMD CPUを使っているかで設定内容が異なる。  
 自分はAMD CPUを使っているので以下のように設定した。
 
-```sh
+```bash
 GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on"
 ```
 
 Intel CPUを使っている場合は以下の通り
 
-```sh
+```bash
 GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
 ```
 
 変更し、保存したら以下のコマンドを実行
 
-```sh
+```bash
 update-grub
 ```
 
 設定を反映するために一度再起動する
 
-```sh
+```bash
 reboot
 ```
 
@@ -140,13 +140,13 @@ blacklist nvidia-modeset
 
 `initramfs`の情報を更新する。`initramfs`は初期RAMイメージで、上記更新前のGPUドライバの情報などを持っているため、更新する必要がある。
 
-```sh
+```bash
 update-initramfs -u
 ```
 
 最後に再起動してホストOSの設定はおしまい。
 
-```sh
+```bash
 reboot
 ```
 
@@ -164,7 +164,7 @@ GPUパススルーをするVMを新規作成。もしくは決める。GPUパス
 
 VM内で以下のコマンドを実行する
 
-```sh
+```bash
 apt update
 apt install nvidia-detect
 ```
