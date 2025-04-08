@@ -64,7 +64,7 @@ func main() {
 	}
 
 	// Markdownファイルを読み込む
-	postsDir := "/Users/sh1ma/Projects/github.com/sh1ma/blog/src/markdown/posts"
+	postsDir := "./src/markdown/posts"
 	err := filepath.WalkDir(postsDir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
