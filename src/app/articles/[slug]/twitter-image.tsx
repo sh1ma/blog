@@ -1,8 +1,6 @@
 import { CardImageResponse } from "./card-image-response"
 import { ArticlePageParams } from "./params"
 
-export const runtime = "edge"
-
 export const alt = "OGP画像"
 export const size = {
   width: 1200,

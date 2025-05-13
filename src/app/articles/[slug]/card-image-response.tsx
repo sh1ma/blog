@@ -5,8 +5,6 @@ import { ImageResponse } from "next/og"
 import React, { CSSProperties } from "react"
 import { ArticlePageParams } from "./params"
 
-export const runtime = "edge"
-
 export const alt = "OGP画像"
 export const contentType = "image/png"
 export const size = {

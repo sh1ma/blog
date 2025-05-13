@@ -8,6 +8,7 @@ import {
   getRecentTweets,
   relativeDatetimeTextFromTweet,
 } from "@/tweets/tweetDomain"
+import { getCloudflareContext } from "@opennextjs/cloudflare"
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -23,7 +24,8 @@ const getArticleLikes = async (articles: Article[]) => {
     () => "?",
   )}) group by article_id`
 
-  const { results } = await process.env.DB.prepare(query)
+  const context = await getCloudflareContext({ async: true })
+  const { results } = await context.env.DB.prepare(query)
     .bind(...articleIds)
     .all<{ article_id: string; "count(*)": string }>()
 

@@ -1,8 +1,9 @@
+@use "sass:meta";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "./syntax-highlight.scss";
+@include meta.load-css("syntax-highlight.scss");
 
 html,
 body {

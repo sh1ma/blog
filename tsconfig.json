@@ -22,8 +22,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]
-    }
-    // "types": ["@cloudflare/workers-types"]
+    },
+    "types": ["@types/node"]
   },
   "include": [
     "next-env.d.ts",

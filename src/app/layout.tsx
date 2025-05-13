@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   description: "sh1maのブログです",
 }
 
-export const runtime = "edge"
-
 dayjs.extend(utc)
 
 export default function RootLayout({

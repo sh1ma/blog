@@ -8,12 +8,11 @@ import { Metadata } from "next"
 import React from "react"
 
 interface Params {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
-export const generateMetadata = async ({
-  params,
-}: Params): Promise<Metadata> => {
+export const generateMetadata = async (props: Params): Promise<Metadata> => {
+  const params = await props.params
   const { slug } = params
   const post = allArticles.find((post) => post.id === slug)
 
@@ -32,7 +31,8 @@ export const generateMetadata = async ({
   }
 }
 
-const ArticlePage = async ({ params }: Params) => {
+const ArticlePage = async (props: Params) => {
+  const params = await props.params
   const { slug } = params
   const post = allArticles.find((post) => post.id === slug)
 

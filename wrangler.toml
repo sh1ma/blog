@@ -1,8 +1,14 @@
 name = "blog"
 compatibility_date = "2024-11-11"
-compatibility_flags = [ "nodejs_compat_v2" ]
+compatibility_flags = [ "nodejs_compat", "global_fetch_strictly_public" ]
 
-pages_build_output_dir = ".vercel/output/static"
+# pages_build_output_dir = ".vercel/output/static"
+main = ".open-next/worker.js"
+
+[assets]
+binding = "ASSETS"
+directory = ".open-next/assets"
+
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
@@ -12,6 +18,12 @@ database_id = "63fa4c1b-5b4c-46e2-b2de-e412ae5deca9"
 [[r2_buckets]]
 binding = "CDN"
 bucket_name = "sh1madev-cdn"
+preview_bucket_name = "sh1madev-cdn-preview"
+
+[[r2_buckets]]
+binding = "NEXT_INC_CACHE_R2_BUCKET"
+bucket_name = "blog-cache"
+preview_bucket_name = "blog-cache-preview"
 
 [observability]
 enabled = true

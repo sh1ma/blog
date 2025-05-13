@@ -1,15 +1,19 @@
 "use server"
 
-import { env } from "process"
+import { getCloudflareContext } from "@opennextjs/cloudflare"
 import { Tweet } from "./app/api/[[...route]]/twitter"
 
 export const getAllArticles = async () => {
-  const { results } = await env.DB.prepare("select * from articles").all()
+  const context = await getCloudflareContext({ async: true })
+  const { results } = await context.env.DB.prepare(
+    "select * from articles",
+  ).all()
   return results
 }
 
 export const countLikes = async (articleId: string) => {
-  const result = await env.DB.prepare(
+  const context = await getCloudflareContext({ async: true })
+  const result = await context.env.DB.prepare(
     "select count(*) from likes where article_id = ?",
   )
     .bind(articleId)
@@ -18,11 +22,12 @@ export const countLikes = async (articleId: string) => {
 }
 
 export const likeArticle = async (articleId: string) => {
-  await env.DB.prepare("insert into likes (article_id) values (?)")
+  const context = await getCloudflareContext({ async: true })
+  await context.env.DB.prepare("insert into likes (article_id) values (?)")
     .bind(articleId)
     .run()
 
-  await fetch(env.DISCORD_WEBHOOK_URL, {
+  await fetch(context.env.DISCORD_WEBHOOK_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -32,14 +37,16 @@ export const likeArticle = async (articleId: string) => {
 }
 
 export const getAllTweets = async () => {
-  const { results } = await env.DB.prepare(
+  const context = await getCloudflareContext({ async: true })
+  const { results } = await context.env.DB.prepare(
     "select * from tweets order by created_at desc",
   ).all<Tweet>()
   return results
 }
 
 export const getRecentTweets = async () => {
-  const { results } = await env.DB.prepare(
+  const context = await getCloudflareContext({ async: true })
+  const { results } = await context.env.DB.prepare(
     "select * from tweets order by created_at desc limit 4",
   ).all<Tweet>()
   return results
