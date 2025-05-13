@@ -1,3 +1,5 @@
+"use server"
+
 import dayjs from "dayjs"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
 // ツイートの型
