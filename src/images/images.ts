@@ -1,11 +1,16 @@
 "use server"
 
+import { getCloudflareContext } from "@opennextjs/cloudflare"
+
 export const exifCutterFromFormData = async (formData: FormData) => {
   const fileData = formData.get("file")
-  const exifCutted = await fetch(process.env.EXIFCUTTER_URL, {
-    method: "POST",
-    body: fileData,
-  })
+  const exifCutted = await fetch(
+    (await getCloudflareContext({ async: true })).env.EXIFCUTTER_URL,
+    {
+      method: "POST",
+      body: fileData,
+    },
+  )
 
   const fileExt = fileData instanceof File ? fileData.name.split(".").pop() : ""
 
@@ -28,7 +33,7 @@ export const exifCutterFromFormData = async (formData: FormData) => {
 }
 
 export const putObject = async (key: string, file: ArrayBuffer) => {
-  const CDN = process.env.CDN
+  const CDN = (await getCloudflareContext({ async: true })).env.CDN
   await CDN.put(key, file)
 
   return
