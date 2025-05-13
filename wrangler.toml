@@ -5,6 +5,9 @@ compatibility_flags = [ "nodejs_compat", "global_fetch_strictly_public" ]
 # pages_build_output_dir = ".vercel/output/static"
 main = ".open-next/worker.js"
 
+[vars]
+NODE_VERSION = "22.12.0"
+
 [assets]
 binding = "ASSETS"
 directory = ".open-next/assets"
