@@ -1,5 +1,4 @@
 import { Hono } from "hono"
-import { Bindings } from "./bindings"
 import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
@@ -8,7 +7,7 @@ const tweetSchema = z.object({
   content: z.string().min(1).max(140),
 })
 
-export const twitterAPI = new Hono<{ Bindings: Bindings }>()
+export const twitterAPI = new Hono()
   .get("/tweets", async (c) => {
     const db = (await getCloudflareContext({ async: true })).env.DB
     const { results } = await db.prepare("SELECT * FROM tweets").all<Tweet>()
