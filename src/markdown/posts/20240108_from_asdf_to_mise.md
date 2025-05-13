@@ -28,7 +28,7 @@ curl https://mise.jdx.dev/install.sh | sh
 
 .zshrcにパスを追加します
 
-```sh
+```bash
 eval "$(~/.local/bin/mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 ```

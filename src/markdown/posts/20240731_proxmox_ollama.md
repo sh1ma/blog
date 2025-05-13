@@ -27,7 +27,7 @@ Linux xx 6.1.0-23-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.99-1 (2024-07-15) x86_
 
 先にコマンド全体を公式から引っ張っておくとこんな感じ。
 
-```sh
+```bash
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
@@ -51,7 +51,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 `ca-certificates`と`curl`が入っていない場合は以下で追加。
 
-```sh
+```bash
 apt update
 sudo apt install -y ca-certificates curl
 ```
@@ -59,7 +59,7 @@ sudo apt install -y ca-certificates curl
 次に`/etc/apt/keyrings`ディレクトリを作ってgpgキーを引っ張ってくる。どうやら最近は`/etc/apt/keyrings`にkeyringを置くのが最適解っぽい。
 参考: [apt-key の非推奨化と keyring の扱い方](https://zenn.dev/kariya_mitsuru/articles/a950e0996fb703#fnref-48d3-2)
 
-```sh
+```bash
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -67,7 +67,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 リポジトリの追加。以下でよしなにやってくれる。
 
-```sh
+```bash
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
@@ -78,7 +78,7 @@ sudo apt-get update
 
 最後にdockerのもろもろのインストール。
 
-```sh
+```bash
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
@@ -90,7 +90,7 @@ NVIDIA Container Toolkitを入れるとDockerコンテナでホストのGPUが�
 
 下記のコマンドでインストールのためのリポジトリをセットアップする。
 
-```sh
+```bash
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
   && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
@@ -99,26 +99,26 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
 
 インストール。
 
-```sh
+```bash
 sudo apt update
 sudo apt install -y nvidia-container-toolkit
 ```
 
 下記のコマンドで入っているコマンドを確認できる。
 
-```sh
+```bash
 sudo nvidia-ctk --version
 ```
 
 入っていることが確認できたら以下を実行。dockerからNVIDIA Container Runtimeが使えるようになる。
 
-```sh
+```bash
 sudo nvidia-ctk runtime configure --runtime=docker
 ```
 
 最後にdockerを再起動しておく。
 
-```sh
+```bash
 sudo systemctl restart docker
 ```
 
@@ -128,13 +128,13 @@ sudo systemctl restart docker
 
 以下のコマンドでOllamaのDockerイメージを実行できる。
 
-```sh
+```bash
 sudo docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
 Ollamaが実行されているかどうかを確認するためにapiサーバーにリクエストを投げるには以下の通り。
 
-```sh
+```bash
 curl http://localhost:11434
 ```
 
@@ -183,7 +183,7 @@ volumes:
 
 保存したらそのディレクトリで以下を実行すると`0.0.0.0:8080`でOpenWebUIが立ち上がるはず。
 
-```sh
+```bash
 docker compose up
 ```
 
