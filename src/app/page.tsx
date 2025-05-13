@@ -4,10 +4,8 @@ import Link from "next/link"
 import { Calendar, ThumbsUp } from "lucide-react"
 import dayjs from "dayjs"
 import Image from "next/image"
-import {
-  getRecentTweets,
-  relativeDatetimeTextFromTweet,
-} from "@/tweets/tweetDomain"
+import { getRecentTweets } from "@/tweets/tweetDomain"
+import { relativeDatetimeTextFromTweet } from "@/tweets/util"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
 
 export const generateMetadata = async (): Promise<Metadata> => {

@@ -1,4 +1,5 @@
-import { relativeDatetimeTextFromTweet, Tweet } from "./tweetDomain"
+import { Tweet } from "./tweetDomain"
+import { relativeDatetimeTextFromTweet } from "./util"
 import Image from "next/image"
 
 export type TweetViewModel = {
