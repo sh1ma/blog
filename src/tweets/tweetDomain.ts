@@ -39,7 +39,7 @@ const recordToModel = (record: TweetDBRecord): Tweet => {
 
 // すべてのツイートを取得する
 export const getAllTweets = async () => {
-  const context = await getCloudflareContext({ async: true })
+  const context = getCloudflareContext()
   const { results } = await context.env.DB.prepare(
     "select * from tweets order by created_at desc",
   ).all<TweetDBRecord>()
