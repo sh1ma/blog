@@ -3,13 +3,11 @@ compatibility_date = "2024-12-30"
 compatibility_flags = [ "nodejs_compat", "global_fetch_strictly_public" ]
 
 main = ".open-next/worker.js"
+pages_build_output_dir = ".open-next/assets"
 
 [vars]
 NODE_VERSION = "22.12.0"
 
-[assets]
-binding = "ASSETS"
-directory = ".open-next/assets"
 
 
 [[d1_databases]]
