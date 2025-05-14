@@ -1,6 +1,9 @@
 import { TweetCard } from "@/tweets/TweetCard"
 import { getAllTweets } from "@/tweets/tweetDomain"
 
+// ref: https://github.com/opennextjs/opennextjs-cloudflare/issues/652
+export const dynamic = "force-dynamic"
+
 const TweetFeedPage = async () => {
   const tweets = await getAllTweets()
 
