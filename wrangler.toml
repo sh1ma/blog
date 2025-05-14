@@ -2,7 +2,6 @@ name = "blog"
 compatibility_date = "2024-11-11"
 compatibility_flags = [ "nodejs_compat", "global_fetch_strictly_public" ]
 
-# pages_build_output_dir = ".vercel/output/static"
 main = ".open-next/worker.js"
 
 [vars]
@@ -14,7 +13,7 @@ directory = ".open-next/assets"
 
 
 [[d1_databases]]
-binding = "DB" # i.e. available in your Worker on env.DB
+binding = "DB"
 database_name = "blog-iine-counter"
 database_id = "63fa4c1b-5b4c-46e2-b2de-e412ae5deca9"
 
