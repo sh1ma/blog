@@ -1,7 +1,6 @@
 "use server"
 
 import { getCloudflareContext } from "@opennextjs/cloudflare"
-import { Tweet } from "./app/api/[[...route]]/twitter"
 
 export const getAllArticles = async () => {
   const context = getCloudflareContext()
@@ -34,20 +33,4 @@ export const likeArticle = async (articleId: string) => {
       content: `いいねされました: ${articleId}`,
     }),
   })
-}
-
-export const getAllTweets = async () => {
-  const context = getCloudflareContext()
-  const { results } = await context.env.DB.prepare(
-    "select * from tweets order by created_at desc",
-  ).all<Tweet>()
-  return results
-}
-
-export const getRecentTweets = async () => {
-  const context = getCloudflareContext()
-  const { results } = await context.env.DB.prepare(
-    "select * from tweets order by created_at desc limit 4",
-  ).all<Tweet>()
-  return results
 }
