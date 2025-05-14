@@ -1,6 +1,10 @@
 import bundleAnalyzer from "@next/bundle-analyzer"
 import { withContentlayer } from "next-contentlayer2"
 
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare"
+
+initOpenNextCloudflareForDev()
+
 // note: the if statement is present because you
 //       only need to use the function during development
 
@@ -16,7 +20,3 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 export default withBundleAnalyzer(withContentlayer(nextConfig))
-
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare"
-
-initOpenNextCloudflareForDev()
