@@ -16,13 +16,16 @@ export const generateMetadata = async (): Promise<Metadata> => {
   }
 }
 
+// ref: https://github.com/opennextjs/opennextjs-cloudflare/issues/652
+export const dynamic = "force-dynamic"
+
 const getArticleLikes = async (articles: Article[]) => {
   const articleIds = articles.map((article) => article.id)
   const query = `select article_id, count(*) from likes where article_id in (${articleIds.map(
     () => "?",
   )}) group by article_id`
 
-  const context = await getCloudflareContext({ async: true })
+  const context = getCloudflareContext()
   const { results } = await context.env.DB.prepare(query)
     .bind(...articleIds)
     .all<{ article_id: string; "count(*)": string }>()
@@ -38,8 +41,8 @@ const friendLinks = [
 
 export default async function Home() {
   const articles = allArticles.toReversed()
-  const likes = await getArticleLikes(articles)
   const recentTweets = await getRecentTweets()
+  const likes = await getArticleLikes(articles)
 
   const articlesWithLikes = articles.map((article) => {
     const like = likes.find((like) => like.article_id === article.id)
