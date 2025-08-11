@@ -16,7 +16,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.2.2",
+    "@hono/zod-validator": "^0.7.0",
     "@opennextjs/cloudflare": "^1.6.5",
     "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "10.4.16",
