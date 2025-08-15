@@ -29,8 +29,8 @@
     "next": "15.3.2",
     "next-contentlayer2": "^0.5.8",
     "postcss": "8.4.30",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-pretty-code": "^0.14.1",
     "rehype-slug": "^6.0.0",
@@ -45,8 +45,8 @@
   "devDependencies": {
     "@next/bundle-analyzer": "15.3.2",
     "@types/node": "^22.17.1",
-    "@types/react": "19.1.4",
-    "@types/react-dom": "19.1.5",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
@@ -69,8 +69,8 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "19.1.4",
-      "@types/react-dom": "19.1.5"
+      "@types/react": "19.1.10",
+      "@types/react-dom": "19.1.7"
     }
   }
 }
