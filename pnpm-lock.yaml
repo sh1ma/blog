@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.9.0)(zod@3.25.76)
+        version: 0.2.2(hono@4.9.1)(zod@3.25.76)
       '@opennextjs/cloudflare':
         specifier: ^1.6.5
         version: 1.6.5(wrangler@4.28.1)
@@ -38,7 +38,7 @@ importers:
         version: 4.2.2
       hono:
         specifier: ^4.9.0
-        version: 4.9.0
+        version: 4.9.1
       lucide-react:
         specifier: ^0.416.0
         version: 0.416.0(react@19.1.0)
@@ -3244,8 +3244,8 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  hono@4.9.0:
-    resolution: {integrity: sha512-JAUc4Sqi3lhby2imRL/67LMcJFKiCu7ZKghM7iwvltVZzxEC5bVJCsAa4NTnSfmWGb+N2eOVtFE586R+K3fejA==}
+  hono@4.9.1:
+    resolution: {integrity: sha512-qfvdJ42t6CQE0N/iSCa8KsW8SQqYD67YB+TYbwPHlnALvX+s7ynh8otR1NEk5jXtUg73gpV/B82OSufDmwtX3w==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@2.0.2:
@@ -6365,9 +6365,9 @@ snapshots:
       protobufjs: 7.5.3
       yargs: 17.7.2
 
-  '@hono/zod-validator@0.2.2(hono@4.9.0)(zod@3.25.76)':
+  '@hono/zod-validator@0.2.2(hono@4.9.1)(zod@3.25.76)':
     dependencies:
-      hono: 4.9.0
+      hono: 4.9.1
       zod: 3.25.76
 
   '@humanwhocodes/config-array@0.13.0':
@@ -9316,7 +9316,7 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono@4.9.0: {}
+  hono@4.9.1: {}
 
   html-escaper@2.0.2: {}
 
