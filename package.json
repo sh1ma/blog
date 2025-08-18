@@ -19,7 +19,7 @@
     "@hono/zod-validator": "^0.2.2",
     "@opennextjs/cloudflare": "^1.6.5",
     "@tailwindcss/typography": "^0.5.16",
-    "autoprefixer": "10.4.16",
+    "autoprefixer": "10.4.21",
     "contentlayer2": "^0.5.8",
     "dayjs": "^1.11.13",
     "dayjs-plugin-utc": "^0.1.2",
