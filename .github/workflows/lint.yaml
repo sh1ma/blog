@@ -1,0 +1,23 @@
+name: Lint & StyleCheck
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Run pnpm install
+        run: pnpm install
+      - name: Run lint
+        run: pnpm lint
+      - name: Run format check
+        run: pnpm format:check
