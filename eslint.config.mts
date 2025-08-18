@@ -37,7 +37,7 @@ export default defineConfig([
       "import/no-unresolved": [
         "error",
         {
-          ignore: ["node_modules", ".contentlayer"],
+          ignore: ["node_modules", "contentlayer/generated"],
         },
       ],
       "react-hooks/exhaustive-deps": "error",
