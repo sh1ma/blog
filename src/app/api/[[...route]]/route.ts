@@ -7,5 +7,5 @@ const route = app.route("/twitter", twitterAPI)
 
 export type AppType = typeof route
 
-export const GET = handle(app)
-export const POST = handle(app)
+export const GET = handle(route)
+export const POST = handle(route)
