@@ -34,12 +34,17 @@ export default defineConfig([
           argsIgnorePattern: "^_",
         },
       ],
-      "import/no-unresolved": "error",
+      "import/no-unresolved": [
+        "error",
+        {
+          ignore: ["node_modules", "contentlayer/generated"],
+        },
+      ],
       "react-hooks/exhaustive-deps": "error",
     },
 
     settings: {
-      "import/ignore": ["node_modules", ".contentlayer"],
+      "import/ignore": ["node_modules", ".contentlayer", ".next"],
     },
     ignores: [
       ".next/**",
