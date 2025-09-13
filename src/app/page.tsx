@@ -36,7 +36,6 @@ const getArticleLikes = async (articles: Article[]) => {
 const friendLinks = [
   { name: "hiwaitanのメモ帳", href: "https://blog.unitypackage.zip/" },
   { name: "chun's diary", href: "https://chun37.hatenablog.com/" },
-  { name: "moytus.dev", href: "https://moytus.dev/" },
 ]
 
 export default async function Home() {
