@@ -32,7 +32,7 @@ GithubのReleasesからビルド済みのアプリケーションがダウンロ
 
 まずはGithubリポジトリをcloneします。
 
-```sh
+```bash
 git clone --depth 1 https://github.com/seemoo-lab/openhaystack.git
 ```
 
@@ -45,7 +45,7 @@ git clone --depth 1 https://github.com/seemoo-lab/openhaystack.git
 
 自分はこのエラーが置きましたが、以下を実行し`OpenHaystack/OpenHaystack.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`を削除して再度XCodeを開き直すことで解決しました。
 
-```sh
+```bash
 rm OpenHaystack/OpenHaystack.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 ```
 
@@ -91,19 +91,19 @@ OpenHaystackは公式にESP32のファームウェアを用意しています。
 
 OpenHaystackのプロジェクトディレクトリに入り、`Firmware/ESP32`まで移動します。
 
-```sh
+```bash
 cd Firmware/ESP32
 ```
 
 まずはファームウェアをビルドします。
 
-```sh
+```bash
 idf.py build
 ```
 
 ディレクトリ内にある`flash_esp32.sh`を使って書き込みます。「Base64-encoded advertisement key」の箇所には先ほどコピーしたアドバタイズ用のキーに置き換えます。
 
-```sh
+```bash
 chmod +x flash_esp32.sh
 ./flash_esp32.sh -p /dev/yourSerialPort "Base64-encoded advertisement key"
 ```

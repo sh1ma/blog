@@ -23,7 +23,7 @@ OpenHaystack記事二個目です。nRF52832が乗った基板を調達できた
 （Raspberry OSが載っている）ラズパイにOpenOCDを入れるのはとても簡単です。  
 以下のコマンドで入れられます。
 
-```sh
+```bash
 sudo apt install -y openocd
 ```
 
@@ -68,7 +68,7 @@ reset
 
 ↑を`openhaystack.cfg`などの名前で保存し、以下を実行してtelnetサーバとgdbサーバなどが立ち上がっていれば一旦準備は完了です。
 
-```sh
+```bash
 openocd -f openhaystack.cfg
 ```
 
@@ -81,7 +81,7 @@ openocd -f openhaystack.cfg
 
 以下のコマンドでファームウェアをダウンロードします。（`v2.2.0`の箇所は適宜変更してください）
 
-```sh
+```bash
 wget https://github.com/dchristl/macless-haystack/releases/download/v2.2.0/nrf52_firmware.bin
 ```
 
@@ -93,7 +93,7 @@ wget https://raw.githubusercontent.com/dchristl/macless-haystack/refs/heads/main
 
 generate_keys.pyを実行すると`output/`に鍵情報のファイルが作成されます。
 
-```sh
+```bash
 python generate_keys.py
 ```
 
@@ -107,7 +107,7 @@ ZDOU6E.keys  ZDOU6E_devices.json  ZDOU6E_keyfile
 
 以下を実行すると埋め込まれます。
 
-```sh
+```bash
 export LC_CTYPE=C
 xxd -p -c 100000 XXXXXX_keyfile | xxd -r -p | dd of=nrf51_firmware.bin skip=1 bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf51_firmware.bin | cut -d ':' -f 1) conv=notrunc
 ```
@@ -128,7 +128,7 @@ reset
 
 追記したら以下を実行
 
-```sh
+```bash
 openocd -f openhaystack.cfg
 ```
 
