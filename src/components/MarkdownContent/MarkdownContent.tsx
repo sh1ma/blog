@@ -11,12 +11,12 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     prose-headings:font-bold
     prose-h2:border-b
     prose-h2:border-primary-default
-    prose-h2:pb-2
+    prose-h2:pb-heading-bottom
     prose-a:text-primary-default
     prose-code:rounded-md
     prose-code:bg-gray-700
-    prose-code:px-1
-    prose-code:py-0.5
+    prose-code:px-inline-x
+    prose-code:py-inline-y
     prose-code:text-slate-300
     prose-code:before:content-none
     prose-code:after:content-none

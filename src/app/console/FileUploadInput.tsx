@@ -18,7 +18,10 @@ export const FileUploadInputForm = () => {
     <>
       <form action={upload}>
         <input type="file" name="file" />
-        <button type="submit" className="bg-white px-4 py-2 text-primary-light">
+        <button
+          type="submit"
+          className="bg-white px-btn-x py-btn-y text-primary-light"
+        >
           Upload
         </button>
       </form>

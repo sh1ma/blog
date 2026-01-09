@@ -24,8 +24,8 @@
 
 **Purpose**: 作業開始前の準備
 
-- [ ] T001 現在のUIのスクリーンショットを撮影（ホーム、記事詳細、About、ツイート一覧の各ページ、モバイル・デスクトップ両方）
-- [ ] T002 開発サーバー起動確認 `pnpm dev`
+- [x] T001 現在のUIのスクリーンショットを撮影（ホーム、記事詳細、About、ツイート一覧の各ページ、モバイル・デスクトップ両方）
+- [x] T002 開発サーバー起動確認 `pnpm dev`
 
 ---
 
@@ -37,7 +37,7 @@
 
 **Goal**: セマンティックなスペーシングトークンをTailwind設定に追加
 
-- [ ] T003 [US4] スペーシングトークンを追加 in tailwind.config.ts
+- [x] T003 [US4] スペーシングトークンを追加 in tailwind.config.ts
   - `page-x`: '1rem'
   - `page-bottom`: '5rem'
   - `card`: '1.5rem'
@@ -50,7 +50,7 @@
   - `inline-x`: '0.25rem'
   - `inline-y`: '0.125rem'
   - `icon-gap`: '0.25rem'
-- [ ] T004 [US4] 開発サーバーで新トークンが認識されることを確認
+- [x] T004 [US4] 開発サーバーで新トークンが認識されることを確認
 
 **Checkpoint**: トークンが利用可能 - コンポーネントのリファクタリングを開始可能
 
@@ -61,6 +61,7 @@
 **Goal**: 全コンポーネントのハードコードされたスペーシング値をトークンに置き換え、レスポンシブデザインを維持
 
 **Independent Test**:
+
 - 各ページをリファクタリング前後でスクリーンショット比較
 - モバイル・タブレット・デスクトップの各ブレークポイントでレイアウト確認
 
@@ -68,57 +69,57 @@
 
 #### Core Layout Files
 
-- [ ] T005 [P] [US1] ルートレイアウトのスペーシングをトークン化 in src/app/layout.tsx
+- [x] T005 [P] [US1] ルートレイアウトのスペーシングをトークン化 in src/app/layout.tsx
   - `mb-20` → `mb-page-bottom`
-- [ ] T006 [P] [US1] ヘッダーのスペーシングをトークン化 in src/app/header.tsx
+- [x] T006 [P] [US1] ヘッダーのスペーシングをトークン化 in src/app/header.tsx
   - `p-4` → `p-section-gap`
 
 #### Home Page (src/app/page.tsx)
 
-- [ ] T007 [US1] ホームページのコンテナスペーシングをトークン化 in src/app/page.tsx
+- [x] T007 [US1] ホームページのコンテナスペーシングをトークン化 in src/app/page.tsx
   - `px-4` → `px-page-x`
   - `gap-4` → `gap-section-gap`（セクション間）
   - `pb-2` → `pb-heading-bottom`（見出し下）
-- [ ] T008 [US1] ホームページの記事カードスペーシングをトークン化 in src/app/page.tsx
+- [x] T008 [US1] ホームページの記事カードスペーシングをトークン化 in src/app/page.tsx
   - `p-6` → `p-card`
-- [ ] T009 [US1] ホームページのサイドバースペーシングをトークン化 in src/app/page.tsx
+- [x] T009 [US1] ホームページのサイドバースペーシングをトークン化 in src/app/page.tsx
   - `p-6` → `p-card`
   - `px-4 py-2` → `px-btn-x py-btn-y`（ボタン/リンク）
-- [ ] T010 [US2] ホームページのツイートカードレスポンシブスペーシングをトークン化 in src/app/page.tsx
+- [x] T010 [US2] ホームページのツイートカードレスポンシブスペーシングをトークン化 in src/app/page.tsx
   - `px-4 py-6 sm:px-6 sm:py-8` → `px-btn-x py-card sm:px-card sm:py-8`（ツイートカードは特殊なため一部維持）
-- [ ] T011 [US1] ホームページのアイコンギャップをトークン化 in src/app/page.tsx
+- [x] T011 [US1] ホームページのアイコンギャップをトークン化 in src/app/page.tsx
   - `gap-1` → `gap-icon-gap`（アイコンとテキスト間）
 
 #### Article Page (src/app/articles/[slug]/page.tsx)
 
-- [ ] T012 [US2] 記事ページのレスポンシブパディングをトークン化 in src/app/articles/[slug]/page.tsx
+- [x] T012 [US2] 記事ページのレスポンシブパディングをトークン化 in src/app/articles/[slug]/page.tsx
   - `p-2 sm:p-6` → `p-card-sm sm:p-card`
-- [ ] T013 [US1] 記事ページのセクションスペーシングをトークン化 in src/app/articles/[slug]/page.tsx
+- [x] T013 [US1] 記事ページのセクションスペーシングをトークン化 in src/app/articles/[slug]/page.tsx
   - `mb-10` → `mb-section-bottom`
   - `pb-2` → `pb-heading-bottom`
   - `gap-1` → `gap-icon-gap`
 
 #### Other Pages
 
-- [ ] T014 [P] [US1] Aboutページのスペーシングをトークン化 in src/app/about/page.tsx
+- [x] T014 [P] [US1] Aboutページのスペーシングをトークン化 in src/app/about/page.tsx
   - `px-4` → `px-page-x`
   - `mb-10` → `mb-section-bottom`
   - `pb-2` → `pb-heading-bottom`
-- [ ] T015 [P] [US1] Consoleページのスペーシングをトークン化 in src/app/console/page.tsx
+- [x] T015 [P] [US1] Consoleページのスペーシングをトークン化 in src/app/console/page.tsx
   - `px-4` → `px-page-x`
-- [ ] T016 [P] [US1] ファイルアップロードボタンのスペーシングをトークン化 in src/app/console/FileUploadInput.tsx
+- [x] T016 [P] [US1] ファイルアップロードボタンのスペーシングをトークン化 in src/app/console/FileUploadInput.tsx
   - `px-4 py-2` → `px-btn-x py-btn-y`
 
 #### Shared Components
 
-- [ ] T017 [P] [US1] LikeButtonのスペーシングをトークン化 in src/components/LikeButton/LikeButton.tsx
+- [x] T017 [P] [US1] LikeButtonのスペーシングをトークン化 in src/components/LikeButton/LikeButton.tsx
   - `p-2` → `p-btn-y`（小さいボタンなので縦パディングトークンを使用）
-- [ ] T018 [P] [US1] ArticleListのスペーシング確認 in src/components/ArticleList/ArticleList.tsx
+- [x] T018 [P] [US1] ArticleListのスペーシング確認 in src/components/ArticleList/ArticleList.tsx
   - `gap-6` は汎用ギャップのためトークン化せず維持
 
 #### Tweet Components
 
-- [ ] T019 [US2] TweetCardのレスポンシブスペーシングをトークン化 in src/tweets/TweetCard.tsx
+- [x] T019 [US2] TweetCardのレスポンシブスペーシングをトークン化 in src/tweets/TweetCard.tsx
   - `px-4 py-6 sm:px-6 sm:py-8` → レスポンシブパターン維持しつつ可能な箇所をトークン化
   - `gap-1` → `gap-icon-gap`
 
@@ -134,7 +135,7 @@
 
 ### Implementation
 
-- [ ] T020 [US3] MarkdownContentのproseスペーシングをトークン化 in src/components/MarkdownContent/MarkdownContent.tsx
+- [x] T020 [US3] MarkdownContentのproseスペーシングをトークン化 in src/components/MarkdownContent/MarkdownContent.tsx
   - `prose-h2:pb-2` → `prose-h2:pb-heading-bottom`
   - `prose-code:px-1 prose-code:py-0.5` → `prose-code:px-inline-x prose-code:py-inline-y`
 
@@ -175,11 +176,13 @@
 ### Within Phase 3 (US1 & US2)
 
 以下のタスクは並行実行可能（[P]マーク）：
+
 - T005, T006（コアレイアウト）
 - T014, T015, T016（その他ページ）
 - T017, T018（共有コンポーネント）
 
 以下は順次実行：
+
 - T007 → T008 → T009 → T010 → T011（ホームページ - 同一ファイル）
 - T012 → T013（記事ページ - 同一ファイル）
 

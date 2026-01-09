@@ -36,7 +36,7 @@ export const LikeButton = ({
 
   return (
     <button
-      className="rounded border-2 border-slate-700 bg-white p-2 text-black transition-colors hover:bg-slate-700 hover:text-white"
+      className="rounded border-2 border-slate-700 bg-white p-btn-y text-black transition-colors hover:bg-slate-700 hover:text-white"
       onClick={onClick}
       disabled={likes.liked}
     >

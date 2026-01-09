@@ -25,6 +25,20 @@ const config: Config = {
       fontFamily: {
         system: ["system-ui"],
       },
+      spacing: {
+        "page-x": "1rem",
+        "page-bottom": "5rem",
+        card: "1.5rem",
+        "card-sm": "0.5rem",
+        "section-gap": "1rem",
+        "section-bottom": "2.5rem",
+        "heading-bottom": "0.5rem",
+        "btn-x": "1rem",
+        "btn-y": "0.5rem",
+        "inline-x": "0.25rem",
+        "inline-y": "0.125rem",
+        "icon-gap": "0.25rem",
+      },
     },
   },
 }

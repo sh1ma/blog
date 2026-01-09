@@ -16,14 +16,14 @@ GitHubのプルリクエストを管理するためのスキル。
 
 PRには必ず以下のいずれかのラベルを付けること:
 
-| ラベル | 用途 |
-|--------|------|
-| `feature` | 機能開発関連 |
-| `bug` | バグ関連 |
-| `refactoring` | リファクタ関連 |
-| `documentation` | ドキュメンテーション関連 |
-| `chore` | 設定ファイルなどの雑多な変更 |
-| `AI` | AI関連 |
+| ラベル          | 用途                         |
+| --------------- | ---------------------------- |
+| `feature`       | 機能開発関連                 |
+| `bug`           | バグ関連                     |
+| `refactoring`   | リファクタ関連               |
+| `documentation` | ドキュメンテーション関連     |
+| `chore`         | 設定ファイルなどの雑多な変更 |
+| `AI`            | AI関連                       |
 
 ## PR作成手順（推奨フロー）
 
@@ -84,6 +84,7 @@ gh pr <command> [flags]
 ## 主要コマンド
 
 ### PR一覧表示
+
 ```bash
 gh pr list                    # 現在のリポジトリのPR一覧
 gh pr list --state all        # すべてのPR（open/closed/merged）
@@ -93,6 +94,7 @@ gh pr list --label "bug"      # ラベルでフィルタ
 ```
 
 ### PR表示・チェックアウト
+
 ```bash
 gh pr view                    # 現在のブランチのPRを表示
 gh pr view 123                # PR #123を表示
@@ -102,6 +104,7 @@ gh pr diff 123                # PR #123の差分を表示
 ```
 
 ### PRマージ・クローズ
+
 ```bash
 gh pr merge                   # 現在のブランチのPRをマージ
 gh pr merge 123               # PR #123をマージ
@@ -113,6 +116,7 @@ gh pr reopen 123              # PR #123を再オープン
 ```
 
 ### PRレビュー
+
 ```bash
 gh pr review                           # 対話形式でレビュー
 gh pr review 123 --approve             # 承認
@@ -122,6 +126,7 @@ gh pr checks 123                       # CIステータス確認
 ```
 
 ### PR編集
+
 ```bash
 gh pr edit 123 --title "新タイトル"
 gh pr edit 123 --body "新本文"

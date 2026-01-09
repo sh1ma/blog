@@ -18,13 +18,13 @@ Conventional Commitに準じた形式:
 <type>/<short-description>
 ```
 
-| type | 用途 |
-|------|------|
-| `feat` | 新機能追加 |
-| `fix` | バグ修正 |
-| `refactor` | リファクタリング |
-| `docs` | ドキュメント変更 |
-| `chore` | ビルド・設定・依存関係の変更 |
+| type       | 用途                         |
+| ---------- | ---------------------------- |
+| `feat`     | 新機能追加                   |
+| `fix`      | バグ修正                     |
+| `refactor` | リファクタリング             |
+| `docs`     | ドキュメント変更             |
+| `chore`    | ビルド・設定・依存関係の変更 |
 
 例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
 
@@ -74,8 +74,10 @@ Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブ�
 `@opennextjs/cloudflare` を使用してNext.jsをCloudflare Workers上で動作させている。環境変数やD1/R2へのアクセスは `getCloudflareContext()` 経由で取得する。
 
 ## Active Technologies
+
 - TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2 (refactor/unify-design-system)
 - Cloudflare D1（いいね機能）、R2（CDN） (refactor/unify-design-system)
 
 ## Recent Changes
+
 - refactor/unify-design-system: Added TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2

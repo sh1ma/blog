@@ -8,46 +8,46 @@
 
 #### ファイル別スペーシング使用一覧
 
-| ファイル | スペーシング値 | コンテキスト |
-|----------|---------------|--------------|
-| `src/app/page.tsx` | `px-4` | メインコンテナの左右パディング |
-| | `gap-4` | グリッドレイアウトのギャップ |
-| | `pb-2` | 見出し下部パディング |
-| | `p-6` | 記事カード、サイドバーセクションのパディング |
-| | `gap-1` | アイコンとテキストのギャップ |
-| | `px-4 py-2` | ボタン・リンクのパディング |
-| | `gap-2` | フレックスコンテナのギャップ |
-| | `px-4 py-6` | ツイートカード（モバイル） |
-| | `sm:px-6 sm:py-8` | ツイートカード（デスクトップ） |
-| | `p-4` | つぶやきリンク |
-| | `ml-1` | 時間表示の左マージン |
-| `src/app/layout.tsx` | `mb-20` | コンテナ下部マージン |
-| | `h-20` | ヘッダーの高さ |
-| | `sm:[&>header]:mb-12` | ヘッダー下のマージン（デスクトップ） |
-| `src/app/header.tsx` | `p-4` | ヘッダー内部パディング |
-| `src/app/about/page.tsx` | `px-4` | コンテナの左右パディング |
-| | `mb-10` | 見出し下部マージン |
-| | `pb-2` | 見出し下部パディング |
-| `src/app/tweets/page.tsx` | なし（max-w-7xlのみ） | - |
-| `src/app/console/page.tsx` | `px-4` | コンテナの左右パディング |
-| `src/app/console/FileUploadInput.tsx` | `px-4 py-2` | ボタンパディング |
-| `src/app/articles/[slug]/page.tsx` | `p-2` | モバイルパディング |
-| | `sm:p-6` | デスクトップパディング |
-| | `mb-10` | ヘッダー下マージン |
-| | `pb-2` | 見出し下部パディング |
-| | `gap-1` | アイコンとテキストのギャップ |
-| | `gap-y-2` | フレックスアイテムの縦ギャップ |
-| `src/components/ArticleList/ArticleList.tsx` | `gap-6` | 記事リストのギャップ |
-| `src/components/LikeButton/LikeButton.tsx` | `p-2` | ボタンパディング |
-| `src/components/MarkdownContent/MarkdownContent.tsx` | `pb-2` | 見出し下部パディング |
-| | `px-1 py-0.5` | インラインコードのパディング |
-| `src/tweets/TweetCard.tsx` | `gap-2` | グリッドギャップ |
-| | `px-4 py-6` | カードパディング（モバイル） |
-| | `sm:px-6 sm:py-8` | カードパディング（デスクトップ） |
-| | `gap-1`, `gap-2` | フレックスギャップ |
-| | `ml-1` | 時間表示の左マージン |
-| `src/app/globals.scss` | `0.2rem` | heading-linkの左マージン |
-| `src/app/syntax-highlight.scss` | `p-0` | コードブロックのリセット |
+| ファイル                                             | スペーシング値        | コンテキスト                                 |
+| ---------------------------------------------------- | --------------------- | -------------------------------------------- |
+| `src/app/page.tsx`                                   | `px-4`                | メインコンテナの左右パディング               |
+|                                                      | `gap-4`               | グリッドレイアウトのギャップ                 |
+|                                                      | `pb-2`                | 見出し下部パディング                         |
+|                                                      | `p-6`                 | 記事カード、サイドバーセクションのパディング |
+|                                                      | `gap-1`               | アイコンとテキストのギャップ                 |
+|                                                      | `px-4 py-2`           | ボタン・リンクのパディング                   |
+|                                                      | `gap-2`               | フレックスコンテナのギャップ                 |
+|                                                      | `px-4 py-6`           | ツイートカード（モバイル）                   |
+|                                                      | `sm:px-6 sm:py-8`     | ツイートカード（デスクトップ）               |
+|                                                      | `p-4`                 | つぶやきリンク                               |
+|                                                      | `ml-1`                | 時間表示の左マージン                         |
+| `src/app/layout.tsx`                                 | `mb-20`               | コンテナ下部マージン                         |
+|                                                      | `h-20`                | ヘッダーの高さ                               |
+|                                                      | `sm:[&>header]:mb-12` | ヘッダー下のマージン（デスクトップ）         |
+| `src/app/header.tsx`                                 | `p-4`                 | ヘッダー内部パディング                       |
+| `src/app/about/page.tsx`                             | `px-4`                | コンテナの左右パディング                     |
+|                                                      | `mb-10`               | 見出し下部マージン                           |
+|                                                      | `pb-2`                | 見出し下部パディング                         |
+| `src/app/tweets/page.tsx`                            | なし（max-w-7xlのみ） | -                                            |
+| `src/app/console/page.tsx`                           | `px-4`                | コンテナの左右パディング                     |
+| `src/app/console/FileUploadInput.tsx`                | `px-4 py-2`           | ボタンパディング                             |
+| `src/app/articles/[slug]/page.tsx`                   | `p-2`                 | モバイルパディング                           |
+|                                                      | `sm:p-6`              | デスクトップパディング                       |
+|                                                      | `mb-10`               | ヘッダー下マージン                           |
+|                                                      | `pb-2`                | 見出し下部パディング                         |
+|                                                      | `gap-1`               | アイコンとテキストのギャップ                 |
+|                                                      | `gap-y-2`             | フレックスアイテムの縦ギャップ               |
+| `src/components/ArticleList/ArticleList.tsx`         | `gap-6`               | 記事リストのギャップ                         |
+| `src/components/LikeButton/LikeButton.tsx`           | `p-2`                 | ボタンパディング                             |
+| `src/components/MarkdownContent/MarkdownContent.tsx` | `pb-2`                | 見出し下部パディング                         |
+|                                                      | `px-1 py-0.5`         | インラインコードのパディング                 |
+| `src/tweets/TweetCard.tsx`                           | `gap-2`               | グリッドギャップ                             |
+|                                                      | `px-4 py-6`           | カードパディング（モバイル）                 |
+|                                                      | `sm:px-6 sm:py-8`     | カードパディング（デスクトップ）             |
+|                                                      | `gap-1`, `gap-2`      | フレックスギャップ                           |
+|                                                      | `ml-1`                | 時間表示の左マージン                         |
+| `src/app/globals.scss`                               | `0.2rem`              | heading-linkの左マージン                     |
+| `src/app/syntax-highlight.scss`                      | `p-0`                 | コードブロックのリセット                     |
 
 ### 1.2 スペーシング値のグループ化
 
@@ -71,11 +71,13 @@
 **Decision**: Tailwindのデフォルトスケール（4pxベース）をそのまま活用し、セマンティックなエイリアスのみを追加する
 
 **Rationale**:
+
 - Tailwindのデフォルトスケールは業界標準であり、チームメンバーや将来の開発者が理解しやすい
 - 既存の値は全てTailwindのデフォルトスケールに準拠している
 - カスタム値（`[17px]`等）は使用されていない
 
 **Alternatives considered**:
+
 1. 完全にセマンティックなトークンシステムを構築する → 過剰な抽象化になり、Principle 1（シンプルさ優先）に違反
 2. CSS変数を使用する → Tailwindとの統合が複雑になる
 
@@ -84,10 +86,12 @@
 **Decision**: `{コンテキスト}-{用途}` の形式で命名する
 
 **Rationale**:
+
 - 用途が明確で、どこで使うべきかが分かりやすい
 - Principle 7（コード可読性）に準拠
 
 **Naming examples**:
+
 ```
 card-padding      → カードコンポーネントのパディング
 section-gap       → セクション間のギャップ
@@ -101,10 +105,12 @@ button-padding-y  → ボタンの縦パディング
 **Decision**: Tailwindのレスポンシブプレフィックス（`sm:`, `md:`, `lg:`）を使用し、トークン自体はレスポンシブに依存しない
 
 **Rationale**:
+
 - 既存のパターン（`sm:p-6` vs `p-2`）がこの方法を採用している
 - トークンを単純に保ち、レスポンシブ適用はユーティリティクラスに委ねる
 
 **Alternatives considered**:
+
 1. レスポンシブバリアント付きトークン（`card-padding-mobile`, `card-padding-desktop`） → 複雑性が増し、柔軟性が低下
 2. CSS変数 + メディアクエリ → Tailwindのエコシステムから外れる
 
@@ -114,20 +120,20 @@ button-padding-y  → ボタンの縦パディング
 
 以下のセマンティックトークンを`tailwind.config.ts`の`theme.extend.spacing`に追加する：
 
-| トークン名 | 値 | 用途 |
-|-----------|-----|------|
-| `page-x` | `1rem` (= 4) | ページコンテナの左右パディング |
-| `card` | `1.5rem` (= 6) | カード内パディング |
-| `card-sm` | `0.5rem` (= 2) | カード内パディング（モバイル） |
-| `section-gap` | `1rem` (= 4) | セクション間のギャップ |
-| `heading-bottom` | `0.5rem` (= 2) | 見出し下のパディング |
-| `section-bottom` | `2.5rem` (= 10) | セクション下のマージン |
-| `page-bottom` | `5rem` (= 20) | ページ下のマージン |
-| `btn-x` | `1rem` (= 4) | ボタン横パディング |
-| `btn-y` | `0.5rem` (= 2) | ボタン縦パディング |
-| `icon-gap` | `0.25rem` (= 1) | アイコンとテキストのギャップ |
-| `inline-x` | `0.25rem` (= 1) | インライン要素横パディング |
-| `inline-y` | `0.125rem` (= 0.5) | インライン要素縦パディング |
+| トークン名       | 値                 | 用途                           |
+| ---------------- | ------------------ | ------------------------------ |
+| `page-x`         | `1rem` (= 4)       | ページコンテナの左右パディング |
+| `card`           | `1.5rem` (= 6)     | カード内パディング             |
+| `card-sm`        | `0.5rem` (= 2)     | カード内パディング（モバイル） |
+| `section-gap`    | `1rem` (= 4)       | セクション間のギャップ         |
+| `heading-bottom` | `0.5rem` (= 2)     | 見出し下のパディング           |
+| `section-bottom` | `2.5rem` (= 10)    | セクション下のマージン         |
+| `page-bottom`    | `5rem` (= 20)      | ページ下のマージン             |
+| `btn-x`          | `1rem` (= 4)       | ボタン横パディング             |
+| `btn-y`          | `0.5rem` (= 2)     | ボタン縦パディング             |
+| `icon-gap`       | `0.25rem` (= 1)    | アイコンとテキストのギャップ   |
+| `inline-x`       | `0.25rem` (= 1)    | インライン要素横パディング     |
+| `inline-y`       | `0.125rem` (= 0.5) | インライン要素縦パディング     |
 
 ### 3.2 トークン化しないスペーシング
 
@@ -141,6 +147,7 @@ button-padding-y  → ボタンの縦パディング
 **Decision**: `@tailwindcss/typography`のデフォルト設定を維持する
 
 **Rationale**:
+
 - 現在のproseスタイル（`prose-lg`）は読みやすさが確保されている
 - カスタマイズは`prose-h2:pb-2`等のユーティリティで十分
 - typographyプラグインのデフォルトは十分に検討されたものである

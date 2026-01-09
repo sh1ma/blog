@@ -43,19 +43,19 @@ spacing: {
 
 ### 2.2 トークン使用マッピング
 
-| 既存クラス | 新しいトークンクラス | 適用箇所 |
-|-----------|-------------------|---------|
-| `px-4` (container) | `px-page-x` | ページコンテナ |
-| `mb-20` | `mb-page-bottom` | ページ下部 |
-| `p-6` | `p-card` | カード、サイドバー |
-| `p-2` (mobile) | `p-card-sm` | モバイルカード |
-| `gap-4` (section) | `gap-section-gap` | セクション間 |
-| `mb-10` | `mb-section-bottom` | セクション下部 |
-| `pb-2` (heading) | `pb-heading-bottom` | 見出し下部 |
-| `px-4 py-2` (button) | `px-btn-x py-btn-y` | ボタン、リンク |
-| `px-1` (inline) | `px-inline-x` | インラインコード横 |
-| `py-0.5` (inline) | `py-inline-y` | インラインコード縦 |
-| `gap-1` (icon) | `gap-icon-gap` | アイコンとテキスト |
+| 既存クラス           | 新しいトークンクラス | 適用箇所           |
+| -------------------- | -------------------- | ------------------ |
+| `px-4` (container)   | `px-page-x`          | ページコンテナ     |
+| `mb-20`              | `mb-page-bottom`     | ページ下部         |
+| `p-6`                | `p-card`             | カード、サイドバー |
+| `p-2` (mobile)       | `p-card-sm`          | モバイルカード     |
+| `gap-4` (section)    | `gap-section-gap`    | セクション間       |
+| `mb-10`              | `mb-section-bottom`  | セクション下部     |
+| `pb-2` (heading)     | `pb-heading-bottom`  | 見出し下部         |
+| `px-4 py-2` (button) | `px-btn-x py-btn-y`  | ボタン、リンク     |
+| `px-1` (inline)      | `px-inline-x`        | インラインコード横 |
+| `py-0.5` (inline)    | `py-inline-y`        | インラインコード縦 |
+| `gap-1` (icon)       | `gap-icon-gap`       | アイコンとテキスト |
 
 ## 3. Validation Rules
 
@@ -75,12 +75,12 @@ spacing: {
 
 以下のクラスはセマンティックトークン化せず、Tailwindのデフォルトスケールを直接使用する：
 
-| クラス | 理由 |
-|--------|------|
+| クラス                             | 理由                               |
+| ---------------------------------- | ---------------------------------- |
 | `gap-1`, `gap-2`, `gap-4`, `gap-6` | 汎用的なギャップで文脈依存ではない |
-| `ml-1` | 微調整用途 |
-| `h-20` | 高さはスペーシングとは別の関心事 |
-| `sm:[&>header]:mb-12` | 特殊な用途 |
+| `ml-1`                             | 微調整用途                         |
+| `h-20`                             | 高さはスペーシングとは別の関心事   |
+| `sm:[&>header]:mb-12`              | 特殊な用途                         |
 
 ## 5. レスポンシブ適用パターン
 
@@ -98,7 +98,7 @@ spacing: {
 
 `@tailwindcss/typography`のデフォルト設定を維持。以下のカスタマイズのみ行う：
 
-| カスタマイズ | 目的 |
-|-------------|------|
-| `prose-h2:pb-2` | 見出し下のパディング（トークン化: `prose-h2:pb-heading-bottom`） |
+| カスタマイズ                        | 目的                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `prose-h2:pb-2`                     | 見出し下のパディング（トークン化: `prose-h2:pb-heading-bottom`）                            |
 | `prose-code:px-1 prose-code:py-0.5` | インラインコードのパディング（トークン化: `prose-code:px-inline-x prose-code:py-inline-y`） |

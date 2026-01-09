@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: 現在のコードはほとんどすべてのtailwindの値(px-2などの決め方)がコードに直書きになっています。これはUIの統一感を失わせ、拡張を難しくする原因です。デザインシステムを構築することでこの問題を解決したいです。まずはデザインはそのままに統一感のないpaddingやmarginなどを統一してください。その際はレスポンシブを考慮してください。proseを含め、全てのコンポーネントを対象にします
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - デザインの見た目を維持したままスペーシングを統一 (Priority: P1)
 
@@ -74,7 +74,7 @@
 - 同じ役割のスペーシングが異なる値で定義されている場合の統一方針
 - レスポンシブで大きく異なるスペーシングが設定されている場合のトークン化方法
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -91,7 +91,7 @@
 - **Breakpoint**: レスポンシブデザインの境界点。各ブレークポイントで異なるスペーシング値を持つことができる
 - **Component**: スペーシングが適用されるUI要素。スペーシングトークンを参照する
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
@@ -110,12 +110,14 @@
 ## Scope Boundaries
 
 ### In Scope
+
 - すべてのReactコンポーネントのmargin/paddingの統一
 - proseクラスのスペーシング統一
 - レスポンシブブレークポイントの考慮
 - スペーシングトークンの定義
 
 ### Out of Scope
+
 - 色やフォントサイズのトークン化（別フィーチャーで対応）
 - デザインの改善や変更（見た目は現状維持）
 - アニメーションやトランジションの変更
