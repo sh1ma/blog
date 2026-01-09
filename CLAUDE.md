@@ -6,6 +6,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 常に日本語で説明してください。
 
+## 作業開始前のルール
+
+**コード変更を伴う作業を開始する前に、必ず `/git-worktree` スキルを使用してworktreeとブランチを作成すること。**
+
+### ブランチ命名規則
+
+Conventional Commitに準じた形式:
+
+```
+<type>/<short-description>
+```
+
+| type | 用途 |
+|------|------|
+| `feat` | 新機能追加 |
+| `fix` | バグ修正 |
+| `refactor` | リファクタリング |
+| `docs` | ドキュメント変更 |
+| `chore` | ビルド・設定・依存関係の変更 |
+
+例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
+
 ## コマンド
 
 ```bash
