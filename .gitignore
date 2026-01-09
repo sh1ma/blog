@@ -45,3 +45,6 @@ tmp
 .dev.vars
 
 .open-next
+
+# git worktrees
+worktrees

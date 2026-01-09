@@ -48,13 +48,13 @@ chore/update-dependencies
 
 ```bash
 # 1. worktreesディレクトリの確認・作成
-ls ../worktrees 2>/dev/null || mkdir -p ../worktrees
+ls worktrees 2>/dev/null || mkdir -p worktrees
 
 # 2. 新しいブランチとworktreeを同時に作成
-git worktree add ../worktrees/<branch-name> -b <type>/<short-description>
+git worktree add worktrees/<branch-name> -b <type>/<short-description>
 
 # 例: feat/add-dark-mode ブランチとworktreeを作成
-git worktree add ../worktrees/add-dark-mode -b feat/add-dark-mode
+git worktree add worktrees/add-dark-mode -b feat/add-dark-mode
 ```
 
 ### Worktree一覧表示
@@ -67,7 +67,7 @@ git worktree list
 
 ```bash
 # worktreeを削除（ブランチは残る）
-git worktree remove ../worktrees/<worktree-name>
+git worktree remove worktrees/<worktree-name>
 
 # worktreeをprune（不要な参照を削除）
 git worktree prune
@@ -76,7 +76,7 @@ git worktree prune
 ### 既存ブランチでworktree作成
 
 ```bash
-git worktree add ../worktrees/<worktree-name> <existing-branch>
+git worktree add worktrees/<worktree-name> <existing-branch>
 ```
 
 ## 実行手順
@@ -91,11 +91,12 @@ git worktree add ../worktrees/<worktree-name> <existing-branch>
 
 ```
 blog/
-├── (メインリポジトリ)
+├── (メインリポジトリのファイル群)
+├── .gitignore            # worktrees/ を除外済み
 └── worktrees/
-    ├── add-dark-mode/      # feat/add-dark-mode
-    ├── fix-like-button/    # fix/like-button-error
-    └── refactor-api/       # refactor/api-structure
+    ├── add-dark-mode/    # feat/add-dark-mode
+    ├── fix-like-button/  # fix/like-button-error
+    └── refactor-api/     # refactor/api-structure
 ```
 
 ## 注意事項
