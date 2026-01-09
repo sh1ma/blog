@@ -91,88 +91,86 @@ export const CardImageResponse = async ({ params }: ArticlePageParams) => {
   const postPublishedAt = dayjs(post.publishedAt).format("YYYY-MM-DD")
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+        backgroundImage: rootBorderColor,
+        color: textColors.title,
+        fontFamily: fontFamily,
+      }}
+    >
       <div
         style={{
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
+          fontSize: titleFontSize,
+          fontWeight: titleFontWeight,
+          backgroundColor: titleBackgroundColor,
+          width: titleContainerSize.width,
+          height: titleContainerSize.height,
+          borderRadius: titleBorderRadius,
+          padding: "24px 48px",
           display: "flex",
-          backgroundImage: rootBorderColor,
-          color: textColors.title,
-          fontFamily: fontFamily,
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
+        <div style={{ display: "flex" }}>{post.title}</div>
         <div
           style={{
-            fontSize: titleFontSize,
-            fontWeight: titleFontWeight,
-            backgroundColor: titleBackgroundColor,
-            width: titleContainerSize.width,
-            height: titleContainerSize.height,
-            borderRadius: titleBorderRadius,
-            padding: "24px 48px",
             display: "flex",
-            flexDirection: "column",
+            gap: "48px",
+            marginBottom: "16px",
             justifyContent: "space-between",
           }}
         >
-          <div style={{ display: "flex" }}>{post.title}</div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <MetaField
+              icon={
+                <HeartIconOutlined
+                  style={{
+                    height: "48px",
+                    width: "48px",
+                    top: "10px",
+                    marginRight: "8px",
+                  }}
+                  stroke={textColors.like}
+                />
+              }
+              text={likeCount.toString()}
+              color={textColors.like}
+            />
+            <MetaField
+              icon={
+                <TimeIconOutlined
+                  style={{
+                    height: "48px",
+                    width: "48px",
+                    top: "10px",
+                    marginRight: "8px",
+                  }}
+                  stroke={textColors.time}
+                />
+              }
+              text={postPublishedAt}
+              color={textColors.time}
+            />
+          </div>
           <div
             style={{
               display: "flex",
-              gap: "48px",
-              marginBottom: "16px",
-              justifyContent: "space-between",
+              alignItems: "flex-end",
+              fontSize: "48px",
+              color: textColors.meta,
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <MetaField
-                icon={
-                  <HeartIconOutlined
-                    style={{
-                      height: "48px",
-                      width: "48px",
-                      top: "10px",
-                      marginRight: "8px",
-                    }}
-                    stroke={textColors.like}
-                  />
-                }
-                text={likeCount.toString()}
-                color={textColors.like}
-              />
-              <MetaField
-                icon={
-                  <TimeIconOutlined
-                    style={{
-                      height: "48px",
-                      width: "48px",
-                      top: "10px",
-                      marginRight: "8px",
-                    }}
-                    stroke={textColors.time}
-                  />
-                }
-                text={postPublishedAt}
-                color={textColors.time}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                fontSize: "48px",
-                color: textColors.meta,
-              }}
-            >
-              blog.sh1ma.dev
-            </div>
+            blog.sh1ma.dev
           </div>
         </div>
       </div>
-    ),
+    </div>,
     {
       ...size,
       fonts: fonts,
