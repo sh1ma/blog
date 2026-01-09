@@ -1,16 +1,19 @@
 <!--
 Sync Impact Report
 ==================
-Version change: N/A → 1.0.0 (Initial creation)
-Modified principles: N/A (new)
+Version change: 1.1.0 → 1.2.0
+Modified principles: None
 Added sections:
-  - Project Identity
-  - Principles (5 total)
-  - Governance
+  - Principle 7: コード可読性 (Code Readability)
+  - Principle 8: コロケーション (Colocation)
+  - Principle 9: コンポーネント設計 (Component Design)
+  - Principle 10: デザイン一貫性 (Design Consistency)
+  - Principle 11: アクセシビリティ (Accessibility)
+Removed sections: None
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ created
-  - .specify/templates/spec-template.md ✅ created
-  - .specify/templates/tasks-template.md ✅ created
+  - .specify/templates/plan-template.md ✅ updated
+  - .specify/templates/spec-template.md ✅ updated
+  - .specify/templates/tasks-template.md ✅ updated
 Follow-up TODOs: None
 -->
 
@@ -22,7 +25,7 @@ Follow-up TODOs: None
 - **Description**: Next.js 15 + Contentlayer2 + Cloudflare Workers (OpenNext) で構築された個人ブログ
 - **Primary Language**: TypeScript
 - **Runtime**: Cloudflare Workers
-- **Constitution Version**: 1.0.0
+- **Constitution Version**: 1.2.0
 - **Ratification Date**: 2026-01-09
 - **Last Amended Date**: 2026-01-09
 
@@ -82,6 +85,83 @@ Cloudflare Workersのエッジ環境に最適化された実装を選択する�
 - 重要な操作（いいね等）はDiscord Webhookで通知する
 
 **根拠**: 個人運用のため常時監視は困難。問題発生時に素早く気付ける仕組みが必要。
+
+### Principle 6: URL安定性の保証 (URL Stability)
+
+既存の公開URLパスを破壊する変更を禁止し、永続的なリンクを保証する。
+
+**規則**:
+- 既存の記事URLパス（`/articles/[slug]`）は変更してはならない
+- ルーティング構造の変更時は、旧URLから新URLへのリダイレクトを必ず設定する
+- 記事ファイル名（slug）の変更は原則禁止。やむを得ない場合はリダイレクト設定を必須とする
+- 外部サービス（検索エンジン、SNS、他サイトからのリンク）からのアクセスを考慮する
+
+**根拠**: ブログ記事は外部からリンクされる可能性があり、リンク切れはSEOと読者体験の両方を損なう。
+Cool URIs don't change (W3C)。
+
+### Principle 7: コード可読性 (Code Readability)
+
+複雑な記述より読みやすさを優先し、将来の自分や他者が理解しやすいコードを書く。
+
+**規則**:
+- 変数名・関数名は単語を省略せず、意図が明確に伝わる名前を使用する
+  - 良い例: `articlePublishedDate`, `userEmailAddress`
+  - 悪い例: `artPubDt`, `usrEmail`
+- 複雑なワンライナーより、ステップを分けた明示的な処理を選択する
+- 関数型プログラミングのエッセンスを取り入れる（純粋関数、イミュータブルなデータ操作）
+- 単一責任の原則を遵守し、1つの関数/コンポーネントは1つの責務のみを持つ
+
+**根拠**: コードは書く時間より読む時間の方が長い。可読性は保守性に直結する。
+
+### Principle 8: コロケーション (Colocation)
+
+関連するファイルは物理的に近い場所に配置し、機能単位でディレクトリを構成する。
+
+**規則**:
+- コンポーネントとその専用スタイル/型定義/テストは同一ディレクトリに配置する
+- ページ固有のコンポーネントはそのページのディレクトリ内に配置する
+- 共有コンポーネントのみ `src/components/` に配置する
+
+**根拠**: 関連ファイルが近くにあることで、機能の全体像を把握しやすくなり、変更の影響範囲が明確になる。
+
+### Principle 9: コンポーネント設計 (Component Design)
+
+再利用性と適切な分離を重視し、React Server Componentsの境界を意識した設計を行う。
+
+**規則**:
+- 巨大な一枚岩のコンポーネントを避け、適切な粒度で分離する
+- プリミティブなUIコンポーネント（ボタン、入力フィールド等）は再利用可能な形で実装する
+- アドホックな（特定の場所でしか使わない）コンポーネントと汎用コンポーネントを明確に区別する
+- Server ComponentとClient Componentの境界を意識し、`"use client"` は必要最小限に留める
+- クライアントコンポーネントはできるだけ末端（リーフ）に配置する
+
+**根拠**: 適切に分離されたコンポーネントは理解・テスト・再利用が容易。RSCの境界を意識することでバンドルサイズを最適化できる。
+
+### Principle 10: デザイン一貫性 (Design Consistency)
+
+UIデザインの一貫性を保ち、スタイル定義を集約管理する。
+
+**規則**:
+- CSS値（色、スペーシング、フォントサイズ等）はすべてTailwindのテーマとして定義する
+- マジックナンバーを直接記述せず、テーマトークンを使用する
+  - 良い例: `text-primary`, `p-4`, `text-lg`
+  - 悪い例: `text-[#1a1a1a]`, `p-[17px]`, `text-[15px]`
+- 新しいデザイントークンが必要な場合は `tailwind.config.ts` に追加する
+
+**根拠**: 一貫したデザインはユーザー体験を向上させ、テーマの集約管理により全体的な変更が容易になる。
+
+### Principle 11: アクセシビリティ (Accessibility)
+
+すべてのユーザーがコンテンツにアクセスできるよう、Webアクセシビリティに十分配慮する。
+
+**規則**:
+- 画像には適切な `alt` 属性を必ず設定する
+- インタラクティブ要素はキーボード操作可能にする
+- 適切なセマンティックHTML要素を使用する（`<button>`, `<nav>`, `<article>` 等）
+- 色のみで情報を伝えない（色覚多様性への配慮）
+- フォーカス状態を視覚的に明示する
+
+**根拠**: アクセシビリティはすべてのユーザーへの配慮であり、SEOにも寄与する。
 
 ## Governance
 
