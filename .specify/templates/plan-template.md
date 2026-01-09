@@ -1,61 +1,104 @@
-# Implementation Plan: [FEATURE_NAME]
+# Implementation Plan: [FEATURE]
+
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+
+**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+
+## Summary
+
+[Extract from feature spec: primary requirement + technical approach from research]
+
+## Technical Context
+
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
-実装前に以下の原則との整合性を確認:
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-| 原則 | 確認項目 | 状態 |
-|------|----------|------|
-| シンプルさ優先 | 不要な抽象化がないか | [ ] |
-| 型安全性の徹底 | any型を使用していないか | [ ] |
-| Cloudflare最適化 | Node.js専用APIを使用していないか | [ ] |
-| コンテンツとコードの分離 | コンテンツがコードに混入していないか | [ ] |
-| 可観測性の確保 | エラーハンドリングが適切か | [ ] |
-| URL安定性の保証 | 既存URLパスを破壊していないか | [ ] |
-| コード可読性 | 変数名が省略されていないか、単一責任を守っているか | [ ] |
-| コロケーション | 関連ファイルが適切に配置されているか | [ ] |
-| コンポーネント設計 | RSC境界を意識しているか、適切に分離されているか | [ ] |
-| デザイン一貫性 | Tailwindテーマトークンを使用しているか | [ ] |
-| アクセシビリティ | a11y要件を満たしているか | [ ] |
+[Gates determined based on constitution file]
 
-## Overview
+## Project Structure
 
-[計画の概要]
+### Documentation (this feature)
 
-## Prerequisites
+```text
+specs/[###-feature]/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+```
 
-- [前提条件1]
-- [前提条件2]
+### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
-## Implementation Steps
+```text
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
-### Phase 1: [フェーズ名]
+tests/
+├── contract/
+├── integration/
+└── unit/
 
-1. [ステップ1]
-2. [ステップ2]
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
 
-### Phase 2: [フェーズ名]
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
 
-1. [ステップ1]
-2. [ステップ2]
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
 
-## Files to Modify
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
+```
 
-- `path/to/file.ts`: [変更内容]
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
-## Files to Create
+## Complexity Tracking
 
-- `path/to/new-file.ts`: [目的]
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
-## Testing Strategy
-
-- [ ] [テスト項目1]
-- [ ] [テスト項目2]
-
-## Rollback Plan
-
-[問題発生時の対処法]
-
-## Dependencies
-
-- [依存するライブラリや機能]
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
