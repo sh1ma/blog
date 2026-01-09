@@ -12,6 +12,69 @@ GitHubのプルリクエストを管理するためのスキル。
 **このスキルは `sh1ma/blog` リポジトリのみで使用すること。**
 他のリポジトリの操作は禁止。`--repo` フラグで他リポジトリを指定してはならない。
 
+## 利用可能なラベル
+
+PRには必ず以下のいずれかのラベルを付けること:
+
+| ラベル | 用途 |
+|--------|------|
+| `feature` | 機能開発関連 |
+| `bug` | バグ関連 |
+| `refactoring` | リファクタ関連 |
+| `documentation` | ドキュメンテーション関連 |
+| `chore` | 設定ファイルなどの雑多な変更 |
+| `AI` | AI関連 |
+
+## PR作成手順（推奨フロー）
+
+### 1. 変更内容の確認
+
+```bash
+# mainからの差分コミットを確認
+git log main..HEAD --oneline
+
+# 変更ファイルを確認
+git diff main..HEAD --stat
+```
+
+### 2. 適切なラベルを選択
+
+変更内容に基づいて、上記のラベルから1つ以上選択する。
+
+### 3. PRを作成
+
+```bash
+gh pr create \
+  --title "タイトル" \
+  --label "ラベル" \
+  --body "$(cat <<'EOF'
+## 概要
+
+<!-- このPRで何を変更したか簡潔に説明 -->
+
+## 変更内容
+
+- 変更点1
+- 変更点2
+
+## 関連Issue
+
+<!-- closes #123 -->
+
+## テスト項目
+
+- [ ] テスト項目1
+- [ ] テスト項目2
+EOF
+)"
+```
+
+### 複数ラベルを付ける場合
+
+```bash
+gh pr create --title "タイトル" --label "feature" --label "AI" --body "..."
+```
+
 ## コマンド概要
 
 ```bash
@@ -27,18 +90,6 @@ gh pr list --state all        # すべてのPR（open/closed/merged）
 gh pr list --author @me       # 自分が作成したPR
 gh pr list --assignee @me     # 自分がアサインされたPR
 gh pr list --label "bug"      # ラベルでフィルタ
-```
-
-### PR作成
-```bash
-gh pr create                          # 対話形式で作成
-gh pr create --fill                   # コミット情報から自動入力
-gh pr create --title "タイトル" --body "本文"
-gh pr create --draft                  # ドラフトPRとして作成
-gh pr create --base main              # ベースブランチを指定
-gh pr create --assignee @me           # 自分をアサイン
-gh pr create --label "enhancement"    # ラベル付与
-gh pr create --reviewer user1,user2   # レビュアー指定
 ```
 
 ### PR表示・チェックアウト
@@ -82,11 +133,13 @@ gh pr ready 123                        # ドラフト解除
 ## 実行手順
 
 1. ユーザーの要求を理解する
-2. 適切なghコマンドを選択・実行
-3. 結果を日本語で報告
+2. PR作成の場合、変更内容を確認してラベルを決定する
+3. **ラベルを必ず付けてPRを作成する**
+4. 結果を日本語で報告
 
 ## 注意事項
 
 - PRは番号、URL、またはブランチ名で指定可能
 - 認証が必要な場合は `gh auth login` を案内
 - **他リポジトリへの操作は絶対に行わない**
+- **PR作成時はラベルを必ず付けること（CIでチェックされる）**

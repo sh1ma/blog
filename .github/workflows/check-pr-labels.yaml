@@ -1,0 +1,27 @@
+name: Check PR Labels
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+
+jobs:
+  check-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for required labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const validLabels = ['feature', 'bug', 'refactoring', 'documentation', 'chore', 'AI'];
+            const prLabels = context.payload.pull_request.labels.map(label => label.name);
+
+            const hasValidLabel = prLabels.some(label => validLabels.includes(label));
+
+            if (!hasValidLabel) {
+              core.setFailed(
+                `PRには以下のラベルのいずれかを付けてください: ${validLabels.join(', ')}\n` +
+                `現在のラベル: ${prLabels.length > 0 ? prLabels.join(', ') : 'なし'}`
+              );
+            } else {
+              console.log(`✅ 有効なラベルが付いています: ${prLabels.filter(l => validLabels.includes(l)).join(', ')}`);
+            }
