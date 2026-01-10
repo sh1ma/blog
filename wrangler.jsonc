@@ -5,11 +5,11 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "main": ".open-next/worker.js",
   "vars": {
-    "NODE_VERSION": "24.12.0"
+    "NODE_VERSION": "24.12.0",
   },
   "assets": {
     "binding": "ASSETS",
-    "directory": ".open-next/assets"
+    "directory": ".open-next/assets",
   },
   "d1_databases": [
     {
@@ -17,22 +17,22 @@
       "database_name": "blog-iine-counter",
       "database_id": "63fa4c1b-5b4c-46e2-b2de-e412ae5deca9",
       "migrations_dir": "drizzle",
-      "migrations_table": "__drizzle_migrations"
-    }
+      "migrations_table": "__drizzle_migrations",
+    },
   ],
   "r2_buckets": [
     {
       "binding": "CDN",
       "bucket_name": "sh1madev-cdn",
-      "preview_bucket_name": "sh1madev-cdn-preview"
+      "preview_bucket_name": "sh1madev-cdn-preview",
     },
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "blog-cache",
-      "preview_bucket_name": "blog-cache-preview"
-    }
+      "preview_bucket_name": "blog-cache-preview",
+    },
   ],
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
 }

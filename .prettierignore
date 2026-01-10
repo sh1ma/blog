@@ -5,3 +5,4 @@ node_modules
 .specify
 .github
 CLAUDE.md
+cloudflare-env.d.ts
