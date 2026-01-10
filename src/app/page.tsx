@@ -53,28 +53,28 @@ export default async function Home() {
     }
   })
   return (
-    <main className="max-w-7xl px-4">
-      <div className="grid items-start gap-4 sm:grid-cols-[2fr_1fr]">
-        <div className="row-span-3 grid gap-4">
-          <h2 className="border-b-2 border-primary-default pb-2 text-2xl text-primary-dark">
+    <main className="max-w-7xl px-page-x">
+      <div className="grid items-start gap-section-gap sm:grid-cols-[2fr_1fr]">
+        <div className="row-span-3 grid gap-section-gap">
+          <h2 className="border-b-2 border-primary-default pb-heading-bottom text-2xl text-primary-dark">
             最新の記事
           </h2>
           <ul className="grid gap-4">
             {articlesWithLikes.map((article) => (
               <li key={article.id}>
                 <Link href={`/articles/${article.id}`}>
-                  <article className="relative bg-white p-6 shadow-md transition-colors hover:bg-primary-light/20">
+                  <article className="relative bg-white p-card shadow-md transition-colors hover:bg-primary-light/20">
                     <h3 className="text-xl text-primary-default">
                       {article.title}
                     </h3>
                     <div>
-                      <span className="flex gap-1 text-sm text-gray-500">
+                      <span className="flex gap-icon-gap text-sm text-gray-500">
                         <Calendar size={20} />
                         <time dateTime={`${article.publishedAt}`}>
                           {article.publishedAt}
                         </time>
                       </span>
-                      <span className="flex gap-1 text-sm text-gray-500">
+                      <span className="flex gap-icon-gap text-sm text-gray-500">
                         <ThumbsUp size={20} />
                         {article.likes}
                       </span>
@@ -85,19 +85,19 @@ export default async function Home() {
             ))}
           </ul>
         </div>
-        <aside className="grid items-start gap-4">
-          <div className="grid gap-4 bg-primary-default p-6 text-white">
+        <aside className="grid items-start gap-section-gap">
+          <div className="grid gap-section-gap bg-primary-default p-card text-white">
             <h2 className=" text-xl">私について</h2>
             <p>プログラマです。</p>
             <Link
               href="/about"
-              className="max-w-max bg-white px-4 py-2 text-primary-default transition-colors hover:bg-primary-dark hover:text-white"
+              className="max-w-max bg-white px-btn-x py-btn-y text-primary-default transition-colors hover:bg-primary-dark hover:text-white"
             >
               もっと知る
             </Link>
           </div>
-          <div className="grid bg-primary-default p-6 text-white">
-            <h2 className="border-b-2 border-primary-default pb-2 text-xl">
+          <div className="grid bg-primary-default p-card text-white">
+            <h2 className="border-b-2 border-primary-default pb-heading-bottom text-xl">
               フレンドリンク
             </h2>
             <ul className="grid gap-4">
@@ -105,7 +105,7 @@ export default async function Home() {
                 <li key={href} className="flex">
                   <Link
                     href={href}
-                    className=" w-full bg-white px-4 py-2 text-primary-default"
+                    className=" w-full bg-white px-btn-x py-btn-y text-primary-default"
                   >
                     {name}
                   </Link>
@@ -113,15 +113,15 @@ export default async function Home() {
               ))}
             </ul>
           </div>
-          <div className="grid gap-4">
-            <h2 className="border-b-2 border-primary-default pb-2 text-2xl text-primary-dark">
+          <div className="grid gap-section-gap">
+            <h2 className="border-b-2 border-primary-default pb-heading-bottom text-2xl text-primary-dark">
               最新のつぶやき
             </h2>
             <ul className="bg-white [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50 ">
               {recentTweets.map((tweet) => (
                 <li
                   key={tweet.id}
-                  className="grid grid-cols-[auto_1fr] gap-2 px-4 py-6 sm:px-6 sm:py-8 "
+                  className="grid grid-cols-[auto_1fr] gap-2 px-btn-x py-card sm:px-card sm:py-8 "
                 >
                   <div className="flex items-start">
                     <div className="relative size-10">
@@ -134,7 +134,7 @@ export default async function Home() {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-icon-gap">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-end gap-2">
                         {"sh1ma"}
@@ -159,7 +159,7 @@ export default async function Home() {
                   </div>
                 </li>
               ))}
-              <li className="p-4">
+              <li className="p-section-gap">
                 <Link href="/tweets" className="text-primary-default">
                   もっと見る(ツイート一覧に移動)
                 </Link>

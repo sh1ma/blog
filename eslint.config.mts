@@ -2,8 +2,6 @@ import { FlatCompat } from "@eslint/eslintrc"
 import js from "@eslint/js"
 import tailwindcss from "eslint-plugin-tailwindcss"
 import unusedImports from "eslint-plugin-unused-imports"
-import react from "eslint-plugin-react"
-import reactHooks from "eslint-plugin-react-hooks"
 
 import { defineConfig } from "eslint/config"
 
@@ -16,12 +14,10 @@ export default defineConfig([
   ...compat.config({
     extends: ["next/typescript", "next/core-web-vitals", "prettier"],
   }),
+  ...tailwindcss.configs["flat/recommended"],
   {
     plugins: {
       "unused-imports": unusedImports,
-      tailwindcss: tailwindcss,
-      react: react,
-      "react-hooks": reactHooks,
     },
     rules: {
       "unused-imports/no-unused-imports": "error",

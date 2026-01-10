@@ -18,15 +18,26 @@ Conventional Commitに準じた形式:
 <type>/<short-description>
 ```
 
-| type | 用途 |
-|------|------|
-| `feat` | 新機能追加 |
-| `fix` | バグ修正 |
-| `refactor` | リファクタリング |
-| `docs` | ドキュメント変更 |
-| `chore` | ビルド・設定・依存関係の変更 |
+| type       | 用途                         |
+| ---------- | ---------------------------- |
+| `feat`     | 新機能追加                   |
+| `fix`      | バグ修正                     |
+| `refactor` | リファクタリング             |
+| `docs`     | ドキュメント変更             |
+| `chore`    | ビルド・設定・依存関係の変更 |
 
 例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
+
+## PR作成前のルール
+
+**PRを作成する前に、必ず以下のコマンドを実行し、問題があれば修正すること。**
+
+```bash
+pnpm lint
+pnpm format:check
+```
+
+問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは手動で修正する。
 
 ## PR作成時のルール
 
@@ -77,10 +88,13 @@ Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブ�
 
 `@opennextjs/cloudflare` を使用してNext.jsをCloudflare Workers上で動作させている。環境変数やD1/R2へのアクセスは `getCloudflareContext()` 経由で取得する。
 
-## Recent Changes
-- feat/introduce-drizzle: Added TypeScript 5.9 + Next.js 15.4 + drizzle-orm, drizzle-kit, @opennextjs/cloudflare, Hono
-- feat/introduce-drizzle: Added TypeScript 5.9 + Next.js 15, drizzle-orm, @opennextjs/cloudflare, Hono
-- feat/introduce-drizzle: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-
 ## Active Technologies
-- TypeScript 5.9 + Next.js 15.4 + drizzle-orm, drizzle-kit, @opennextjs/cloudflare, Hono (feat/introduce-drizzle)
+
+- TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2
+- Cloudflare D1（いいね機能）、R2（CDN）
+- drizzle-orm, drizzle-kit（型安全なD1データベースアクセス）
+
+## Recent Changes
+
+- feat/introduce-drizzle: drizzle-ormを導入してD1データベースアクセスを型安全に
+- refactor/unify-design-system: TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS追加

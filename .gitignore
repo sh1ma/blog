@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -45,3 +48,6 @@ tmp
 .dev.vars
 
 .open-next
+
+# git worktrees
+worktrees
