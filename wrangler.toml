@@ -5,7 +5,7 @@ compatibility_flags = [ "nodejs_compat", "global_fetch_strictly_public" ]
 main = ".open-next/worker.js"
 
 [vars]
-NODE_VERSION = "22.12.0"
+NODE_VERSION = "24.12.0"
 
 [assets]
 binding = "ASSETS"
