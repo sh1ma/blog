@@ -5,10 +5,95 @@
 
 @include meta.load-css("syntax-highlight.scss");
 
+:root {
+  /* ===== プリミティブカラー ===== */
+  --color-navy-950: #020618;
+  --color-navy-900: #0f172a;
+  --color-gray-800: #333333;
+  --color-gray-600: #4b5563;
+  --color-gray-500: #6b7280;
+  --color-gray-400: #9ca3af;
+  --color-gray-300: #aaaaaa;
+  --color-gray-200: #e5e7eb;
+  --color-purple-600: #514fc9;
+  --color-purple-700: #3a38a0;
+  --color-purple-400: #7a79d9;
+  --color-indigo-900: #1e1a4d;
+  --color-blue-300: #86c8f3;
+  --color-yellow-400: #c9c34f;
+  --color-pink-400: #fe89ab;
+  --color-red-500: #ff6b6b;
+  --color-white: #ffffff;
+  --color-light-bg: #f0f2ff;
+  --color-dark-text: #1a1a2e;
+
+  /* ===== セマンティックカラー（ライトテーマ） ===== */
+  /* 背景 */
+  --bg-base: var(--color-light-bg);
+  --bg-surface: var(--color-white);
+  --bg-surface-hover: rgba(122, 121, 217, 0.2);
+  --bg-elevated: var(--color-purple-600);
+  --bg-muted: var(--color-gray-200);
+
+  /* テキスト */
+  --text-primary: var(--color-dark-text);
+  --text-secondary: var(--color-gray-500);
+  --text-muted: var(--color-gray-400);
+  --text-inverse: var(--color-white);
+  --text-link: var(--color-purple-600);
+  --text-link-hover: var(--color-purple-700);
+
+  /* ブランド/アクセント */
+  --brand-primary: var(--color-purple-600);
+  --brand-primary-dark: var(--color-purple-700);
+  --brand-primary-light: var(--color-purple-400);
+  --accent-blue: var(--color-blue-300);
+  --accent-yellow: var(--color-yellow-400);
+  --accent-pink: var(--color-pink-400);
+  --accent-red: var(--color-red-500);
+
+  /* ボーダー */
+  --border-default: var(--color-gray-400);
+  --border-subtle: rgba(156, 163, 175, 0.5);
+  --border-brand: var(--color-purple-600);
+}
+
+/* ===== ダークテーマ（prefers-color-scheme対応） ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 背景 */
+    --bg-base: var(--color-navy-950);
+    --bg-surface: var(--color-gray-800);
+    --bg-surface-hover: rgba(134, 200, 243, 0.1);
+    --bg-elevated: var(--color-indigo-900);
+    --bg-muted: var(--color-navy-900);
+
+    /* テキスト */
+    --text-primary: var(--color-white);
+    --text-secondary: var(--color-gray-300);
+    --text-muted: var(--color-gray-400);
+    --text-inverse: var(--color-dark-text);
+    --text-link: var(--color-blue-300);
+    --text-link-hover: var(--color-purple-400);
+
+    /* ブランド/アクセント（変更なし） */
+    --brand-primary: var(--color-purple-600);
+    --brand-primary-dark: var(--color-indigo-900);
+    --brand-primary-light: var(--color-purple-400);
+
+    /* ボーダー */
+    --border-default: var(--color-gray-400);
+    --border-subtle: rgba(170, 170, 170, 0.3);
+    --border-brand: var(--color-purple-600);
+  }
+}
+
 html,
 body {
-  @apply bg-primary-bg;
+  @apply bg-bg-base;
   font-family:
+    "Inter",
+    "Noto Sans JP",
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
