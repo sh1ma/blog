@@ -44,14 +44,16 @@ const ArticlePage = async (props: Params) => {
 
   return (
     <div className="grid max-w-7xl grid-cols-1 sm:grid-cols-[2fr_1fr]">
-      <div className="bg-white p-2 sm:p-6">
-        <header className="mb-10 border-b border-b-primary-default pb-2">
+      <div className="bg-white p-card-sm sm:p-card">
+        <header className="mb-section-bottom border-b border-b-primary-default pb-heading-bottom">
           <div className="flex flex-col gap-y-2">
-            <span className="flex items-center gap-1 text-sm">
+            <span className="flex items-center gap-icon-gap text-sm">
               <Calendar size={16} className="inline" />
               {dayjs(post.publishedAt).format("YYYY-MM-DD")}
             </span>
-            <h2 className="pb-2 text-2xl font-bold">{post.title}</h2>
+            <h2 className="pb-heading-bottom text-2xl font-bold">
+              {post.title}
+            </h2>
           </div>
         </header>
         <main>
