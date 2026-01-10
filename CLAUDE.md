@@ -72,3 +72,11 @@ Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブ�
 ### Cloudflare統合
 
 `@opennextjs/cloudflare` を使用してNext.jsをCloudflare Workers上で動作させている。環境変数やD1/R2へのアクセスは `getCloudflareContext()` 経由で取得する。
+
+## Recent Changes
+- feat/introduce-drizzle: Added TypeScript 5.9 + Next.js 15.4 + drizzle-orm, drizzle-kit, @opennextjs/cloudflare, Hono
+- feat/introduce-drizzle: Added TypeScript 5.9 + Next.js 15, drizzle-orm, @opennextjs/cloudflare, Hono
+- feat/introduce-drizzle: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+
+## Active Technologies
+- TypeScript 5.9 + Next.js 15.4 + drizzle-orm, drizzle-kit, @opennextjs/cloudflare, Hono (feat/introduce-drizzle)
