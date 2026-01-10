@@ -4,6 +4,18 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "src/**"
+      - "e2e/**"
+      - "playwright.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "next.config.mjs"
+      - "contentlayer.config.ts"
+      - "tailwind.config.ts"
+      - "wrangler.toml"
+      - "migrations/**"
+      - ".github/workflows/e2e.yaml"
   workflow_dispatch:
 
 jobs:
