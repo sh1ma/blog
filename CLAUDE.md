@@ -28,6 +28,10 @@ Conventional Commitに準じた形式:
 
 例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
 
+## PR作成時のルール
+
+**PRを作成する際は、必ず `/gh-pr` スキルを使用すること。**
+
 ## コマンド
 
 ```bash
