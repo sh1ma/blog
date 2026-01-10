@@ -28,7 +28,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
   const viewModel = tweetToViewModel(tweet)
 
   return (
-    <article className="grid grid-cols-[auto_1fr] gap-2  px-4 py-6 sm:px-6 sm:py-8">
+    <article className="grid grid-cols-[auto_1fr] gap-2  px-btn-x py-card sm:px-card sm:py-8">
       <div className="flex items-start">
         <div className="relative size-10">
           <Image
@@ -40,7 +40,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-icon-gap">
         <div className="flex flex-col gap-2">
           <div className="flex items-end gap-2">
             {viewModel.user.name}

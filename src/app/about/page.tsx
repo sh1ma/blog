@@ -25,8 +25,8 @@ const AboutPage = () => {
   }
 
   return (
-    <div className="max-w-7xl px-4">
-      <h2 className="mb-10 border-b border-b-stone-200 pb-2 text-2xl font-bold">
+    <div className="max-w-7xl px-page-x">
+      <h2 className="mb-section-bottom border-b border-b-stone-200 pb-heading-bottom text-2xl font-bold">
         About
       </h2>
       <MarkdownContent post={aboutMd}></MarkdownContent>

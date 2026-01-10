@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <div className="mb-20 grid w-full place-items-center [&>*]:w-full [&>header]:h-20 sm:[&>header]:mb-12">
+        <div className="mb-page-bottom grid w-full place-items-center [&>*]:w-full [&>header]:h-20 sm:[&>header]:mb-12">
           <BlogHeader />
           {children}
         </div>
