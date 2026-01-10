@@ -38,10 +38,7 @@ const recordToModel = (record: TweetRecord): Tweet => {
 export const getAllTweets = async () => {
   const context = getCloudflareContext()
   const db = drizzle(context.env.DB)
-  const results = await db
-    .select()
-    .from(tweets)
-    .orderBy(desc(tweets.createdAt))
+  const results = await db.select().from(tweets).orderBy(desc(tweets.createdAt))
 
   return results.map(recordToModel)
 }

@@ -20,21 +20,21 @@ Cloudflare D1データベースにDrizzle ORMを導入し、既存の生SQLク�
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Status | Notes |
-|-----------|--------|-------|
-| P1: シンプルさ優先 | ✅ PASS | Drizzle ORMは最小限の抽象化で型安全性を提供。過度な抽象化なし |
-| P2: 型安全性の徹底 | ✅ PASS | Drizzle ORMの主目的が型安全なSQLクエリ。`any`不使用 |
-| P3: Cloudflare最適化 | ✅ PASS | Drizzle ORMはD1をネイティブサポート。Web標準API使用 |
-| P4: コンテンツとコードの分離 | ✅ PASS | 変更なし |
-| P5: 可観測性の確保 | ✅ PASS | 既存のエラーハンドリング・通知を維持 |
-| P6: URL安定性の保証 | ✅ PASS | URL構造に変更なし |
-| P7: コード可読性 | ✅ PASS | Drizzleスキーマは宣言的で可読性が高い |
-| P8: コロケーション | ✅ PASS | スキーマ定義は`src/db/`に配置 |
-| P9: コンポーネント設計 | ✅ PASS | Server Actions維持、RSC境界に変更なし |
-| P10: デザイン一貫性 | ✅ PASS | UI変更なし |
-| P11: アクセシビリティ | ✅ PASS | UI変更なし |
+| Principle                    | Status  | Notes                                                         |
+| ---------------------------- | ------- | ------------------------------------------------------------- |
+| P1: シンプルさ優先           | ✅ PASS | Drizzle ORMは最小限の抽象化で型安全性を提供。過度な抽象化なし |
+| P2: 型安全性の徹底           | ✅ PASS | Drizzle ORMの主目的が型安全なSQLクエリ。`any`不使用           |
+| P3: Cloudflare最適化         | ✅ PASS | Drizzle ORMはD1をネイティブサポート。Web標準API使用           |
+| P4: コンテンツとコードの分離 | ✅ PASS | 変更なし                                                      |
+| P5: 可観測性の確保           | ✅ PASS | 既存のエラーハンドリング・通知を維持                          |
+| P6: URL安定性の保証          | ✅ PASS | URL構造に変更なし                                             |
+| P7: コード可読性             | ✅ PASS | Drizzleスキーマは宣言的で可読性が高い                         |
+| P8: コロケーション           | ✅ PASS | スキーマ定義は`src/db/`に配置                                 |
+| P9: コンポーネント設計       | ✅ PASS | Server Actions維持、RSC境界に変更なし                         |
+| P10: デザイン一貫性          | ✅ PASS | UI変更なし                                                    |
+| P11: アクセシビリティ        | ✅ PASS | UI変更なし                                                    |
 
 ## Project Structure
 
@@ -82,6 +82,7 @@ wrangler.toml            # [MODIFY] migrations_dirをdrizzle/に変更
 ### 現状分析
 
 **リモートD1の状態:**
+
 - テーブル: `articles`, `likes`, `tweets`, `d1_migrations`, `_cf_KV`, `sqlite_sequence`
 - `d1_migrations`テーブルの内容:
   | id | name | applied_at |
@@ -90,6 +91,7 @@ wrangler.toml            # [MODIFY] migrations_dirをdrizzle/に変更
   | 2 | 0002_add_tweets_table.sql | 2024-07-15 09:23:21 |
 
 **既存マイグレーションファイル:**
+
 - `migrations/0001_initial.sql`: articles, likesテーブル作成
 - `migrations/0002_add_tweets_table.sql`: tweetsテーブル作成
 
@@ -101,9 +103,11 @@ wrangler.toml            # [MODIFY] migrations_dirをdrizzle/に変更
    - `drizzle.config.ts`を作成し、`d1-http`ドライバーを設定
 
 2. **既存スキーマのintrospect**
+
    ```bash
    pnpm drizzle-kit pull --init
    ```
+
    - リモートD1から現在のスキーマを取得
    - `--init`フラグで初期マイグレーションとしてマーク
    - `drizzle/`ディレクトリに以下が生成される:
@@ -116,6 +120,7 @@ wrangler.toml            # [MODIFY] migrations_dirをdrizzle/に変更
    - 手動でスキーマを精査し、型を調整
 
 4. **wrangler.tomlの更新**
+
    ```toml
    [[d1_databases]]
    binding = "DB"
@@ -141,8 +146,8 @@ wrangler.toml            # [MODIFY] migrations_dirをdrizzle/に変更
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| N/A | - | - |
+| --------- | ---------- | ------------------------------------ |
+| N/A       | -          | -                                    |
 
 ---
 

@@ -41,6 +41,7 @@
 ### 環境変数の準備
 
 以下の環境変数を設定する必要がある（`.env`ファイルまたはexport）:
+
 - `CLOUDFLARE_ACCOUNT_ID`: CloudflareアカウントID
 - `CLOUDFLARE_DATABASE_ID`: D1データベースID (`63fa4c1b-5b4c-46e2-b2de-e412ae5deca9`)
 - `CLOUDFLARE_D1_TOKEN`: Cloudflare APIトークン（D1読み取り権限が必要）
@@ -50,7 +51,7 @@
 - [x] T003a Set up environment variables for drizzle-kit (CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_DATABASE_ID, CLOUDFLARE_D1_TOKEN)
 - [x] T003b Run `pnpm drizzle-kit pull --init` to introspect remote D1 schema and mark as initial migration
 - [x] T003c Move generated drizzle/schema.ts to src/db/schema.ts (overwrite if exists)
-- [x] T003d Verify drizzle/meta/_journal.json was created with initial migration entry
+- [x] T003d Verify drizzle/meta/\_journal.json was created with initial migration entry
 - [x] T003e Verify drizzle/meta/0000_snapshot.json was created
 - [x] T003f Update wrangler.toml: add `migrations_dir = "drizzle"` and `migrations_table = "__drizzle_migrations"` to d1_databases binding
 - [x] T003g Run `wrangler d1 migrations list blog-iine-counter --remote` to verify Drizzle migration is recognized
@@ -81,6 +82,7 @@
 **Goal**: 既存の5つのServer ActionをDrizzle ORMベースに移行し、型安全なデータベースアクセスを実現する
 
 **Independent Test**:
+
 - TypeScriptコンパイルが型エラーなしで通過する
 - ローカル開発サーバーでいいねボタンが動作する
 - ツイート一覧が正しく表示される

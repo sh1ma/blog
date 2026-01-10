@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "cloudflare d1にdrizzle ORMを導入し、d1のクエリを直接入力する形式から移行します"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - 型安全なデータベースクエリの実行 (Priority: P1)
 
@@ -58,7 +58,7 @@
 - 既存のマイグレーションファイルとDrizzleスキーマの整合性をどう維持するか？
 - Cloudflare Workers環境でDrizzle ORMが正常に動作するか？
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -74,7 +74,7 @@
 - **Like**: いいねの記録（id, article_id, created_at）、Articleへの外部キー参照
 - **Tweet**: ツイートコンテンツ（id, created_at, content）
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

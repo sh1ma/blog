@@ -29,6 +29,7 @@ export CLOUDFLARE_D1_TOKEN="your-d1-api-token"
 ```
 
 **APIトークンの作成方法**:
+
 1. Cloudflare Dashboard → My Profile → API Tokens
 2. Create Token → Custom token
 3. Permissions: `D1:Read` を追加
@@ -43,6 +44,7 @@ pnpm drizzle-kit pull --init
 ```
 
 これにより以下が生成される:
+
 - `drizzle/schema.ts` - スキーマ定義（→ `src/db/schema.ts`に移動）
 - `drizzle/meta/_journal.json` - マイグレーション履歴
 - `drizzle/meta/0000_snapshot.json` - スキーマスナップショット
@@ -67,18 +69,26 @@ import { sql } from "drizzle-orm"
 
 export const articles = sqliteTable("articles", {
   id: text("id").primaryKey(),
-  createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
 })
 
 export const likes = sqliteTable("likes", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  articleId: text("article_id").notNull().references(() => articles.id),
-  createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  articleId: text("article_id")
+    .notNull()
+    .references(() => articles.id),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
 })
 
 export const tweets = sqliteTable("tweets", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
   content: text("content").notNull(),
 })
 ```
@@ -187,6 +197,7 @@ pnpm preview
 スキーマのカラム名（`article_id`）とTypeScriptプロパティ名（`articleId`）の対応を確認。Drizzleは自動的にスネークケースからキャメルケースに変換しない。
 
 **解決策**: スキーマ定義で明示的にカラム名を指定:
+
 ```typescript
 articleId: text("article_id").notNull()
 ```
@@ -196,6 +207,7 @@ articleId: text("article_id").notNull()
 マイグレーションが適用されていない可能性。
 
 **解決策**:
+
 ```bash
 wrangler d1 migrations apply blog-iine-counter --remote
 ```
@@ -205,6 +217,7 @@ wrangler d1 migrations apply blog-iine-counter --remote
 パッケージがインストールされていない。
 
 **解決策**:
+
 ```bash
 pnpm add drizzle-orm
 ```

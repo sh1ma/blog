@@ -4,18 +4,26 @@ import type { InferSelectModel, InferInsertModel } from "drizzle-orm"
 
 export const articles = sqliteTable("articles", {
   id: text().primaryKey(),
-  createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+  createdAt: text("created_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
 })
 
 export const likes = sqliteTable("likes", {
   id: integer().primaryKey({ autoIncrement: true }),
-  articleId: text("article_id").notNull().references(() => articles.id),
-  createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+  articleId: text("article_id")
+    .notNull()
+    .references(() => articles.id),
+  createdAt: text("created_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
 })
 
 export const tweets = sqliteTable("tweets", {
   id: integer().primaryKey({ autoIncrement: true }),
-  createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+  createdAt: text("created_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
   content: text().notNull(),
 })
 

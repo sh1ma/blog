@@ -14,6 +14,7 @@
 全記事のメタデータを取得する。
 
 **Current Implementation** (`src/db.ts`):
+
 ```typescript
 export const getAllArticles = async () => {
   const context = getCloudflareContext()
@@ -25,6 +26,7 @@ export const getAllArticles = async () => {
 ```
 
 **New Implementation**:
+
 ```typescript
 export const getAllArticles = async () => {
   const context = getCloudflareContext()
@@ -42,6 +44,7 @@ export const getAllArticles = async () => {
 指定記事のいいね数を取得する。
 
 **Current Implementation** (`src/db.ts`):
+
 ```typescript
 export const countLikes = async (articleId: string) => {
   const context = getCloudflareContext()
@@ -55,6 +58,7 @@ export const countLikes = async (articleId: string) => {
 ```
 
 **New Implementation**:
+
 ```typescript
 export const countLikes = async (articleId: string) => {
   const context = getCloudflareContext()
@@ -77,6 +81,7 @@ export const countLikes = async (articleId: string) => {
 記事にいいねを追加する。
 
 **Current Implementation** (`src/db.ts`):
+
 ```typescript
 export const likeArticle = async (articleId: string) => {
   const context = getCloudflareContext()
@@ -88,6 +93,7 @@ export const likeArticle = async (articleId: string) => {
 ```
 
 **New Implementation**:
+
 ```typescript
 export const likeArticle = async (articleId: string) => {
   const context = getCloudflareContext()
@@ -108,6 +114,7 @@ export const likeArticle = async (articleId: string) => {
 全ツイートを新しい順で取得する。
 
 **Current Implementation** (`src/tweets/tweetDomain.ts`):
+
 ```typescript
 export const getAllTweets = async () => {
   const context = getCloudflareContext()
@@ -119,14 +126,12 @@ export const getAllTweets = async () => {
 ```
 
 **New Implementation**:
+
 ```typescript
 export const getAllTweets = async () => {
   const context = getCloudflareContext()
   const db = drizzle(context.env.DB)
-  const results = await db
-    .select()
-    .from(tweets)
-    .orderBy(desc(tweets.createdAt))
+  const results = await db.select().from(tweets).orderBy(desc(tweets.createdAt))
   return results.map(recordToModel)
 }
 ```
@@ -140,6 +145,7 @@ export const getAllTweets = async () => {
 最新5件のツイートを取得する。
 
 **Current Implementation** (`src/tweets/tweetDomain.ts`):
+
 ```typescript
 const RECENT_LIMIT = 5
 export const getRecentTweets = async () => {
@@ -152,6 +158,7 @@ export const getRecentTweets = async () => {
 ```
 
 **New Implementation**:
+
 ```typescript
 const RECENT_LIMIT = 5
 export const getRecentTweets = async () => {
