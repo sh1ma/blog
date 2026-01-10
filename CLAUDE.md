@@ -28,6 +28,17 @@ Conventional Commitに準じた形式:
 
 例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
 
+## PR作成前のルール
+
+**PRを作成する前に、必ず以下のコマンドを実行し、問題があれば修正すること。**
+
+```bash
+pnpm lint
+pnpm format:check
+```
+
+問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは手動で修正する。
+
 ## コマンド
 
 ```bash
