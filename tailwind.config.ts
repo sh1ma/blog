@@ -7,22 +7,55 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{js,ts,jsx,tsx}",
   ],
-
+  darkMode: "media",
   plugins: [typography],
   theme: {
     extend: {
       colors: {
-        primary: {
-          default: "#514fc9",
-          dark: "#3a38a0",
-          light: "#7a79d9",
-          bg: "#f0f2ff",
+        // セマンティックカラー（CSS変数参照）
+        bg: {
+          base: "var(--bg-base)",
+          surface: "var(--bg-surface)",
+          "surface-hover": "var(--bg-surface-hover)",
+          elevated: "var(--bg-elevated)",
+          muted: "var(--bg-muted)",
+        },
+        text: {
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
+          inverse: "var(--text-inverse)",
+          link: "var(--text-link)",
+          "link-hover": "var(--text-link-hover)",
+        },
+        brand: {
+          primary: "var(--brand-primary)",
+          "primary-dark": "var(--brand-primary-dark)",
+          "primary-light": "var(--brand-primary-light)",
         },
         accent: {
-          default: "#ff6b6b",
+          blue: "var(--accent-blue)",
+          yellow: "var(--accent-yellow)",
+          pink: "var(--accent-pink)",
+          red: "var(--accent-red)",
+          // 後方互換用
+          default: "var(--accent-red)",
+        },
+        border: {
+          DEFAULT: "var(--border-default)",
+          subtle: "var(--border-subtle)",
+          brand: "var(--border-brand)",
+        },
+        // 後方互換用エイリアス
+        primary: {
+          default: "var(--brand-primary)",
+          dark: "var(--brand-primary-dark)",
+          light: "var(--brand-primary-light)",
+          bg: "var(--bg-base)",
         },
       },
       fontFamily: {
+        sans: ["Inter", "Noto Sans JP", "system-ui", "sans-serif"],
         system: ["system-ui"],
       },
       spacing: {
@@ -38,6 +71,11 @@ const config: Config = {
         "inline-x": "0.25rem",
         "inline-y": "0.125rem",
         "icon-gap": "0.25rem",
+      },
+      boxShadow: {
+        "glow-white": "0 0 20px rgba(255, 255, 255, 0.3)",
+        "glow-primary": "0 0 20px rgba(81, 79, 201, 0.4)",
+        "glow-accent": "0 0 20px rgba(134, 200, 243, 0.4)",
       },
     },
   },
