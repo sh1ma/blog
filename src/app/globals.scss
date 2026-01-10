@@ -58,36 +58,6 @@
   --border-brand: var(--color-purple-600);
 }
 
-/* ===== ダークテーマ（prefers-color-scheme対応） ===== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* 背景 */
-    --bg-base: var(--color-navy-950);
-    --bg-surface: var(--color-gray-800);
-    --bg-surface-hover: rgba(134, 200, 243, 0.1);
-    --bg-elevated: var(--color-indigo-900);
-    --bg-muted: var(--color-navy-900);
-
-    /* テキスト */
-    --text-primary: var(--color-white);
-    --text-secondary: var(--color-gray-300);
-    --text-muted: var(--color-gray-400);
-    --text-inverse: var(--color-dark-text);
-    --text-link: var(--color-blue-300);
-    --text-link-hover: var(--color-purple-400);
-
-    /* ブランド/アクセント（変更なし） */
-    --brand-primary: var(--color-purple-600);
-    --brand-primary-dark: var(--color-indigo-900);
-    --brand-primary-light: var(--color-purple-400);
-
-    /* ボーダー */
-    --border-default: var(--color-gray-400);
-    --border-subtle: rgba(170, 170, 170, 0.3);
-    --border-brand: var(--color-purple-600);
-  }
-}
-
 html,
 body {
   @apply bg-bg-base;
