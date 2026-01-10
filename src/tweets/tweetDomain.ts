@@ -2,6 +2,10 @@
 
 import dayjs from "dayjs"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { drizzle } from "drizzle-orm/d1"
+import { desc } from "drizzle-orm"
+import { tweets, type Tweet as TweetRecord } from "@/db/schema"
+
 // ツイートの型
 export type Tweet = {
   id: string
@@ -13,13 +17,6 @@ export type Tweet = {
   }
 }
 
-// データベースのレコードの型
-type TweetDBRecord = {
-  id: string
-  created_at: string
-  content: string
-}
-
 // 仮のユーザー情報を返す
 const DUMMY_USER = {
   screenName: "sh1ma",
@@ -27,11 +24,11 @@ const DUMMY_USER = {
 }
 
 // レコードをモデルに変換する
-const recordToModel = (record: TweetDBRecord): Tweet => {
+const recordToModel = (record: TweetRecord): Tweet => {
   return {
-    id: record.id,
+    id: String(record.id),
     text: record.content,
-    createdAt: dayjs.utc(record.created_at),
+    createdAt: dayjs.utc(record.createdAt),
     // 仮のユーザー情報をセット
     user: DUMMY_USER,
   }
@@ -40,9 +37,8 @@ const recordToModel = (record: TweetDBRecord): Tweet => {
 // すべてのツイートを取得する
 export const getAllTweets = async () => {
   const context = getCloudflareContext()
-  const { results } = await context.env.DB.prepare(
-    "select * from tweets order by created_at desc",
-  ).all<TweetDBRecord>()
+  const db = drizzle(context.env.DB)
+  const results = await db.select().from(tweets).orderBy(desc(tweets.createdAt))
 
   return results.map(recordToModel)
 }
@@ -51,8 +47,12 @@ export const getAllTweets = async () => {
 const RECENT_LIMIT = 5
 export const getRecentTweets = async () => {
   const context = getCloudflareContext()
-  const { results } = await context.env.DB.prepare(
-    `select * from tweets order by created_at desc limit ${RECENT_LIMIT}`,
-  ).all<TweetDBRecord>()
+  const db = drizzle(context.env.DB)
+  const results = await db
+    .select()
+    .from(tweets)
+    .orderBy(desc(tweets.createdAt))
+    .limit(RECENT_LIMIT)
+
   return results.map(recordToModel)
 }

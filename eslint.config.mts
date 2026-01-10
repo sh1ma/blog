@@ -10,6 +10,18 @@ const compat = new FlatCompat({
 })
 
 export default defineConfig([
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "out/**",
+      "public/**",
+      ".contentlayer/**",
+      "drizzle/**",
+      "next-env.d.ts",
+      "cloudflare-env.d.ts",
+    ],
+  },
   js.configs.recommended,
   ...compat.config({
     extends: ["next/typescript", "next/core-web-vitals", "prettier"],
@@ -38,16 +50,8 @@ export default defineConfig([
       ],
       "react-hooks/exhaustive-deps": "error",
     },
-
     settings: {
       "import/ignore": ["node_modules", ".contentlayer", ".next"],
     },
-    ignores: [
-      ".next/**",
-      "node_modules/**",
-      "out/**",
-      "public/**",
-      ".contentlayer/**",
-    ],
   },
 ])

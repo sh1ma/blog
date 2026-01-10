@@ -39,6 +39,8 @@ pnpm format:check
 
 問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは手動で修正する。
 
+## PR作成時のルール
+
 **PRの作成には必ず `/gh-pr` スキルを使用すること。** 直接 `gh pr create` コマンドを実行してはならない。スキルにはラベル付けなどのルールが含まれている。
 
 ## コマンド
@@ -88,9 +90,11 @@ Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブ�
 
 ## Active Technologies
 
-- TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2 (refactor/unify-design-system)
-- Cloudflare D1（いいね機能）、R2（CDN） (refactor/unify-design-system)
+- TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2
+- Cloudflare D1（いいね機能）、R2（CDN）
+- drizzle-orm, drizzle-kit（型安全なD1データベースアクセス）
 
 ## Recent Changes
 
-- refactor/unify-design-system: Added TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2
+- feat/introduce-drizzle: drizzle-ormを導入してD1データベースアクセスを型安全に
+- refactor/unify-design-system: TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS追加

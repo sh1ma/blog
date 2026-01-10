@@ -14,7 +14,7 @@ on:
       - "contentlayer.config.ts"
       - "tailwind.config.ts"
       - "wrangler.toml"
-      - "migrations/**"
+      - "drizzle/**"
       - ".github/workflows/e2e.yaml"
   workflow_dispatch:
 
