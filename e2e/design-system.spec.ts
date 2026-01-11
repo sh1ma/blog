@@ -29,7 +29,9 @@ test.describe("デザインシステム - ライトテーマ", () => {
     expect(cardBackgroundColor).toBe("rgb(255, 255, 255)")
   })
 
-  test("フォントファミリーにInterとNoto Sans JPが含まれている", async ({ page }) => {
+  test("フォントファミリーにInterとNoto Sans JPが含まれている", async ({
+    page,
+  }) => {
     const fontFamily = await page.evaluate(() => {
       const body = document.querySelector("body")
       if (!body) return null
