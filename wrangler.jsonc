@@ -31,6 +31,11 @@
       "bucket_name": "blog-cache",
       "preview_bucket_name": "blog-cache-preview",
     },
+    {
+      "binding": "VRT",
+      "bucket_name": "blog-vrt",
+      "preview_bucket_name": "blog-vrt-preview",
+    },
   ],
   "observability": {
     "enabled": true,

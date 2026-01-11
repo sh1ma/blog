@@ -6,6 +6,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: [["html", { open: "never" }], ["list"]],
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.2,
+      animations: "disabled",
+    },
+  },
   use: {
     baseURL: "http://localhost:8787",
     screenshot: "only-on-failure",

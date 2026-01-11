@@ -13,10 +13,13 @@ on:
       - "next.config.mjs"
       - "contentlayer.config.ts"
       - "tailwind.config.ts"
-      - "wrangler.toml"
+      - "wrangler.jsonc"
       - "drizzle/**"
       - ".github/workflows/e2e.yaml"
   workflow_dispatch:
+
+env:
+  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
 jobs:
   e2e:
@@ -38,8 +41,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium --with-deps
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
 
       - name: Build content
         run: pnpm build:content

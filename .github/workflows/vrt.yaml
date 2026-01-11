@@ -1,0 +1,213 @@
+name: Visual Regression Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "e2e/**"
+      - "playwright.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "next.config.mjs"
+      - "contentlayer.config.ts"
+      - "tailwind.config.ts"
+      - ".github/workflows/vrt.yaml"
+  workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: "Update baseline snapshots"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  R2_BUCKET: blog-vrt
+  R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+
+jobs:
+  vrt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for update snapshots checkbox
+        id: check-update
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "update_snapshots=${{ inputs.update_snapshots }}" >> $GITHUB_OUTPUT
+          else
+            # PRボディからチェックボックスを確認
+            if [[ -z "${{ github.event.pull_request.number }}" ]]; then
+              echo "update_snapshots=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body -q .body)
+            if echo "$PR_BODY" | grep -qiE '\[[ ]*[xX][ ]*\].*スナップショットを更新する'; then
+              echo "update_snapshots=true" >> $GITHUB_OUTPUT
+            else
+              echo "update_snapshots=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
+
+      - name: Build content
+        run: pnpm build:content
+
+      - name: Download baseline snapshots from R2
+        if: steps.check-update.outputs.update_snapshots != 'true'
+        run: |
+          mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png --remote || echo "Baseline home-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png --remote || echo "Baseline article-page not found"
+
+      - name: Run VRT tests
+        id: vrt
+        run: |
+          if [[ "${{ steps.check-update.outputs.update_snapshots }}" == "true" ]]; then
+            # スナップショット更新モード - テストをスキップして新規スクリーンショット生成
+            pnpm exec playwright test vrt.spec.ts --update-snapshots || true
+          else
+            # 通常の比較テスト
+            pnpm exec playwright test vrt.spec.ts || echo "vrt_failed=true" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Upload report to R2
+        if: always()
+        run: |
+          PR_NUM=${{ github.event.pull_request.number || 'manual' }}
+          RUN_ID=${{ github.run_id }}
+          if [ -d "playwright-report" ]; then
+            # playwright-reportディレクトリ内のすべてのファイルをR2にアップロード
+            find playwright-report -type f | while read file; do
+              key="${file#playwright-report/}"
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/$key --file "$file" --remote
+            done
+          fi
+
+      - name: Upload new snapshots to R2 (update mode)
+        if: steps.check-update.outputs.update_snapshots == 'true'
+        run: |
+          PR_NUM=${{ github.event.pull_request.number || 'manual' }}
+          if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
+            # スナップショットをR2にアップロード
+            find e2e/__snapshots__/vrt.spec.ts-snapshots -type f -name "*.png" | while read file; do
+              filename=$(basename "$file")
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/$filename --file "$file" --remote
+            done
+          fi
+
+      - name: Collect screenshot URLs
+        id: screenshots
+        if: always()
+        run: |
+          PR_NUM=${{ github.event.pull_request.number || 'manual' }}
+          RUN_ID=${{ github.run_id }}
+          REPORT_URL="${{ env.R2_PUBLIC_URL }}/reports/pr-${PR_NUM}/run-${RUN_ID}/index.html"
+          echo "report_url=${REPORT_URL}" >> $GITHUB_OUTPUT
+
+          # 差分画像のURLを収集
+          DIFF_IMAGES=""
+          if [ -d "test-results" ]; then
+            for diff in test-results/**/diff*.png; do
+              if [ -f "$diff" ]; then
+                FILENAME=$(basename "$diff")
+                TESTNAME=$(dirname "$diff" | xargs basename)
+                # test-resultsディレクトリもR2にアップロード
+                pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME} --file "$diff" --remote
+                DIFF_IMAGES="${DIFF_IMAGES}- ![${TESTNAME}](${{ env.R2_PUBLIC_URL }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME})\n"
+              fi
+            done
+          fi
+          echo "diff_images<<EOF" >> $GITHUB_OUTPUT
+          printf "%b\n" "$DIFF_IMAGES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const updateMode = '${{ steps.check-update.outputs.update_snapshots }}' === 'true';
+            const vrtFailed = '${{ steps.vrt.outputs.vrt_failed }}' === 'true';
+            const reportUrl = '${{ steps.screenshots.outputs.report_url }}';
+            const diffImages = `${{ steps.screenshots.outputs.diff_images }}`;
+            const prNum = context.issue.number;
+
+            let body = '## Visual Regression Test Results\n\n';
+
+            if (updateMode) {
+              body += '**Mode**: スナップショット更新\n\n';
+              body += '新しいスナップショットが生成され、R2にアップロードされました。\n';
+              body += 'マージ後、ベースライン更新ワークフローが実行されます。\n\n';
+            } else if (vrtFailed) {
+              body += '**Status**: :x: ビジュアルの差分を検出\n\n';
+              body += '### 差分画像\n\n';
+              if (diffImages) {
+                body += diffImages + '\n';
+              }
+              body += '\n';
+            } else {
+              body += '**Status**: :white_check_mark: ビジュアルの差分なし\n\n';
+            }
+
+            body += `[レポートを確認](${reportUrl})\n\n`;
+            body += '---\n';
+            body += '*これらの変更が意図的なものである場合、PRテンプレートの「スナップショットを更新する」にチェックを入れて再実行してください。*';
+
+            // 既存のVRTコメントを検索
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNum,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Visual Regression Test Results')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNum,
+                body: body,
+              });
+            }
+
+      - name: Fail if VRT detected differences
+        if: steps.vrt.outputs.vrt_failed == 'true' && steps.check-update.outputs.update_snapshots != 'true'
+        run: exit 1
