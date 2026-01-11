@@ -1,0 +1,34 @@
+name: "Setup Playwright"
+description: "Setup Playwright with browser cache"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Playwright version
+      id: playwright-version
+      shell: bash
+      run: |
+        VERSION=$(jq -r '.devDependencies["@playwright/test"]' package.json | sed 's/[\^~]//g')
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Playwright version: ${VERSION}"
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-browsers-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+    - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+      run: |
+        echo "Installing Playwright browsers..."
+        pnpm exec playwright install chromium --with-deps
+
+    - name: Skip browser installation
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: echo "Using cached Playwright browsers"

@@ -27,6 +27,7 @@ env:
   R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
 jobs:
   vrt:
@@ -72,8 +73,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium --with-deps
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
 
       - name: Build content
         run: pnpm build:content
