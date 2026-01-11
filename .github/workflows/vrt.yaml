@@ -83,8 +83,8 @@ jobs:
         if: steps.check-update.outputs.update_snapshots != 'true'
         run: |
           mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png --remote || echo "Baseline home-page not found"
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png --remote || echo "Baseline article-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || echo "Baseline home-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || echo "Baseline article-page not found"
 
       - name: Run VRT tests
         id: vrt
