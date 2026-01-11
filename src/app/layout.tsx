@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.scss"
 import React from "react"
 import { BlogHeader } from "./header"
+import { Footer } from "@/components/Footer/Footer"
 import utc from "dayjs/plugin/utc"
 import dayjs from "dayjs"
 
@@ -21,9 +22,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <div className="mb-page-bottom grid w-full place-items-center [&>*]:w-full [&>header]:h-20 sm:[&>header]:mb-12">
+        <div className="flex min-h-screen flex-col">
           <BlogHeader />
-          {children}
+          <main className="flex-1">{children}</main>
+          <Footer />
         </div>
       </body>
     </html>

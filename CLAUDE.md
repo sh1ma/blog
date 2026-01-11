@@ -37,7 +37,7 @@ pnpm lint
 pnpm format:check
 ```
 
-問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは手動で修正する。
+問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは `pnpm next lint --fix` で自動修正する。自動修正できないエラーは手動で修正する。
 
 ## PR作成時のルール
 
@@ -93,6 +93,16 @@ Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブ�
 - TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2
 - Cloudflare D1（いいね機能）、R2（CDN）
 - drizzle-orm, drizzle-kit（型安全なD1データベースアクセス）
+
+## 開発時のファイル管理
+
+**dev-assets/** ディレクトリは開発時の一時ファイルや参考資料を置くためのディレクトリです。
+
+- デザインファイル（AI生成UIなど）
+- 実装時の参考資料
+- その他リポジトリにコミットしたくない開発用ファイル
+
+このディレクトリは `.gitignore` に含まれており、リポジトリには含まれません。
 
 ## Recent Changes
 
