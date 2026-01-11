@@ -1,6 +1,6 @@
 ---
 name: gh-pr
-description: GitHubのPR（プルリクエスト）を管理する。PR作成、一覧表示、マージ、レビュー、チェックアウト時に使用。「PRを作りたい」「マージして」「レビューして」などのキーワードで発動。
+description: GitHubのPR（プルリクエスト）を管理する。PR作成、一覧表示、マージ、レビュー、チェックアウト、コメント確認時に使用。「PRを作りたい」「マージして」「レビューして」「コメントを確認」などのキーワードで発動。
 ---
 
 # GitHub PR管理
@@ -116,8 +116,45 @@ gh pr list --label "bug"      # ラベルでフィルタ
 gh pr view                    # 現在のブランチのPRを表示
 gh pr view 123                # PR #123を表示
 gh pr view --web              # ブラウザで開く
+gh pr view --comments         # PRのコメントを表示（会話コメントのみ）
 gh pr checkout 123            # PR #123をチェックアウト
 gh pr diff 123                # PR #123の差分を表示
+```
+
+### PRコメント表示
+
+PRのコメントを確認する方法は複数あります。
+
+#### 基本的なコメント表示
+
+```bash
+# 会話コメントを表示（gh pr viewのデフォルト出力に含まれる）
+gh pr view 123 --comments
+
+# JSONフォーマットで詳細情報を取得
+gh pr view 123 --json comments
+
+# すべてのコメント（インラインレビューコメント含む）をAPI経由で取得
+gh api repos/sh1ma/blog/pulls/123/comments
+```
+
+#### コメントの種類
+
+- **会話コメント（Issue comments）**: PR全体に対するコメント。`gh pr view --comments` で表示可能
+- **レビューコメント（Review comments）**: コードの特定行に対するインラインコメント。API経由で取得
+- **レビュー（Reviews）**: 承認/変更要求/コメント。`gh pr view --json reviews` で取得可能
+
+#### 実用例
+
+```bash
+# 現在のブランチのPRのコメントを確認
+gh pr view --comments
+
+# PR #123のすべてのインラインコメントを確認
+gh api repos/sh1ma/blog/pulls/123/comments | jq -r '.[] | "\(.path):\(.line) - \(.user.login): \(.body)"'
+
+# PR #123のレビュー状況を確認
+gh pr view 123 --json reviews | jq -r '.reviews[] | "\(.author.login): \(.state) - \(.body)"'
 ```
 
 ### PRマージ・クローズ
@@ -184,7 +221,8 @@ VRTに関連するPRには `test` ラベルも追加することを推奨しま�
 2. PR作成の場合、変更内容を確認してラベルを決定する
 3. **`.github/pull_request_template.md` のテンプレートを遵守してPRを作成する**
 4. **ラベルを必ず付けてPRを作成する**
-5. 結果を日本語で報告
+5. PRコメント確認の場合、適切なコマンド（`gh pr view --comments`、`gh api`など）を使用する
+6. 結果を日本語で報告
 
 ## 注意事項
 
