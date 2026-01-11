@@ -1,0 +1,56 @@
+name: Production Deploy
+
+on:
+  push:
+    branches:
+      - deploy
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "next.config.mjs"
+      - "contentlayer.config.ts"
+      - "tailwind.config.ts"
+      - "wrangler.jsonc"
+      - "tsconfig.json"
+      - "drizzle/**"
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  production-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.12.0
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build content
+        run: pnpm build:content
+
+      - name: Deploy to production
+        run: |
+          # OpenNext ビルド
+          pnpm exec opennextjs-cloudflare build
+
+          # 本番環境へデプロイ
+          pnpm exec opennextjs-cloudflare upload
+
+          echo "Deployed to production"
