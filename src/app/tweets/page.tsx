@@ -8,9 +8,10 @@ const TweetFeedPage = async () => {
   const tweets = await getAllTweets()
 
   return (
-    <div className="max-w-7xl">
-      <div className="rounded-md bg-white text-black">
-        <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-b-gray-600/50">
+    <main className="mx-auto w-full max-w-3xl px-4 py-8">
+      <h2 className="mb-8 text-3xl font-bold text-text-primary">Tweets</h2>
+      <div className="rounded-xl bg-bg-surface shadow-soft">
+        <ul className="flex flex-col [&>li:not(:last-child)]:border-b [&>li:not(:last-child)]:border-gray-200">
           {tweets.map((e) => (
             <li key={e.id}>
               <TweetCard tweet={e} />
@@ -18,7 +19,7 @@ const TweetFeedPage = async () => {
           ))}
         </ul>
       </div>
-    </div>
+    </main>
   )
 }
 

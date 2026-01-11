@@ -75,6 +75,9 @@ const config: Config = {
         "glow-white": "0 0 20px rgba(255, 255, 255, 0.3)",
         "glow-primary": "0 0 20px rgba(81, 79, 201, 0.4)",
         "glow-accent": "0 0 20px rgba(134, 200, 243, 0.4)",
+        soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+        hover:
+          "0 10px 25px -5px rgba(81, 79, 201, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
       },
     },
   },

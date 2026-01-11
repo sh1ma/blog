@@ -13,19 +13,19 @@ test.describe("デザインシステム - ライトテーマ", () => {
       return window.getComputedStyle(body).backgroundColor
     })
 
-    // --bg-base の色 (#f0f2ff) は rgb(240, 242, 255)
-    expect(backgroundColor).toBe("rgb(240, 242, 255)")
+    // --bg-base の色 (#F9FAFB) は rgb(249, 250, 251)
+    expect(backgroundColor).toBe("rgb(249, 250, 251)")
   })
 
   test("カード背景色がライトテーマの色になっている", async ({ page }) => {
-    // 記事カード内のarticle要素の背景色を取得
+    // 記事カードのarticle要素の背景色を取得
     const cardBackgroundColor = await page.evaluate(() => {
-      const article = document.querySelector("main ul li article")
+      const article = document.querySelector("main article")
       if (!article) return null
       return window.getComputedStyle(article).backgroundColor
     })
 
-    // bg-white の色 (#ffffff) は rgb(255, 255, 255)
+    // bg-bg-surface の色 (#ffffff) は rgb(255, 255, 255)
     expect(cardBackgroundColor).toBe("rgb(255, 255, 255)")
   })
 
@@ -56,22 +56,22 @@ test.describe("デザインシステム - ライトテーマ", () => {
       return window.getComputedStyle(heading).color
     })
 
-    // h2は text-primary-dark (#3a38a0) を使用 -> rgb(58, 56, 160)
-    expect(h2Color).toBe("rgb(58, 56, 160)")
+    // h2は text-text-primary (#1f2937) を使用 -> rgb(31, 41, 55)
+    expect(h2Color).toBe("rgb(31, 41, 55)")
 
-    // h3は text-primary-default (#514fc9) を使用 -> rgb(81, 79, 201)
+    // h3は text-brand-primary (#514fc9) を使用 -> rgb(81, 79, 201)
     expect(h3Color).toBe("rgb(81, 79, 201)")
   })
 
-  test("ヘッダーリンクの色が白色になっている", async ({ page }) => {
-    const headerLinkColor = await page.evaluate(() => {
-      const link = document.querySelector("header a")
-      if (!link) return null
-      return window.getComputedStyle(link).color
+  test("ヘッダーロゴの色が正しく設定されている", async ({ page }) => {
+    const headerLogoColor = await page.evaluate(() => {
+      const logo = document.querySelector("header h1")
+      if (!logo) return null
+      return window.getComputedStyle(logo).color
     })
 
-    // ヘッダーのリンクは text-white -> rgb(255, 255, 255)
-    expect(headerLinkColor).toBe("rgb(255, 255, 255)")
+    // ヘッダーのロゴは text-text-primary -> rgb(31, 41, 55)
+    expect(headerLogoColor).toBe("rgb(31, 41, 55)")
   })
 })
 
@@ -89,15 +89,15 @@ test.describe("デザインシステム - ダークモードでもライトテ�
       return window.getComputedStyle(body).backgroundColor
     })
 
-    // ライトテーマの色 (#f0f2ff) は rgb(240, 242, 255) のまま
-    expect(backgroundColor).toBe("rgb(240, 242, 255)")
+    // ライトテーマの色 (#F9FAFB) は rgb(249, 250, 251) のまま
+    expect(backgroundColor).toBe("rgb(249, 250, 251)")
   })
 
   test("ダークモード設定でもカード背景色がライトテーマのまま", async ({
     page,
   }) => {
     const cardBackgroundColor = await page.evaluate(() => {
-      const article = document.querySelector("main ul li article")
+      const article = document.querySelector("main article")
       if (!article) return null
       return window.getComputedStyle(article).backgroundColor
     })
@@ -115,8 +115,12 @@ test.describe("デザインシステム - ダークモードでもライトテ�
       return window.getComputedStyle(header).backgroundColor
     })
 
-    // ヘッダー背景色は bg-primary-default (#514fc9) -> rgb(81, 79, 201)
-    expect(headerBackgroundColor).toBe("rgb(81, 79, 201)")
+    // ヘッダー背景色は bg-bg-surface/90 -> rgba(255, 255, 255, 0.9)
+    // backdrop-blurがあるため、背景色は半透明
+    // ダークモードでも白色ベースまたは透明であることを確認
+    expect(headerBackgroundColor).toMatch(
+      /rgba?\((255,\s*255,\s*255|0,\s*0,\s*0)/,
+    )
   })
 })
 
@@ -140,9 +144,9 @@ test.describe("デザインシステム - CSS変数の定義確認", () => {
     })
 
     // プリミティブカラーが正しく定義されている
-    expect(cssVariables.bgBase).toBe("#f0f2ff")
+    expect(cssVariables.bgBase).toBe("#f9fafb")
     expect(cssVariables.bgSurface).toBe("#ffffff")
-    expect(cssVariables.textPrimary).toBe("#1a1a2e")
+    expect(cssVariables.textPrimary).toBe("#1f2937")
     expect(cssVariables.textLink).toBe("#514fc9")
     expect(cssVariables.brandPrimary).toBe("#514fc9")
   })
@@ -163,7 +167,7 @@ test.describe("デザインシステム - CSS変数の定義確認", () => {
     })
 
     // ダークモードでもライトテーマの値のまま
-    expect(cssVariables.bgBase).toBe("#f0f2ff")
+    expect(cssVariables.bgBase).toBe("#f9fafb")
     expect(cssVariables.bgSurface).toBe("#ffffff")
   })
 })

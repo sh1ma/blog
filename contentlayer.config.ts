@@ -11,11 +11,23 @@ export const Article = defineDocumentType(() => ({
   fields: {
     title: { type: "string", required: true },
     publishedAt: { type: "date", required: true },
+    thumbnail: { type: "string", required: false },
+    description: { type: "string", required: false },
+    tags: { type: "list", of: { type: "string" }, required: false },
   },
   computedFields: {
     id: {
       type: "string",
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, ""),
+    },
+    readingTime: {
+      type: "number",
+      resolve: (doc) => {
+        const CHARS_PER_MINUTE = 500
+        const content = doc.body.raw
+        const charCount = content.length
+        return Math.ceil(charCount / CHARS_PER_MINUTE)
+      },
     },
   },
 }))

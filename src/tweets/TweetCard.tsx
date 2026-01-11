@@ -28,7 +28,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
   const viewModel = tweetToViewModel(tweet)
 
   return (
-    <article className="grid grid-cols-[auto_1fr] gap-2  px-btn-x py-card sm:px-card sm:py-8">
+    <article className="grid grid-cols-[auto_1fr] gap-3 px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex items-start">
         <div className="relative size-10">
           <Image
@@ -40,21 +40,22 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-icon-gap">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-end gap-2">
+      <div className="flex min-w-0 flex-col gap-3">
+        <div className="flex flex-wrap items-baseline gap-1">
+          <span className="font-semibold text-text-primary">
             {viewModel.user.name}
-            <span className="text-slate-400">@{viewModel.user.screenName}</span>
-            <time
-              className="ml-1 text-slate-400"
-              dateTime={viewModel.model.createdAt.toString()}
-            >
-              <span className="text-sm">{viewModel.createdAt}</span>
-            </time>
-          </div>
+          </span>
+          <span className="text-text-muted">@{viewModel.user.screenName}</span>
+          <span className="text-text-muted">·</span>
+          <time
+            className="text-text-muted"
+            dateTime={viewModel.model.createdAt.toString()}
+          >
+            <span className="text-sm">{viewModel.createdAt}</span>
+          </time>
         </div>
-        <div className="w-full">
-          <pre className="w-full whitespace-pre-wrap break-all font-sans">
+        <div className="min-w-0">
+          <pre className="whitespace-pre-wrap break-words font-sans text-text-primary">
             {viewModel.content}
           </pre>
         </div>
