@@ -9,19 +9,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for required labels
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const validLabels = ['feature', 'bug', 'refactoring', 'documentation', 'chore', 'AI'];
-            const prLabels = context.payload.pull_request.labels.map(label => label.name);
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # リポジトリの全ラベルを取得
+          VALID_LABELS=$(gh label list --repo ${{ github.repository }} --json name --jq '[.[].name] | join(",")')
 
-            const hasValidLabel = prLabels.some(label => validLabels.includes(label));
+          # PRのラベルを取得
+          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json labels --jq '[.labels[].name] | join(",")')
 
-            if (!hasValidLabel) {
-              core.setFailed(
-                `PRには以下のラベルのいずれかを付けてください: ${validLabels.join(', ')}\n` +
-                `現在のラベル: ${prLabels.length > 0 ? prLabels.join(', ') : 'なし'}`
-              );
-            } else {
-              console.log(`✅ 有効なラベルが付いています: ${prLabels.filter(l => validLabels.includes(l)).join(', ')}`);
-            }
+          echo "リポジトリの有効なラベル: $VALID_LABELS"
+          echo "PRに付いているラベル: $PR_LABELS"
+
+          # PRにラベルが付いているかチェック
+          if [ -z "$PR_LABELS" ]; then
+            echo "::error::PRにはラベルを付けてください"
+            echo "利用可能なラベル: $VALID_LABELS"
+            exit 1
+          fi
+
+          # PRのラベルが有効なラベルに含まれているかチェック
+          IFS=',' read -ra PR_LABEL_ARRAY <<< "$PR_LABELS"
+          IFS=',' read -ra VALID_LABEL_ARRAY <<< "$VALID_LABELS"
+
+          FOUND=false
+          VALID_PR_LABELS=""
+
+          for pr_label in "${PR_LABEL_ARRAY[@]}"; do
+            for valid_label in "${VALID_LABEL_ARRAY[@]}"; do
+              if [ "$pr_label" = "$valid_label" ]; then
+                FOUND=true
+                if [ -z "$VALID_PR_LABELS" ]; then
+                  VALID_PR_LABELS="$pr_label"
+                else
+                  VALID_PR_LABELS="$VALID_PR_LABELS, $pr_label"
+                fi
+                break
+              fi
+            done
+          done
+
+          if [ "$FOUND" = true ]; then
+            echo "✅ 有効なラベルが付いています: $VALID_PR_LABELS"
+          else
+            echo "::error::PRには有効なラベルを付けてください"
+            echo "現在のラベル: $PR_LABELS"
+            echo "利用可能なラベル: $VALID_LABELS"
+            exit 1
+          fi
