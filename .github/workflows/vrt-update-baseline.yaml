@@ -30,6 +30,15 @@ jobs:
         with:
           version: 10
 
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.12.0
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Copy snapshots from PR to baselines
         run: |
           PR_NUM=${{ github.event.pull_request.number || inputs.pr_number }}
