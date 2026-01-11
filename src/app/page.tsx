@@ -63,7 +63,7 @@ export default async function Home() {
             {articlesWithLikes.map((article) => (
               <li key={article.id}>
                 <Link href={`/articles/${article.id}`}>
-                  <article className="relative bg-white p-card shadow-md transition-colors hover:bg-primary-light/20">
+                  <article className="hover:bg-primary-light/20 relative bg-white p-card shadow-md transition-colors">
                     <h3 className="text-xl text-primary-default">
                       {article.title}
                     </h3>
