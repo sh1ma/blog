@@ -80,14 +80,10 @@ jobs:
 
       - name: Download baseline snapshots from R2
         if: steps.check-update.outputs.update_snapshots != 'true'
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: |
-            mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
-            wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png || echo "Baseline home-page not found"
-            wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png || echo "Baseline article-page not found"
+        run: |
+          mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png || echo "Baseline home-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png || echo "Baseline article-page not found"
 
       - name: Run VRT tests
         id: vrt
