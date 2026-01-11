@@ -54,7 +54,7 @@ test.describe("記事ページ", () => {
   test("存在しない記事は404を表示する", async ({ page }) => {
     await page.goto("/articles/non-existent-article-slug")
 
-    // 404表示を確認（div要素内の404テキスト）
-    await expect(page.locator("div").filter({ hasText: /^404$/ })).toBeVisible()
+    // 404表示を確認
+    await expect(page.getByText("404")).toBeVisible()
   })
 })
