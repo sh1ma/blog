@@ -51,3 +51,6 @@ tmp
 
 # git worktrees
 worktrees
+
+# assets for development
+dev-assets
