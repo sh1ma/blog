@@ -128,6 +128,13 @@ jobs:
                 comment_id: botComment.id,
                 body: body,
               });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNum,
+                body: body,
+              });
             }
 
       - name: Update comment on failure
@@ -155,6 +162,13 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNum,
                 body: body,
               });
             }
