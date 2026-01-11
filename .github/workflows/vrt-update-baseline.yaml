@@ -38,12 +38,12 @@ jobs:
           # R2からPRのスナップショットをダウンロード
           for snapshot in home-page-chromium.png article-page-chromium.png; do
             # PRのスナップショットをダウンロード
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/${snapshot} --file /tmp/${snapshot} || {
+            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/${snapshot} --file /tmp/${snapshot} --remote || {
               echo "Snapshot ${snapshot} not found for PR #${PR_NUM}, skipping..."
               continue
             }
             # ベースラインとしてアップロード
-            pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/${snapshot} --file /tmp/${snapshot}
+            pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/${snapshot} --file /tmp/${snapshot} --remote
             echo "Updated baseline: ${snapshot}"
           done
 

@@ -82,8 +82,8 @@ jobs:
         if: steps.check-update.outputs.update_snapshots != 'true'
         run: |
           mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png || echo "Baseline home-page not found"
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png || echo "Baseline article-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png --remote || echo "Baseline home-page not found"
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png --remote || echo "Baseline article-page not found"
 
       - name: Run VRT tests
         id: vrt
@@ -106,7 +106,7 @@ jobs:
             # playwright-reportディレクトリ内のすべてのファイルをR2にアップロード
             find playwright-report -type f | while read file; do
               key="${file#playwright-report/}"
-              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/$key --file "$file"
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/$key --file "$file" --remote
             done
           fi
 
@@ -118,7 +118,7 @@ jobs:
             # スナップショットをR2にアップロード
             find e2e/__snapshots__/vrt.spec.ts-snapshots -type f -name "*.png" | while read file; do
               filename=$(basename "$file")
-              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/$filename --file "$file"
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/$filename --file "$file" --remote
             done
           fi
 
@@ -139,7 +139,7 @@ jobs:
                 FILENAME=$(basename "$diff")
                 TESTNAME=$(dirname "$diff" | xargs basename)
                 # test-resultsディレクトリもR2にアップロード
-                pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME} --file "$diff"
+                pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME} --file "$diff" --remote
                 DIFF_IMAGES="${DIFF_IMAGES}- ![${TESTNAME}](${{ env.R2_PUBLIC_URL }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME})\n"
               fi
             done
