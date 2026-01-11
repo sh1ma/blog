@@ -24,8 +24,9 @@ on:
 
 env:
   R2_BUCKET: blog-vrt
-  R2_ENDPOINT: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
   R2_PUBLIC_URL: https://pub-ee5a6a37e95344b7b0a77806c56dd768.r2.dev
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
 jobs:
   vrt:
@@ -73,19 +74,16 @@ jobs:
       - name: Build content
         run: pnpm build:content
 
-      - name: Configure AWS CLI for R2
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          aws-region: auto
-
       - name: Download baseline snapshots from R2
         if: steps.check-update.outputs.update_snapshots != 'true'
-        run: |
-          mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
-          aws s3 sync s3://${{ env.R2_BUCKET }}/baselines/ e2e/__snapshots__/vrt.spec.ts-snapshots/ \
-            --endpoint-url ${{ env.R2_ENDPOINT }} || echo "No baselines found, first run"
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: |
+            mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
+            wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium.png || echo "Baseline home-page not found"
+            wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium.png || echo "Baseline article-page not found"
 
       - name: Run VRT tests
         id: vrt
@@ -105,17 +103,23 @@ jobs:
           PR_NUM=${{ github.event.pull_request.number || 'manual' }}
           RUN_ID=${{ github.run_id }}
           if [ -d "playwright-report" ]; then
-            aws s3 sync playwright-report/ s3://${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/ \
-              --endpoint-url ${{ env.R2_ENDPOINT }}
+            # playwright-reportディレクトリ内のすべてのファイルをR2にアップロード
+            find playwright-report -type f | while read file; do
+              key="${file#playwright-report/}"
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/$key --file "$file"
+            done
           fi
 
       - name: Upload new snapshots to R2 (update mode)
         if: steps.check-update.outputs.update_snapshots == 'true'
         run: |
           PR_NUM=${{ github.event.pull_request.number || 'manual' }}
-          if [ -d "e2e/__snapshots__" ]; then
-            aws s3 sync e2e/__snapshots__/vrt.spec.ts-snapshots/ s3://${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/ \
-              --endpoint-url ${{ env.R2_ENDPOINT }}
+          if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
+            # スナップショットをR2にアップロード
+            find e2e/__snapshots__/vrt.spec.ts-snapshots -type f -name "*.png" | while read file; do
+              filename=$(basename "$file")
+              pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/$filename --file "$file"
+            done
           fi
 
       - name: Collect screenshot URLs
@@ -135,8 +139,7 @@ jobs:
                 FILENAME=$(basename "$diff")
                 TESTNAME=$(dirname "$diff" | xargs basename)
                 # test-resultsディレクトリもR2にアップロード
-                aws s3 cp "$diff" "s3://${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME}" \
-                  --endpoint-url ${{ env.R2_ENDPOINT }}
+                pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME} --file "$diff"
                 DIFF_IMAGES="${DIFF_IMAGES}- ![${TESTNAME}](${{ env.R2_PUBLIC_URL }}/reports/pr-${PR_NUM}/run-${RUN_ID}/screenshots/${TESTNAME}-${FILENAME})\n"
               fi
             done

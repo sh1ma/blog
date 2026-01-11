@@ -10,7 +10,6 @@ on:
 
 env:
   R2_BUCKET: blog-vrt
-  R2_ENDPOINT: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
 
 jobs:
   update-baseline:
@@ -18,19 +17,25 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Configure AWS CLI for R2
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          aws-region: auto
+          version: 10
 
       - name: Upload baselines to R2
-        run: |
-          if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
-            aws s3 sync e2e/__snapshots__/vrt.spec.ts-snapshots/ s3://${{ env.R2_BUCKET }}/baselines/ \
-              --endpoint-url ${{ env.R2_ENDPOINT }}
-            echo "Baselines updated successfully"
-          else
-            echo "No snapshots directory found"
-          fi
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: |
+            if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
+              for file in e2e/__snapshots__/vrt.spec.ts-snapshots/*.png; do
+                if [ -f "$file" ]; then
+                  filename=$(basename "$file")
+                  wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/$filename --file "$file"
+                fi
+              done
+              echo "Baselines updated successfully"
+            else
+              echo "No snapshots directory found"
+            fi
