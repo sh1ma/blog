@@ -24,7 +24,7 @@ on:
 
 env:
   R2_BUCKET: blog-vrt
-  R2_PUBLIC_URL: https://pub-ee5a6a37e95344b7b0a77806c56dd768.r2.dev
+  R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
@@ -44,8 +44,12 @@ jobs:
             echo "update_snapshots=${{ inputs.update_snapshots }}" >> $GITHUB_OUTPUT
           else
             # PRボディからチェックボックスを確認
+            if [[ -z "${{ github.event.pull_request.number }}" ]]; then
+              echo "update_snapshots=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
             PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body -q .body)
-            if echo "$PR_BODY" | grep -q "\[x\] スナップショットを更新する"; then
+            if echo "$PR_BODY" | grep -qiE '\[[ ]*[xX][ ]*\].*スナップショットを更新する'; then
               echo "update_snapshots=true" >> $GITHUB_OUTPUT
             else
               echo "update_snapshots=false" >> $GITHUB_OUTPUT
@@ -145,7 +149,7 @@ jobs:
             done
           fi
           echo "diff_images<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$DIFF_IMAGES" >> $GITHUB_OUTPUT
+          printf "%b\n" "$DIFF_IMAGES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR

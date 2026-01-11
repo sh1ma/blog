@@ -1,18 +1,26 @@
 name: Update VRT Baselines
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
-    paths:
-      - "e2e/__snapshots__/**"
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to copy snapshots from"
+        required: true
+        type: string
 
 env:
   R2_BUCKET: blog-vrt
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
 jobs:
   update-baseline:
+    # PRがマージされた場合のみ実行
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -22,20 +30,21 @@ jobs:
         with:
           version: 10
 
-      - name: Upload baselines to R2
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: |
-            if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
-              for file in e2e/__snapshots__/vrt.spec.ts-snapshots/*.png; do
-                if [ -f "$file" ]; then
-                  filename=$(basename "$file")
-                  wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/$filename --file "$file"
-                fi
-              done
-              echo "Baselines updated successfully"
-            else
-              echo "No snapshots directory found"
-            fi
+      - name: Copy snapshots from PR to baselines
+        run: |
+          PR_NUM=${{ github.event.pull_request.number || inputs.pr_number }}
+          echo "Copying snapshots from PR #${PR_NUM} to baselines..."
+
+          # R2からPRのスナップショットをダウンロード
+          for snapshot in home-page-chromium.png article-page-chromium.png; do
+            # PRのスナップショットをダウンロード
+            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/${snapshot} --file /tmp/${snapshot} || {
+              echo "Snapshot ${snapshot} not found for PR #${PR_NUM}, skipping..."
+              continue
+            }
+            # ベースラインとしてアップロード
+            pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/${snapshot} --file /tmp/${snapshot}
+            echo "Updated baseline: ${snapshot}"
+          done
+
+          echo "Baselines updated successfully from PR #${PR_NUM}"
