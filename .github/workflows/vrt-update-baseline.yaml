@@ -36,7 +36,7 @@ jobs:
           echo "Copying snapshots from PR #${PR_NUM} to baselines..."
 
           # R2からPRのスナップショットをダウンロード
-          for snapshot in home-page-chromium.png article-page-chromium.png; do
+          for snapshot in home-page-chromium-linux.png article-page-chromium-linux.png; do
             # PRのスナップショットをダウンロード
             pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/${snapshot} --file /tmp/${snapshot} --remote || {
               echo "Snapshot ${snapshot} not found for PR #${PR_NUM}, skipping..."

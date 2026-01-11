@@ -28,7 +28,7 @@ test.describe("Visual Regression Tests", () => {
 
       await page.waitForLoadState("networkidle")
       // 記事本文が表示されるまで待機
-      await page.locator("article").waitFor({ state: "visible" })
+      await page.locator("main").waitFor({ state: "visible" })
 
       await expect(page).toHaveScreenshot("article-page.png", {
         fullPage: true,
