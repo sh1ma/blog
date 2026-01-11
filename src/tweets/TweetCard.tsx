@@ -40,25 +40,22 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-end gap-2">
-            <span className="font-semibold text-text-primary">
-              {viewModel.user.name}
-            </span>
-            <span className="text-text-muted">
-              @{viewModel.user.screenName}
-            </span>
-            <time
-              className="ml-1 text-text-muted"
-              dateTime={viewModel.model.createdAt.toString()}
-            >
-              <span className="text-sm">{viewModel.createdAt}</span>
-            </time>
-          </div>
+      <div className="flex min-w-0 flex-col gap-3">
+        <div className="flex flex-wrap items-baseline gap-1">
+          <span className="font-semibold text-text-primary">
+            {viewModel.user.name}
+          </span>
+          <span className="text-text-muted">@{viewModel.user.screenName}</span>
+          <span className="text-text-muted">·</span>
+          <time
+            className="text-text-muted"
+            dateTime={viewModel.model.createdAt.toString()}
+          >
+            <span className="text-sm">{viewModel.createdAt}</span>
+          </time>
         </div>
-        <div className="w-full">
-          <pre className="w-full whitespace-pre-wrap break-all font-sans text-text-primary">
+        <div className="min-w-0">
+          <pre className="whitespace-pre-wrap break-words font-sans text-text-primary">
             {viewModel.content}
           </pre>
         </div>

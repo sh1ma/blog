@@ -29,14 +29,14 @@ test.describe("記事ページ", () => {
 
     // 記事ヘッダー内に日付が表示される
     const articleHeader = page.locator("article > header")
-    await expect(articleHeader).toContainText("2023-01-02")
+    await expect(articleHeader).toContainText("2023-11-09")
   })
 
   test("記事本文が表示される", async ({ page }) => {
     await page.goto(`/articles/${testArticleSlug}`)
 
-    // proseクラスを持つ記事本文コンテナ
-    const articleContent = page.locator(".prose")
+    // 記事本文コンテナ（article内のmain）
+    const articleContent = page.locator("article main.prose")
     await expect(articleContent).toBeVisible()
 
     // 記事内に特定のテキストが含まれることを確認

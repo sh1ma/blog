@@ -1,7 +1,26 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { PenLine, Search, Menu } from "lucide-react"
 
-export const BlogHeader = async () => {
+export const BlogHeader = () => {
+  const pathname = usePathname()
+
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return pathname === "/" || pathname?.startsWith("/articles")
+    }
+    return pathname?.startsWith(path)
+  }
+
+  const getLinkClassName = (path: string) => {
+    if (isActive(path)) {
+      return "border-b-2 border-brand-primary pb-0.5 text-sm font-semibold text-brand-primary"
+    }
+    return "border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+  }
+
   return (
     <div className="sticky top-4 z-50 mb-8 w-full px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -16,22 +35,13 @@ export const BlogHeader = async () => {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/"
-              className="border-b-2 border-brand-primary pb-0.5 text-sm font-semibold text-brand-primary"
-            >
+            <Link href="/" className={getLinkClassName("/")}>
               Articles
             </Link>
-            <Link
-              href="/tweets"
-              className="text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
-            >
+            <Link href="/tweets" className={getLinkClassName("/tweets")}>
               Tweets
             </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
-            >
+            <Link href="/about" className={getLinkClassName("/about")}>
               About
             </Link>
           </nav>
