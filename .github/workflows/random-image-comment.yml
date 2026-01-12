@@ -1,0 +1,95 @@
+name: Random Image Comment
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  comment-random-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch random image and comment on PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # ランダム画像API用のユーザーID（リポジトリ変数として設定推奨）
+          RANDOM_IMAGE_USER_ID: ${{ vars.RANDOM_IMAGE_USER_ID || 'google-oauth2%7C108347409698494459380' }}
+        run: |
+          # APIからランダム画像を取得
+          # 注: jqコマンドはubuntu-latestランナーに標準装備されています
+          API_URL="https://kotonoha.sh1ma.dev/api/photos/random?userId=${RANDOM_IMAGE_USER_ID}"
+
+          echo "Fetching random image from: $API_URL"
+          # -f フラグでHTTPエラー（4xx, 5xx）を検出
+          if ! RESPONSE=$(curl -fs "$API_URL"); then
+            echo "::error::Failed to fetch image from API (HTTP error or network failure)"
+            exit 1
+          fi
+
+          # レスポンスを確認
+          echo "API Response: $RESPONSE"
+
+          # okフィールドをチェック
+          OK=$(echo "$RESPONSE" | jq -r '.ok')
+
+          if [ "$OK" != "true" ]; then
+            ERROR=$(echo "$RESPONSE" | jq -r '.error // "Unknown error"')
+            echo "::error::API error: $ERROR"
+            exit 1
+          fi
+
+          # 画像URLと関連情報を取得
+          IMAGE_URL=$(echo "$RESPONSE" | jq -r '.photo.imageUrl')
+          TWEET_URL=$(echo "$RESPONSE" | jq -r '.photo.tweetUrl // empty')
+          TWEET_AUTHOR=$(echo "$RESPONSE" | jq -r '.photo.tweetAuthorScreenName // empty')
+
+          if [ -z "$IMAGE_URL" ] || [ "$IMAGE_URL" = "null" ]; then
+            echo "::error::画像URLを取得できませんでした"
+            exit 1
+          fi
+
+          echo "Image URL: $IMAGE_URL"
+          echo "Tweet URL: $TWEET_URL"
+          echo "Tweet Author: $TWEET_AUTHOR"
+
+          # PRにコメントを投稿（ヒアドキュメントを使用）
+          cat << 'EOF' > /tmp/pr-comment.md
+          ## 🎨 今日のランダム画像
+
+          ![Random Image](IMAGE_URL_PLACEHOLDER)
+          EOF
+
+          # 画像URLを置換
+          sed -i "s|IMAGE_URL_PLACEHOLDER|$IMAGE_URL|g" /tmp/pr-comment.md
+
+          # ツイート情報があれば追加
+          if [ -n "$TWEET_URL" ] && [ "$TWEET_URL" != "null" ]; then
+            cat << 'EOF' >> /tmp/pr-comment.md
+
+          ---
+          EOF
+            if [ -n "$TWEET_AUTHOR" ] && [ "$TWEET_AUTHOR" != "null" ]; then
+              echo "" >> /tmp/pr-comment.md
+              echo "📸 Photo by [@$TWEET_AUTHOR](https://x.com/$TWEET_AUTHOR)" >> /tmp/pr-comment.md
+              echo "🔗 [元の投稿を見る]($TWEET_URL)" >> /tmp/pr-comment.md
+            else
+              echo "" >> /tmp/pr-comment.md
+              echo "🔗 [元の投稿を見る]($TWEET_URL)" >> /tmp/pr-comment.md
+            fi
+          fi
+
+          # 最後のメッセージを追加
+          cat << 'EOF' >> /tmp/pr-comment.md
+
+          ---
+
+          *PR作成お疲れ様です！*
+          EOF
+
+          # PRにコメントを投稿
+          gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --body-file /tmp/pr-comment.md
+
+          echo "✅ ランダム画像のコメントを投稿しました"
