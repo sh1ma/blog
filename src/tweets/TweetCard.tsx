@@ -29,7 +29,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
 
   return (
     <article className="flex gap-3 px-4 py-3">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <div className="relative size-10">
           <Image
             src="/anon-icon-200x200.webp"
