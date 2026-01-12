@@ -13,7 +13,7 @@
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:e2e": "playwright test --ignore-snapshots --grep-invert 'Visual Regression'",
@@ -51,7 +51,6 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@next/bundle-analyzer": "15.5.9",
     "@next/eslint-plugin-next": "^15.5.9",
