@@ -24,7 +24,7 @@ export default defineConfig([
   },
   js.configs.recommended,
   ...compat.config({
-    extends: ["next/typescript", "next/core-web-vitals", "prettier"],
+    extends: ["next/core-web-vitals", "next/typescript", "prettier"],
   }),
   ...tailwindcss.configs["flat/recommended"],
   {
