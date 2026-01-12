@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Calendar, Clock, ThumbsUp, ImageOff } from "lucide-react"
+import { Calendar, Clock, Heart, ImageOff } from "lucide-react"
 import { Tag } from "../Tag/Tag"
 
 type ArticleCardProps = {
@@ -77,14 +77,12 @@ export const ArticleCard = ({
             <Clock size={16} />
             <span>{readingTime}分</span>
           </span>
+          <span className="size-1 rounded-full bg-gray-300" />
+          <span className="flex items-center gap-1">
+            <Heart size={16} />
+            <span>{likes}</span>
+          </span>
         </div>
-      </div>
-
-      <div className="shrink-0">
-        <button className="flex items-center gap-1.5 text-text-muted transition-colors hover:text-red-500">
-          <ThumbsUp size={20} />
-          <span className="text-sm font-medium">{likes}</span>
-        </button>
       </div>
     </article>
   )

@@ -29,9 +29,9 @@ export const BlogHeader = () => {
             <div className="bg-brand-primary/10 flex size-10 items-center justify-center rounded-lg text-brand-primary">
               <PenLine className="text-3xl" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight text-text-primary">
+            <div className="text-xl font-bold tracking-tight text-text-primary">
               blog.<span className="text-brand-primary">sh1ma.dev</span>
-            </h1>
+            </div>
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

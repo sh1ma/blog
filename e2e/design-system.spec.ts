@@ -65,7 +65,7 @@ test.describe("デザインシステム - ライトテーマ", () => {
 
   test("ヘッダーロゴの色が正しく設定されている", async ({ page }) => {
     const headerLogoColor = await page.evaluate(() => {
-      const logo = document.querySelector("header h1")
+      const logo = document.querySelector('header a[href="/"] div.text-xl')
       if (!logo) return null
       return window.getComputedStyle(logo).color
     })
