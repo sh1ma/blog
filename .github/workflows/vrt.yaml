@@ -83,13 +83,13 @@ jobs:
       - name: Download baseline snapshots from R2
         if: steps.check-update.outputs.update_snapshots != 'true'
         run: |
-          mkdir -p e2e/__snapshots__/vrt.spec.ts-snapshots
+          mkdir -p e2e/vrt.spec.ts-snapshots
           # -linuxサフィックス付きファイルを試し、なければサフィックスなしをダウンロード
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium-linux.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium-linux.png --file e2e/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
+            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
             echo "Baseline home-page not found"
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium-linux.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/__snapshots__/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
+          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium-linux.png --file e2e/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
+            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
             echo "Baseline article-page not found"
 
       - name: Run VRT tests
@@ -121,9 +121,9 @@ jobs:
         if: steps.check-update.outputs.update_snapshots == 'true'
         run: |
           PR_NUM=${{ github.event.pull_request.number || 'manual' }}
-          if [ -d "e2e/__snapshots__/vrt.spec.ts-snapshots" ]; then
+          if [ -d "e2e/vrt.spec.ts-snapshots" ]; then
             # スナップショットをR2にアップロード
-            find e2e/__snapshots__/vrt.spec.ts-snapshots -type f -name "*.png" | while read file; do
+            find e2e/vrt.spec.ts-snapshots -type f -name "*.png" | while read file; do
               filename=$(basename "$file")
               pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/$filename --file "$file" --remote
             done
