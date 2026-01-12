@@ -1,0 +1,77 @@
+name: Random Image Comment
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  comment-random-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch random image and comment on PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # APIからランダム画像を取得
+          API_URL="https://kotonoha.sh1ma.dev/api/photos/random?userId=google-oauth2|108347409698494459380"
+
+          echo "Fetching random image from: $API_URL"
+          RESPONSE=$(curl -s "$API_URL")
+
+          # レスポンスを確認
+          echo "API Response: $RESPONSE"
+
+          # okフィールドをチェック
+          OK=$(echo "$RESPONSE" | jq -r '.ok')
+
+          if [ "$OK" != "true" ]; then
+            ERROR=$(echo "$RESPONSE" | jq -r '.error // "Unknown error"')
+            echo "::error::API error: $ERROR"
+            exit 1
+          fi
+
+          # 画像URLと関連情報を取得
+          IMAGE_URL=$(echo "$RESPONSE" | jq -r '.photo.imageUrl')
+          TWEET_URL=$(echo "$RESPONSE" | jq -r '.photo.tweetUrl // empty')
+          TWEET_AUTHOR=$(echo "$RESPONSE" | jq -r '.photo.tweetAuthorScreenName // empty')
+
+          if [ -z "$IMAGE_URL" ] || [ "$IMAGE_URL" = "null" ]; then
+            echo "::error::画像URLを取得できませんでした"
+            exit 1
+          fi
+
+          echo "Image URL: $IMAGE_URL"
+          echo "Tweet URL: $TWEET_URL"
+          echo "Tweet Author: $TWEET_AUTHOR"
+
+          # PRにコメントを投稿
+          COMMENT="## 🎨 今日のランダム画像
+
+![Random Image]($IMAGE_URL)"
+
+          # ツイート情報があれば追加
+          if [ -n "$TWEET_URL" ] && [ "$TWEET_URL" != "null" ]; then
+            COMMENT="$COMMENT
+
+---"
+            if [ -n "$TWEET_AUTHOR" ] && [ "$TWEET_AUTHOR" != "null" ]; then
+              COMMENT="$COMMENT
+
+📸 Photo by [@$TWEET_AUTHOR](https://twitter.com/$TWEET_AUTHOR)
+🔗 [元の投稿を見る]($TWEET_URL)"
+            else
+              COMMENT="$COMMENT
+
+🔗 [元の投稿を見る]($TWEET_URL)"
+            fi
+          fi
+
+          COMMENT="$COMMENT
+
+---
+
+*PR作成お疲れ様です！*"
+
+          echo "$COMMENT" | gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --body-file -
+
+          echo "✅ ランダム画像のコメントを投稿しました"
