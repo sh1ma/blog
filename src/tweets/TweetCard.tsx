@@ -28,8 +28,8 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
   const viewModel = tweetToViewModel(tweet)
 
   return (
-    <article className="grid grid-cols-[auto_1fr] gap-3 px-4 py-3">
-      <div className="flex items-start">
+    <article className="flex gap-3 px-4 py-3">
+      <div className="flex-shrink-0">
         <div className="relative size-10">
           <Image
             src="/anon-icon-200x200.webp"
@@ -40,7 +40,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
           />
         </div>
       </div>
-      <div className="flex min-w-0 flex-col gap-0.5">
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-baseline gap-1 overflow-hidden">
           <span className="truncate font-semibold text-text-primary">
             {viewModel.user.name}

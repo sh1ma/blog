@@ -57,8 +57,8 @@ test.describe("Tweetsページ", () => {
     // 最初のツイートを取得
     const firstTweet = page.locator("article").first()
 
-    // grid-cols-[auto_1fr]が適用されている
-    await expect(firstTweet).toHaveClass(/grid-cols-\[auto_1fr\]/)
+    // flexレイアウトが適用されている
+    await expect(firstTweet).toHaveClass(/flex/)
 
     // アイコンエリアが存在
     const iconArea = firstTweet.locator("div").first()
@@ -136,5 +136,38 @@ test.describe("Tweetsページ", () => {
     const className = await article.getAttribute("class")
     expect(className).not.toContain("sm:px-6")
     expect(className).not.toContain("sm:py-8")
+  })
+
+  test("Tailwindのスタイルが実際にCSSとして適用されている", async ({
+    page,
+  }) => {
+    const article = page.locator("article").first()
+
+    // 実際のCSSプロパティを取得
+    const styles = await article.evaluate((el) => {
+      const computed = window.getComputedStyle(el)
+      return {
+        paddingTop: computed.paddingTop,
+        paddingBottom: computed.paddingBottom,
+        paddingLeft: computed.paddingLeft,
+        paddingRight: computed.paddingRight,
+        display: computed.display,
+        gap: computed.gap,
+      }
+    })
+
+    // py-3（12px）が適用されている
+    expect(styles.paddingTop).toBe("12px")
+    expect(styles.paddingBottom).toBe("12px")
+
+    // px-4（16px）が適用されている
+    expect(styles.paddingLeft).toBe("16px")
+    expect(styles.paddingRight).toBe("16px")
+
+    // flexレイアウトが適用されている
+    expect(styles.display).toBe("flex")
+
+    // gap-3（12px）が適用されている
+    expect(styles.gap).toBe("12px")
   })
 })
