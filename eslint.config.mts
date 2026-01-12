@@ -23,6 +23,7 @@ export default defineConfig([
       "contentlayer/**",
       "next-env.d.ts",
       "cloudflare-env.d.ts",
+      "worktrees/**",
     ],
   },
   js.configs.recommended,

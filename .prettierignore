@@ -6,3 +6,4 @@ node_modules
 .github
 CLAUDE.md
 cloudflare-env.d.ts
+worktrees
