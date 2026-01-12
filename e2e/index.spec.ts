@@ -68,8 +68,9 @@ test.describe("トップページ", () => {
     // 記事タイトルを取得
     const title = await firstArticle.locator("h3").textContent()
 
-    // 記事のタイトルリンクをクリック
-    await firstArticle.locator("h3").click()
+    // カード全体（説明文など、以前はクリック不可能だった部分）をクリック
+    // カード要素自体をクリックすることで、カード全体がクリック可能になったことを確認
+    await firstArticle.click()
 
     // 記事詳細ページに遷移することを確認
     await expect(page).toHaveURL(/\/articles\/.+/)
