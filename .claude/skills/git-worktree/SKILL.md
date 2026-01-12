@@ -56,11 +56,14 @@ git worktree add worktrees/<branch-name> -b <type>/<short-description>
 # 3. Claude設定のシンボリックリンクを作成（絶対パスを使用）
 # メインリポジトリのルートディレクトリを取得
 MAIN_REPO=$(git worktree list --porcelain | grep -m 1 "worktree" | cut -d' ' -f2)
+# 既存のsettings.local.jsonを削除してからシンボリックリンクを作成
+rm -f worktrees/<branch-name>/.claude/settings.local.json
 ln -s "${MAIN_REPO}/.claude/settings.local.json" worktrees/<branch-name>/.claude/settings.local.json
 
 # 例: feat/add-dark-mode ブランチとworktreeを作成
 git worktree add worktrees/add-dark-mode -b feat/add-dark-mode
 MAIN_REPO=$(git worktree list --porcelain | grep -m 1 "worktree" | cut -d' ' -f2)
+rm -f worktrees/add-dark-mode/.claude/settings.local.json
 ln -s "${MAIN_REPO}/.claude/settings.local.json" worktrees/add-dark-mode/.claude/settings.local.json
 ```
 
@@ -92,7 +95,7 @@ git worktree add worktrees/<worktree-name> <existing-branch>
 2. 適切なブランチ名を決定する（type/short-description形式）
 3. worktreeを作成する
 4. メインリポジトリのパスを取得する（`git worktree list --porcelain`を使用）
-5. Claude設定のシンボリックリンクを絶対パスで作成する（settings.local.jsonをメインリポジトリから参照）
+5. 既存のsettings.local.jsonを削除してから、Claude設定のシンボリックリンクを絶対パスで作成する（settings.local.jsonをメインリポジトリから参照）
 6. 作成したworktreeのパスを報告する
 7. 作業完了後、worktreeの削除を案内する
 
@@ -116,3 +119,4 @@ blog/
 - マージ後はブランチも削除すること
 - `.claude/settings.local.json` はシンボリックリンク（絶対パス）でメインリポジトリと共有される（MCP/コマンド/スキルの許可設定が全worktreeで同期される）
 - シンボリックリンクは必ず絶対パスで作成すること（相対パスでは正しく動作しない場合がある）
+- `git worktree add` 実行時にGitが自動的に `.claude/settings.local.json` をコピーするため、シンボリックリンク作成前に既存ファイルを削除する必要がある
