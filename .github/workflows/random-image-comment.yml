@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   comment-random-image:
     runs-on: ubuntu-latest
@@ -11,13 +15,19 @@ jobs:
       - name: Fetch random image and comment on PR
         env:
           GH_TOKEN: ${{ github.token }}
+          # ランダム画像API用のユーザーID（リポジトリ変数として設定推奨）
+          RANDOM_IMAGE_USER_ID: ${{ vars.RANDOM_IMAGE_USER_ID || 'google-oauth2%7C108347409698494459380' }}
         run: |
           # APIからランダム画像を取得
-          # パイプ文字をURLエンコード（%7C）
-          API_URL="https://kotonoha.sh1ma.dev/api/photos/random?userId=google-oauth2%7C108347409698494459380"
+          # 注: jqコマンドはubuntu-latestランナーに標準装備されています
+          API_URL="https://kotonoha.sh1ma.dev/api/photos/random?userId=${RANDOM_IMAGE_USER_ID}"
 
           echo "Fetching random image from: $API_URL"
-          RESPONSE=$(curl -s "$API_URL")
+          # -f フラグでHTTPエラー（4xx, 5xx）を検出
+          if ! RESPONSE=$(curl -fs "$API_URL"); then
+            echo "::error::Failed to fetch image from API (HTTP error or network failure)"
+            exit 1
+          fi
 
           # レスポンスを確認
           echo "API Response: $RESPONSE"
@@ -63,7 +73,7 @@ jobs:
           EOF
             if [ -n "$TWEET_AUTHOR" ] && [ "$TWEET_AUTHOR" != "null" ]; then
               echo "" >> /tmp/pr-comment.md
-              echo "📸 Photo by [@$TWEET_AUTHOR](https://twitter.com/$TWEET_AUTHOR)" >> /tmp/pr-comment.md
+              echo "📸 Photo by [@$TWEET_AUTHOR](https://x.com/$TWEET_AUTHOR)" >> /tmp/pr-comment.md
               echo "🔗 [元の投稿を見る]($TWEET_URL)" >> /tmp/pr-comment.md
             else
               echo "" >> /tmp/pr-comment.md
