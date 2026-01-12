@@ -11,6 +11,8 @@ Git worktreeを使って並列開発を支援するスキル。
 
 **作業を開始する前に、必ずこのスキルを使ってworktreeとブランチを作成すること。**
 
+**worktree作成後は、必ず `.claude/settings.local.json` のシンボリックリンクを作成すること。** この手順は必須である。スキップしてはならない。シンボリックリンクを作成することで、MCP/コマンド/スキルの許可設定が全worktree間で確実に共有される。
+
 ## ブランチ命名規則
 
 Conventional Commitに準じた形式でブランチ名を付ける:
@@ -53,7 +55,8 @@ ls worktrees 2>/dev/null || mkdir -p worktrees
 # 2. 新しいブランチとworktreeを同時に作成
 git worktree add worktrees/<branch-name> -b <type>/<short-description>
 
-# 3. Claude設定のシンボリックリンクを作成（絶対パスを使用）
+# 3. 【必須】Claude設定のシンボリックリンクを作成（絶対パスを使用）
+#    この手順は必ず実行すること。スキップ不可。
 # メインリポジトリのルートディレクトリを取得
 MAIN_REPO=$(git worktree list --porcelain | grep -m 1 "worktree" | cut -d' ' -f2)
 # 既存のsettings.local.jsonを削除してからシンボリックリンクを作成
@@ -62,6 +65,7 @@ ln -s "${MAIN_REPO}/.claude/settings.local.json" worktrees/<branch-name>/.claude
 
 # 例: feat/add-dark-mode ブランチとworktreeを作成
 git worktree add worktrees/add-dark-mode -b feat/add-dark-mode
+# 【必須】シンボリックリンク作成（この手順を忘れないこと）
 MAIN_REPO=$(git worktree list --porcelain | grep -m 1 "worktree" | cut -d' ' -f2)
 rm -f worktrees/add-dark-mode/.claude/settings.local.json
 ln -s "${MAIN_REPO}/.claude/settings.local.json" worktrees/add-dark-mode/.claude/settings.local.json
@@ -95,7 +99,7 @@ git worktree add worktrees/<worktree-name> <existing-branch>
 2. 適切なブランチ名を決定する（type/short-description形式）
 3. worktreeを作成する
 4. メインリポジトリのパスを取得する（`git worktree list --porcelain`を使用）
-5. 既存のsettings.local.jsonを削除してから、Claude設定のシンボリックリンクを絶対パスで作成する（settings.local.jsonをメインリポジトリから参照）
+5. **【必須】既存のsettings.local.jsonを削除してから、Claude設定のシンボリックリンクを絶対パスで作成する（settings.local.jsonをメインリポジトリから参照）。この手順は必ず実行すること。**
 6. 作成したworktreeのパスを報告する
 7. 作業完了後、worktreeの削除を案内する
 
