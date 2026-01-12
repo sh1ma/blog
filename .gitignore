@@ -55,3 +55,7 @@ worktrees
 
 # assets for development
 dev-assets
+
+# playwright snapshots (darwin/local only)
+*-darwin.png
+*-webkit.png
