@@ -48,7 +48,7 @@ pnpm lint
 pnpm format:check
 ```
 
-問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは `pnpm next lint --fix` で自動修正する。自動修正できないエラーは手動で修正する。
+問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは `pnpm lint --fix` で自動修正する。自動修正できないエラーは手動で修正する。
 
 ## PR作成時のルール
 
