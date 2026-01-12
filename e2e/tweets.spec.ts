@@ -9,11 +9,11 @@ test.describe("Tweetsページ", () => {
     page,
   }) => {
     // ツイート要素を取得
-    const tweetContent = page.locator("article pre").first()
+    const tweetContent = page.locator("article p").first()
     await expect(tweetContent).toBeVisible()
 
     // テキストが折り返されることを確認
-    // preタグにwhitespace-pre-wrapクラスが適用されている
+    // pタグにwhitespace-pre-wrapクラスが適用されている
     await expect(tweetContent).toHaveClass(/whitespace-pre-wrap/)
 
     // テキストが親要素からはみ出していないことを確認
@@ -87,5 +87,54 @@ test.describe("Tweetsページ", () => {
     const yDiff2 = Math.abs(screenNameBox.y - timeBox.y)
     expect(yDiff1).toBeLessThan(10)
     expect(yDiff2).toBeLessThan(10)
+  })
+
+  test("本文がカード幅を超えてはみ出していない", async ({ page }) => {
+    const articles = page.locator("article")
+    const count = await articles.count()
+
+    for (let i = 0; i < count; i++) {
+      const article = articles.nth(i)
+      const articleBox = await article.boundingBox()
+      const content = article.locator("p")
+      const contentBox = await content.boundingBox()
+
+      if (articleBox && contentBox) {
+        expect(contentBox.x + contentBox.width).toBeLessThanOrEqual(
+          articleBox.x + articleBox.width,
+        )
+      }
+    }
+  })
+
+  test("ヘッダー要素が折り返されていない", async ({ page }) => {
+    const firstTweet = page.locator("article").first()
+    const userName = firstTweet.locator("span.font-semibold").first()
+    const screenName = firstTweet.locator("span.text-text-muted").first()
+    const time = firstTweet.locator("time")
+
+    const userNameBox = await userName.boundingBox()
+    const screenNameBox = await screenName.boundingBox()
+    const timeBox = await time.boundingBox()
+
+    if (userNameBox && screenNameBox && timeBox) {
+      const avgY = (userNameBox.y + screenNameBox.y + timeBox.y) / 3
+      expect(Math.abs(userNameBox.y - avgY)).toBeLessThan(5)
+      expect(Math.abs(screenNameBox.y - avgY)).toBeLessThan(5)
+      expect(Math.abs(timeBox.y - avgY)).toBeLessThan(5)
+    }
+  })
+
+  test("パディングクラスが適切に設定されている", async ({ page }) => {
+    const article = page.locator("article").first()
+
+    // Tailwindのpy-3クラスとpx-4クラスが適用されていることを確認
+    await expect(article).toHaveClass(/py-3/)
+    await expect(article).toHaveClass(/px-4/)
+
+    // レスポンシブクラス（sm:）が削除されていることを確認
+    const className = await article.getAttribute("class")
+    expect(className).not.toContain("sm:px-6")
+    expect(className).not.toContain("sm:py-8")
   })
 })

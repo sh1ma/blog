@@ -28,7 +28,7 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
   const viewModel = tweetToViewModel(tweet)
 
   return (
-    <article className="grid grid-cols-[auto_1fr] gap-3 px-4 py-6 sm:px-6 sm:py-8">
+    <article className="grid grid-cols-[auto_1fr] gap-3 px-4 py-3">
       <div className="flex items-start">
         <div className="relative size-10">
           <Image
@@ -40,24 +40,26 @@ export const TweetCard = ({ tweet }: { tweet: Tweet }) => {
           />
         </div>
       </div>
-      <div className="flex min-w-0 flex-col gap-3">
-        <div className="flex flex-wrap items-baseline gap-1">
-          <span className="font-semibold text-text-primary">
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <div className="flex items-baseline gap-1 overflow-hidden">
+          <span className="truncate font-semibold text-text-primary">
             {viewModel.user.name}
           </span>
-          <span className="text-text-muted">@{viewModel.user.screenName}</span>
-          <span className="text-text-muted">·</span>
+          <span className="shrink-0 text-text-muted">
+            @{viewModel.user.screenName}
+          </span>
+          <span className="shrink-0 text-text-muted">·</span>
           <time
-            className="text-text-muted"
+            className="shrink-0 text-text-muted"
             dateTime={viewModel.model.createdAt.toString()}
           >
             <span className="text-sm">{viewModel.createdAt}</span>
           </time>
         </div>
-        <div className="min-w-0">
-          <pre className="whitespace-pre-wrap break-words font-sans text-text-primary">
+        <div className="min-w-0 overflow-hidden">
+          <p className="whitespace-pre-wrap break-words text-text-primary">
             {viewModel.content}
-          </pre>
+          </p>
         </div>
       </div>
     </article>
