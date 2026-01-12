@@ -39,4 +39,17 @@ test.describe("Visual Regression Tests", () => {
       })
     })
   })
+
+  test.describe("Tweetsページ", () => {
+    test("ツイート一覧フルページスクリーンショット", async ({ page }) => {
+      await page.goto("/tweets")
+      await page.waitForLoadState("networkidle")
+      await page.locator("article").first().waitFor({ state: "visible" })
+
+      await expect(page).toHaveScreenshot("tweets-page.png", {
+        fullPage: true,
+        animations: "disabled",
+      })
+    })
+  })
 })
