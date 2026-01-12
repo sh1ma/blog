@@ -12,23 +12,14 @@ const compat = new FlatCompat({
 export default defineConfig([
   {
     ignores: [
-      ".next",
       ".next/**",
-      ".open-next",
       ".open-next/**",
-      ".wrangler",
       ".wrangler/**",
-      "node_modules",
       "node_modules/**",
-      "out",
       "out/**",
-      "public",
       "public/**",
-      ".contentlayer",
       ".contentlayer/**",
-      "drizzle",
       "drizzle/**",
-      "contentlayer",
       "contentlayer/**",
       "next-env.d.ts",
       "cloudflare-env.d.ts",
