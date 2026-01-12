@@ -40,6 +40,7 @@ Issue内容に基づいて、上記のラベルから1つ以上選択する。
 gh issue create \
   --title "タイトル" \
   --label "ラベル" \
+  --assignee sh1ma \
   --template "default.md"
 ```
 
@@ -52,7 +53,7 @@ gh issue create \
 ### 複数ラベルを付ける場合
 
 ```bash
-gh issue create --title "タイトル" --label "feature" --label "AI" --template "default.md"
+gh issue create --title "タイトル" --label "feature" --label "AI" --assignee sh1ma --template "default.md"
 ```
 
 ## コマンド概要
@@ -153,8 +154,9 @@ gh issue develop 123 --list       # 関連ブランチ一覧
 2. Issue作成の場合、内容を確認してラベルを決定する
 3. **`.github/ISSUE_TEMPLATE/default.md` のテンプレートを使用してIssueを作成する**
 4. **ラベルを必ず付けてIssueを作成する**
-5. その他のコマンド（一覧表示、編集など）の場合、適切なghコマンドを実行
-6. 結果を日本語で報告
+5. **assigneeをsh1maに設定する**
+6. その他のコマンド（一覧表示、編集など）の場合、適切なghコマンドを実行
+7. 結果を日本語で報告
 
 ## 注意事項
 
@@ -164,3 +166,4 @@ gh issue develop 123 --list       # 関連ブランチ一覧
 - **他リポジトリへの操作は絶対に行わない**
 - **Issue作成時はラベルを必ず付けること**
 - **Issue作成時はテンプレートを必ず使用すること**
+- **Issue作成時はassigneeをsh1maに設定すること**
