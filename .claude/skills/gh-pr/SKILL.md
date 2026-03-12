@@ -1,16 +1,13 @@
 ---
 name: gh-pr
-description: GitHubのPR（プルリクエスト）を管理する。PR作成、一覧表示、マージ、レビュー、チェックアウト、コメント確認時に使用。「PRを作りたい」「マージして」「レビューして」「コメントを確認」などのキーワードで発動。
+description: GitHubのPRを作成・管理する。「PR作成」「マージ」「レビュー確認」「CIチェック」「レビューコメント確認」「PR一覧」などのキーワードで発動。
 ---
 
 # GitHub PR管理
 
-GitHubのプルリクエストを管理するためのスキル。
-
 ## 重要な制約
 
-**このスキルは `sh1ma/blog` リポジトリのみで使用すること。**
-他のリポジトリの操作は禁止。`--repo` フラグで他リポジトリを指定してはならない。
+**`sh1ma/blog` リポジトリのみ対象。** `--repo` フラグで他リポジトリを指定してはならない。
 
 ## 利用可能なラベル
 
@@ -26,210 +23,47 @@ PRには必ず以下のいずれかのラベルを付けること:
 | `AI`            | AI関連                       |
 | `test`          | テスト関連                   |
 
-## PR作成手順（推奨フロー）
+## スクリプト
 
-### 1. 変更内容の確認
-
-```bash
-# mainからの差分コミットを確認
-git log main..HEAD --oneline
-
-# 変更ファイルを確認
-git diff main..HEAD --stat
-```
-
-### 2. 適切なラベルを選択
-
-変更内容に基づいて、上記のラベルから1つ以上選択する。
-
-### 3. PRを作成
-
-**重要**: `.github/pull_request_template.md` のテンプレートを必ず遵守すること。
+### PR作成
 
 ```bash
-gh pr create \
-  --title "タイトル" \
-  --label "ラベル" \
-  --assignee sh1ma \
-  --body "$(cat <<'EOF'
-## 概要
-
-<!-- このPRで何を変更したか簡潔に説明 -->
-
-## 変更内容
-
-- 変更点1
-- 変更点2
-
-## 関連Issue
-
-<!-- closes #123 -->
-
-## テスト項目
-
-- [ ] テスト項目1
-- [ ] テスト項目2
-
-## VRT設定
-
-<!-- UIに意図的な変更がある場合のみチェックしてください -->
-
-- [ ] スナップショットを更新する（UI変更を意図的に行った場合にチェック）
-
-## スクリーンショット（任意）
-
-<!-- UIの変更がある場合はスクリーンショットを貼ってください -->
-
-## 備考
-
-<!-- レビュアーに伝えたいことがあれば記載してください -->
-EOF
-)"
+.claude/skills/gh-pr/scripts/create-pr.sh --title <title> --label <label> [--label ...] --body <body>
 ```
 
-### 複数ラベルを付ける場合
+- ラベルバリデーション付き（上記ラベルのみ許可）
+- `--assignee sh1ma` 自動付与
+- **bodyは `.github/pull_request_template.md` に沿って構成すること**（概要・変更内容・関連Issue・テスト項目・VRT設定・スクリーンショット・備考）
+
+### レビューコメント取得
 
 ```bash
-gh pr create --title "タイトル" --label "feature" --label "AI" --assignee sh1ma --body "..."
+.claude/skills/gh-pr/scripts/fetch-review-comments.sh <pr_number>
 ```
 
-## コマンド概要
+インラインレビューコメントとレビュー状態を整形表示。
+
+### CIチェック確認
 
 ```bash
-gh pr <command> [flags]
+.claude/skills/gh-pr/scripts/check-pr-status.sh [<pr_number>]
 ```
 
-## 主要コマンド
+省略時は現在のブランチのPR。
 
-### PR一覧表示
+## Visual Regression Test (VRT)
 
-```bash
-gh pr list                    # 現在のリポジトリのPR一覧
-gh pr list --state all        # すべてのPR（open/closed/merged）
-gh pr list --author @me       # 自分が作成したPR
-gh pr list --assignee @me     # 自分がアサインされたPR
-gh pr list --label "bug"      # ラベルでフィルタ
-```
+PRを作成すると自動でVRTが実行される。
 
-### PR表示・チェックアウト
-
-```bash
-gh pr view                    # 現在のブランチのPRを表示
-gh pr view 123                # PR #123を表示
-gh pr view --web              # ブラウザで開く
-gh pr view --comments         # PRのコメントを表示（会話コメントのみ）
-gh pr checkout 123            # PR #123をチェックアウト
-gh pr diff 123                # PR #123の差分を表示
-```
-
-### PRコメント表示
-
-PRのコメントを確認する方法は複数あります。
-
-#### 基本的なコメント表示
-
-```bash
-# 会話コメントを表示（gh pr viewのデフォルト出力に含まれる）
-gh pr view 123 --comments
-
-# JSONフォーマットで詳細情報を取得
-gh pr view 123 --json comments
-
-# すべてのコメント（インラインレビューコメント含む）をAPI経由で取得
-gh api repos/sh1ma/blog/pulls/123/comments
-```
-
-#### コメントの種類
-
-- **会話コメント（Issue comments）**: PR全体に対するコメント。`gh pr view --comments` で表示可能
-- **レビューコメント（Review comments）**: コードの特定行に対するインラインコメント。API経由で取得
-- **レビュー（Reviews）**: 承認/変更要求/コメント。`gh pr view --json reviews` で取得可能
-
-#### 実用例
-
-```bash
-# 現在のブランチのPRのコメントを確認
-gh pr view --comments
-
-# PR #123のすべてのインラインコメントを確認
-gh api repos/sh1ma/blog/pulls/123/comments | jq -r '.[] | "\(.path):\(.line) - \(.user.login): \(.body)"'
-
-# PR #123のレビュー状況を確認
-gh pr view 123 --json reviews | jq -r '.reviews[] | "\(.author.login): \(.state) - \(.body)"'
-```
-
-### PRマージ・クローズ
-
-```bash
-gh pr merge                   # 現在のブランチのPRをマージ
-gh pr merge 123               # PR #123をマージ
-gh pr merge --squash          # スカッシュマージ
-gh pr merge --rebase          # リベースマージ
-gh pr merge --delete-branch   # マージ後にブランチ削除
-gh pr close 123               # PR #123をクローズ
-gh pr reopen 123              # PR #123を再オープン
-```
-
-### PRレビュー
-
-```bash
-gh pr review                           # 対話形式でレビュー
-gh pr review 123 --approve             # 承認
-gh pr review 123 --request-changes -b "修正必要"
-gh pr review 123 --comment -b "コメント"
-gh pr checks 123                       # CIステータス確認
-```
-
-### PR編集
-
-```bash
-gh pr edit 123 --title "新タイトル"
-gh pr edit 123 --body "新本文"
-gh pr edit 123 --add-label "bug"
-gh pr edit 123 --add-reviewer user1
-gh pr ready 123                        # ドラフト解除
-```
-
-## Visual Regression Test (VRT) について
-
-PRを作成すると、自動でVRTが実行されます。
-
-### VRTの動作
-
-1. R2からベースライン（mainブランチの最新スナップショット）を取得
-2. PRのコードでスクリーンショットを撮影
-3. ベースラインと比較して差分を検出
-4. PRにコメントで結果を通知（レポートURLと差分画像）
-
-### UIに意図的な変更を加えた場合
-
-1. PRテンプレートの「VRT設定」セクションで「スナップショットを更新する」にチェック
-2. VRTワークフローが再実行され、新しいスナップショットがR2にアップロード
-3. マージ後、自動でベースラインが更新される
-
-### VRTが失敗した場合
-
-- **意図しない変更**: コードを修正してVRTを再実行
-- **意図した変更**: 「スナップショットを更新する」にチェックして再実行
-
-### ラベル
-
-VRTに関連するPRには `test` ラベルも追加することを推奨します。
+- R2からベースライン取得 → スクリーンショット撮影 → 差分検出 → PRにコメント通知
+- **UIに意図的な変更がある場合**: PRテンプレートの「VRT設定」で「スナップショットを更新する」にチェック
+- **意図しない差分**: コードを修正してVRT再実行
+- VRT関連のPRには `test` ラベルも推奨
 
 ## 実行手順
 
-1. ユーザーの要求を理解する
-2. PR作成の場合、変更内容を確認してラベルを決定する
-3. **`.github/pull_request_template.md` のテンプレートを遵守してPRを作成する**
-4. **ラベルを必ず付けてPRを作成する**
-5. **assigneeを `sh1ma` に設定してPRを作成する**
-6. PRコメント確認の場合、適切なコマンド（`gh pr view --comments`、`gh api`など）を使用する
-7. 結果を日本語で報告
-
-## 注意事項
-
-- PRは番号、URL、またはブランチ名で指定可能
-- 認証が必要な場合は `gh auth login` を案内
-- **他リポジトリへの操作は絶対に行わない**
-- **PR作成時はラベルを必ず付けること（CIでチェックされる）**
-- **PR作成時はassigneeを `sh1ma` に必ず設定すること**
+1. PR作成時は `create-pr.sh` を使用し、テンプレートに沿ったbodyを渡す
+2. レビューコメント確認は `fetch-review-comments.sh` を使用
+3. CIチェック確認は `check-pr-status.sh` を使用
+4. 一覧・マージ・編集などは `gh pr` コマンドを直接使用
+5. 結果を日本語で報告
