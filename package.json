@@ -23,7 +23,7 @@
     "test:e2e:server": "pnpm wrangler d1 migrations apply blog-iine-counter --local && pnpm wrangler d1 execute blog-iine-counter --local --file=./e2e/fixtures/seed.sql && pnpm preview"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.7.6",
+    "@hono/zod-validator": "^0.8.0",
     "@opennextjs/cloudflare": "^1.14.8",
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "10.4.23",
