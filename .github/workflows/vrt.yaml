@@ -84,13 +84,15 @@ jobs:
         if: steps.check-update.outputs.update_snapshots != 'true'
         run: |
           mkdir -p e2e/vrt.spec.ts-snapshots
-          # -linuxサフィックス付きファイルを試し、なければサフィックスなしをダウンロード
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium-linux.png --file e2e/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/home-page-chromium.png --file e2e/vrt.spec.ts-snapshots/home-page-chromium-linux.png --remote || \
-            echo "Baseline home-page not found"
-          pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium-linux.png --file e2e/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/article-page-chromium.png --file e2e/vrt.spec.ts-snapshots/article-page-chromium-linux.png --remote || \
-            echo "Baseline article-page not found"
+          # vrt.spec.ts の toHaveScreenshot() からスナップショット名を導出（追加漏れ防止）
+          SNAPSHOTS=$(grep -oE 'toHaveScreenshot\("[^"]+\.png"' e2e/vrt.spec.ts | sed -E 's/.*toHaveScreenshot\("([^"]+)\.png"/\1/')
+          for name in $SNAPSHOTS; do
+            file="${name}-chromium-linux.png"
+            # -linuxサフィックス付きファイルを試し、なければサフィックスなしをダウンロード
+            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/${file} --file e2e/vrt.spec.ts-snapshots/${file} --remote || \
+              pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/baselines/${name}-chromium.png --file e2e/vrt.spec.ts-snapshots/${file} --remote || \
+              echo "Baseline ${name} not found"
+          done
 
       - name: Run VRT tests
         id: vrt
