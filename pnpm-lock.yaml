@@ -28,8 +28,8 @@ importers:
         specifier: ^0.5.8
         version: 0.5.8(esbuild@0.27.3)
       dayjs:
-        specifier: ^1.11.19
-        version: 1.11.19
+        specifier: ^1.11.21
+        version: 1.11.21
       dayjs-plugin-utc:
         specifier: ^0.1.2
         version: 0.1.2
@@ -2872,8 +2872,8 @@ packages:
   dayjs-plugin-utc@0.1.2:
     resolution: {integrity: sha512-ExERH5o3oo6jFOdkvMP3gytTCQ9Ksi5PtylclJWghr7k7m3o2U5QrwtdiJkOxLOH4ghr0EKhpqGefzGz1VvVJg==}
 
-  dayjs@1.11.19:
-    resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
+  dayjs@1.11.21:
+    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
 
   debounce@1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
@@ -8863,7 +8863,7 @@ snapshots:
 
   dayjs-plugin-utc@0.1.2: {}
 
-  dayjs@1.11.19: {}
+  dayjs@1.11.21: {}
 
   debounce@1.2.1: {}
 
