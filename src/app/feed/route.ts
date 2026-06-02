@@ -5,7 +5,7 @@ import { Feed } from "feed"
 export const GET = async () => {
   const feed = new Feed({
     title: "blog.sh1ma.dev",
-    feedLinks: "https://blog.sh1ma.dev/feed",
+    feedLinks: { rss: "https://blog.sh1ma.dev/feed" },
     link: "https://blog.sh1ma.dev",
     id: "https://blog.sh1ma.dev",
     copyright: `All rights reserved ${dayjs().format("YYYY")}, sh1ma`,
