@@ -37,8 +37,8 @@
     "next": "15.5.19",
     "next-contentlayer2": "^0.5.8",
     "postcss": "8.5.15",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-pretty-code": "^0.14.1",
     "rehype-slug": "^6.0.0",
@@ -57,7 +57,7 @@
     "@next/eslint-plugin-next": "^15.5.9",
     "@playwright/test": "^1.57.0",
     "@types/node": "^24.0.0",
-    "@types/react": "19.2.8",
+    "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
@@ -83,7 +83,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "19.2.8",
+      "@types/react": "19.2.16",
       "@types/react-dom": "19.2.3"
     },
     "onlyBuiltDependencies": [
