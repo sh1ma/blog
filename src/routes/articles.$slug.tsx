@@ -1,45 +1,31 @@
+import { createFileRoute, notFound } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { Calendar, Clock } from "lucide-react"
-import type { Metadata } from "next"
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import { TableOfContents } from "@/components/TableOfContents/TableOfContents"
 import { Tag } from "@/components/Tag/Tag"
 import { extractHeadings } from "@/utils/extractHeadings"
 
-interface Params {
-  params: Promise<{ slug: string }>
-}
+export const Route = createFileRoute("/articles/$slug")({
+  component: ArticlePage,
+  loader: ({ params }) => {
+    const post = allArticles.find((p) => p.id === params.slug)
+    if (!post) throw notFound()
+    return { post }
+  },
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [
+          { title: loaderData.post.title },
+          { name: "description", content: "ブログ記事" },
+        ]
+      : [{ title: "404" }],
+  }),
+})
 
-export const generateMetadata = async (props: Params): Promise<Metadata> => {
-  const params = await props.params
-  const { slug } = params
-  const post = allArticles.find((post) => post.id === slug)
-
-  if (!post) {
-    return {
-      title: "404",
-      metadataBase: new URL("https://blog.sh1ma.dev"),
-      description: "404",
-    }
-  }
-
-  return {
-    title: post.title,
-    metadataBase: new URL("https://blog.sh1ma.dev"),
-    description: "ブログ記事",
-  }
-}
-
-const ArticlePage = async (props: Params) => {
-  const params = await props.params
-  const { slug } = params
-  const post = allArticles.find((post) => post.id === slug)
-
-  if (!post) {
-    return <div>404</div>
-  }
-
+function ArticlePage() {
+  const { post } = Route.useLoaderData()
   const headings = extractHeadings(post.body.html)
 
   return (
@@ -78,5 +64,3 @@ const ArticlePage = async (props: Params) => {
     </article>
   )
 }
-
-export default ArticlePage

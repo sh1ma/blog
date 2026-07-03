@@ -3,31 +3,13 @@
   "name": "blog",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
   "vars": {
     "NODE_VERSION": "24.12.0",
   },
-  "assets": {
-    "binding": "ASSETS",
-    "directory": ".open-next/assets",
-  },
-  "r2_buckets": [
-    {
-      "binding": "CDN",
-      "bucket_name": "sh1madev-cdn",
-      "preview_bucket_name": "sh1madev-cdn-preview",
-    },
-    {
-      "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "blog-cache",
-      "preview_bucket_name": "blog-cache-preview",
-    },
-    {
-      "binding": "VRT",
-      "bucket_name": "blog-vrt",
-      "preview_bucket_name": "blog-vrt-preview",
-    },
-  ],
   "observability": {
     "enabled": true,
   },

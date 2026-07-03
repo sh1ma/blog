@@ -1,5 +1,4 @@
 import { Github, PenLine } from "lucide-react"
-import Link from "next/link"
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -22,7 +21,7 @@ export const Footer = () => {
         </div>
 
         <div className="flex gap-6">
-          <Link
+          <a
             href="https://github.com/sh1ma"
             target="_blank"
             rel="noopener noreferrer"
@@ -30,7 +29,7 @@ export const Footer = () => {
             aria-label="GitHub"
           >
             <Github className="size-5" />
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

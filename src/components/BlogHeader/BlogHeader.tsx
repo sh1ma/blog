@@ -1,17 +1,14 @@
-"use client"
-
+import { Link, useLocation } from "@tanstack/react-router"
 import { Menu, PenLine, Search } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 
 export const BlogHeader = () => {
-  const pathname = usePathname()
+  const pathname = useLocation({ select: (loc) => loc.pathname })
 
   const isActive = (path: string) => {
     if (path === "/") {
-      return pathname === "/" || pathname?.startsWith("/articles")
+      return pathname === "/" || pathname.startsWith("/articles")
     }
-    return pathname?.startsWith(path)
+    return pathname.startsWith(path)
   }
 
   const getLinkClassName = (path: string) => {
@@ -25,7 +22,7 @@ export const BlogHeader = () => {
     <div className="sticky top-4 z-50 mb-8 w-full px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <header className="bg-bg-surface/90 flex items-center justify-between gap-4 rounded-xl border border-gray-200/50 px-6 py-4 shadow-soft backdrop-blur-md transition-all duration-300">
-          <Link href="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="bg-brand-primary/10 flex size-10 items-center justify-center rounded-lg text-brand-primary">
               <PenLine className="text-3xl" />
             </div>
@@ -35,10 +32,10 @@ export const BlogHeader = () => {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <Link href="/" className={getLinkClassName("/")}>
+            <Link to="/" className={getLinkClassName("/")}>
               Articles
             </Link>
-            <Link href="/about" className={getLinkClassName("/about")}>
+            <Link to="/about" className={getLinkClassName("/about")}>
               About
             </Link>
           </nav>
@@ -54,11 +51,17 @@ export const BlogHeader = () => {
               />
             </div>
 
-            <button className="p-2 text-text-muted hover:text-brand-primary sm:hidden">
+            <button
+              type="button"
+              className="p-2 text-text-muted hover:text-brand-primary sm:hidden"
+            >
               <Search />
             </button>
 
-            <button className="p-2 text-text-muted hover:text-brand-primary md:hidden">
+            <button
+              type="button"
+              className="p-2 text-text-muted hover:text-brand-primary md:hidden"
+            >
               <Menu />
             </button>
           </div>

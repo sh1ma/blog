@@ -12,12 +12,11 @@
 /playwright/.cache/
 /.playwright-mcp/
 
-# next.js
-/.next/
-/out/
+# Vite build output
+/dist
 
-# production
-/build
+# generated route tree
+src/routeTree.gen.ts
 
 # misc
 .DS_Store
@@ -36,7 +35,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 
 .contentlayer

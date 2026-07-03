@@ -13,6 +13,7 @@
       "!**/.open-next",
       "!**/.contentlayer",
       "!**/.wrangler",
+      "!**/dist",
       "!**/dev-assets",
       "!**/worktrees",
       "!**/playwright-report",
@@ -20,6 +21,7 @@
       "!**/public",
       "!**/pnpm-lock.yaml",
       "!**/cloudflare-env.d.ts",
+      "!**/routeTree.gen.ts",
       "!**/*.md"
     ]
   },

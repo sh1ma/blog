@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@tanstack/react-router"
 
 type TagProps = {
   label: string
@@ -25,7 +25,7 @@ export const Tag = ({ label, href, size = "md" }: TagProps) => {
   if (href) {
     return (
       <Link
-        href={href}
+        to={href}
         className={`${baseClasses} hover:bg-brand-primary-light/30`}
       >
         {label}
