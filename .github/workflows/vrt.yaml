@@ -11,9 +11,13 @@ on:
       - "playwright.config.ts"
       - "package.json"
       - "pnpm-lock.yaml"
-      - "next.config.mjs"
+      - "index.html"
+      - "scripts/**"
+      - "vite.config.ts"
       - "contentlayer.config.ts"
       - "tailwind.config.ts"
+      - "postcss.config.cjs"
+      - "tsconfig*.json"
       - ".github/workflows/vrt.yaml"
   workflow_dispatch:
     inputs:
@@ -72,13 +76,13 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Setup Playwright
         uses: ./.github/actions/setup-playwright
 
-      - name: Build content
-        run: pnpm build:content
+      - name: Build
+        run: pnpm build
 
       - name: Download baseline snapshots from R2
         if: steps.check-update.outputs.update_snapshots != 'true'

@@ -10,10 +10,14 @@ on:
       - "playwright.config.ts"
       - "package.json"
       - "pnpm-lock.yaml"
-      - "next.config.mjs"
+      - "index.html"
+      - "scripts/**"
+      - "vite.config.ts"
       - "contentlayer.config.ts"
       - "tailwind.config.ts"
+      - "postcss.config.cjs"
       - "wrangler.jsonc"
+      - "tsconfig*.json"
       - ".github/workflows/e2e.yaml"
   workflow_dispatch:
 
@@ -38,13 +42,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Setup Playwright
         uses: ./.github/actions/setup-playwright
 
-      - name: Build content
-        run: pnpm build:content
+      - name: Build
+        run: pnpm build
 
       - name: Run E2E tests
         run: pnpm test:e2e
