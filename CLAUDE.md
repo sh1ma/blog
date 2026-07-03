@@ -4,15 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 重要
 
-常に日本語で説明してください。
+- 常に日本語で説明してください。
+- **依存追加は必ず `pnpm add` / `pnpm add -D` を使うこと**。`package.json` を直接編集して依存を書き込むのは禁止。バージョン指定は pnpm に解決させ、`pnpm-lock.yaml` と一貫させる。
 
-### ブランチ命名規則
+## ブランチ命名規則
 
-Conventional Commitに準じた形式:
-
-```
-<type>/<short-description>
-```
+Conventional Commit に準じた `<type>/<short-description>` 形式:
 
 | type       | 用途                         |
 | ---------- | ---------------------------- |
@@ -22,106 +19,106 @@ Conventional Commitに準じた形式:
 | `docs`     | ドキュメント変更             |
 | `chore`    | ビルド・設定・依存関係の変更 |
 
-例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
+例: `feat/add-dark-mode`, `fix/broken-link`, `refactor/api-structure`
 
-## コードの修正の仕方（CIなどはこの限りではない）
+## コード修正の進め方 (CI などは除く)
 
-- バグや不具合はまず再現するテストを書き、必ず一回はFailedすることを確認する
-- 上記ができたらバグを修正し、テストが通ることを確認する
-- テストが間違っている場合もある。その場合はそれをユーザーに伝え、その上で修正する
+- バグ・不具合は先に再現テストを書き、必ず一度 Failed することを確認してから修正する。
+- テストが間違っていることもある。その場合はユーザーに伝えたうえで修正する。
 
 ## 作業後に確認すること
 
-- VRTやE2Eの変更漏れがないか確認する
-- origin/mainにまだ取り込んでいない変更があるか確認する
+- VRT / E2E の変更漏れがないか確認する。
+- `origin/main` にまだ取り込んでいない変更が無いか確認する。
 
-## PR作成前のルール
+## PR 作成前のチェック
 
-**PRを作成する前に、必ず以下のコマンドを実行し、問題があれば修正すること。**
+以下がすべて通ることを確認する。失敗があれば直してから PR を作成する。
 
 ```bash
-pnpm lint
-pnpm format:check
+pnpm check         # biome の lint + format チェック (書き換えなし)
+pnpm typecheck     # tsc -b --noEmit
+pnpm test:e2e      # Playwright (VRT を除く)
 ```
 
-問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは `pnpm lint --fix` で自動修正する。自動修正できないエラーは手動で修正する。
+自動修正できるものは `pnpm check:fix` で当てる。
 
-## PR作成時のルール
+## PR 作成時のルール
 
-**PRの作成には必ず `/gh-pr` スキルを使用すること。** 直接 `gh pr create` コマンドを実行してはならない。スキルにはラベル付けなどのルールが含まれている。
+- **PR 作成には必ず `/gh-pr` スキルを使う**。`gh pr create` の直接実行は禁止。スキルにラベル付与などのルールが含まれている。
+- `.github/pull_request_template.md` のセクション (概要 / 変更内容 / 関連 Issue / テスト項目 / VRT 設定 / スクリーンショット / 備考) を必ず埋める。
 
-**PR作成時は `.github/pull_request_template.md` のテンプレートを必ず遵守すること。** 以下のセクションをすべて含める必要がある：
-
-- 概要
-- 変更内容
-- 関連Issue
-- テスト項目
-- VRT設定（スナップショット更新のチェックボックス）
-- スクリーンショット（任意）
-- 備考
-
-## コマンド
+## 主要コマンド
 
 ```bash
-# 開発サーバー起動
-pnpm dev
+pnpm dev           # 開発サーバー起動 (contentlayer build → vite dev)
+pnpm build         # フルビルド: contentlayer → tsc → vite → RSS feed → OGP 画像
+pnpm build:content # Contentlayer 単独ビルド (.contentlayer/generated 生成)
+pnpm build:feed    # dist/feed.xml を再生成
+pnpm build:ogp     # dist/og/{slug}.png と dist/articles/{slug}/index.html を再生成
+pnpm preview       # pnpm build → wrangler dev (本番と同じ静的アセット挙動で確認)
+pnpm deploy        # pnpm build → wrangler deploy (本番)
+pnpm versions:upload  # pnpm build → wrangler versions upload (preview/staging用)
 
-# ビルド
-pnpm build
+pnpm check         # biome check (書き換え無し)
+pnpm check:fix     # biome check --write
+pnpm typecheck     # tsc -b --noEmit
 
-# Cloudflare Pages プレビュー
-pnpm preview
+pnpm test:e2e         # Playwright (VRT を除く)
+pnpm test:e2e:ui      # Playwright UI モード
+pnpm test:e2e:server  # pnpm build → wrangler dev (playwright の webServer から呼ばれる)
 
-# Cloudflare Pages デプロイ
-pnpm deploy
-
-# Lint
-pnpm lint
-
-# フォーマット
-pnpm format
-pnpm format:check
-
-# コンテンツ（Markdown）のビルド
-pnpm build:content
-
-# Cloudflare 環境変数の型生成
-pnpm cf-typegen
+pnpm cf-typegen    # Cloudflare 環境変数の型生成 → cloudflare-env.d.ts
 ```
 
 ## アーキテクチャ
 
-Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブログ。
+**Vite 6 + React 19 SPA / TanStack Router (file-based) + TanStack Query / Contentlayer2 / Biome / Cloudflare Workers 静的アセット** で構成されるブログ。
 
-### 主要な構成
+### コンテンツパイプライン
 
-- **コンテンツ管理**: `src/markdown/` にMarkdownファイルを配置。Contentlayer2で処理され、`contentlayer/generated` から型付きでインポート可能
-- **記事の定義**: `contentlayer.config.ts` でArticle/Aboutの2種類のドキュメントタイプを定義
-- **APIルート**: `src/app/api/[[...route]]/` でHonoを使用したAPIを提供
-- **データベース**: Cloudflare D1を使用（いいね機能など）。`src/db.ts` でServer Actionsとして実装
-- **ストレージ**: Cloudflare R2をCDNとキャッシュ用に使用
+- Markdown は `src/markdown/posts/*.md` (記事) と `src/markdown/about.md` に配置。
+- `contentlayer.config.ts` で Article / About の 2 ドキュメントタイプを定義。`rehype-slug` + `rehype-autolink-headings` + `rehype-pretty-code` (shiki `one-dark-pro`) を通す。
+- `pnpm build:content` が `.contentlayer/generated` に型付き JSON を生成する。ランタイムは `contentlayer/generated` を alias 経由でインポートする。
 
-### Cloudflare統合
+### ルーティング / データ
 
-`@opennextjs/cloudflare` を使用してNext.jsをCloudflare Workers上で動作させている。環境変数やD1/R2へのアクセスは `getCloudflareContext()` 経由で取得する。
+- ルートは file-based (`src/routes/`)。`@tanstack/router-plugin` の Vite プラグインが `src/routeTree.gen.ts` を自動生成する。生成物は Biome と Git から除外済。
+- `src/routes/__root.tsx` が `QueryClient` を context に持ち、`Header` / `Footer` レイアウトを提供する。
+- 記事一覧・詳細は Contentlayer 生成物を直接 import (静的)。TanStack Query は将来的な動的取得のために Provider を用意しているのみ。
 
-## Active Technologies
+### RSS / OGP の静的生成
 
-- TypeScript / Next.js + Tailwind CSS, @tailwindcss/typography, React
-- Cloudflare D1（いいね機能）、R2（CDN）
-- drizzle-orm, drizzle-kit（型安全なD1データベースアクセス）
+- **RSS**: `scripts/build-feed.ts` が Contentlayer から `dist/feed.xml` を生成 (RSS 2.0)。
+- **OGP**: `scripts/build-ogp.ts` が satori + `@resvg/resvg-js` で各記事 `dist/og/{slug}.png` (1200×630) を生成。フォントは IBM Plex Sans JP を fonts.gstatic.com から取得。合わせて `dist/articles/{slug}/index.html` を SPA シェルから生成し、`<title>` / OG / Twitter meta を注入する。クローラーが記事タイトルと OGP を取得できるようにするための静的シェル差分。
+
+### Cloudflare 統合 / デプロイ
+
+- Vite ↔ workerd の統合は **`@cloudflare/vite-plugin`** に任せる。`vite dev` は workerd ベースの dev server として動作し、ローカルからでも本番同等の静的アセットハンドリング (SPA fallback / trailing-slash) が得られる。
+- `wrangler.jsonc` は `main` を持たず、`assets.not_found_handling: single-page-application` の pure static Worker。`assets.directory` は plugin が build 時に `dist/wrangler.json` を生成して自動で埋める。
+- `vite build` の出力 `dist/wrangler.json` は `.wrangler/deploy/config.json` 経由で `wrangler` に自動リダイレクトされるため、リポジトリ直下から `wrangler deploy` するだけで良い。
+- **Preview**: PR で `wrangler versions upload --preview-alias pr-{PR番号}` (`.github/workflows/preview-deploy.yaml`)。
+- **Staging**: `main` push で `wrangler versions upload --preview-alias staging` (`.github/workflows/staging-deploy.yaml`)。
+- **Production**: `deploy` ブランチへの push で `wrangler deploy` (`.github/workflows/production-deploy.yaml`)。`create-production-pr.yaml` (workflow_dispatch) で `main → deploy` PR を自動作成できる。
+- 必要な Secrets: `CLOUDFLARE_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` / `WORKERS_SUBDOMAIN`。
+
+### E2E / VRT
+
+- Playwright の `webServer` は `pnpm test:e2e:server` を起動し、`http://localhost:8787` (wrangler dev) をターゲットにする。wrangler の trailing-slash redirect を再現できるため、per-article HTML の配信も含めて実際のプロダクションと同等の挙動でテストできる。
+- SPA なので初期 HTML はシェル。`page.evaluate` で DOM を読むテストは `page.waitForSelector("main article")` などで描画待ちを入れること。
+- VRT は `e2e/vrt.spec.ts` + `.github/workflows/vrt.yaml`。baseline は R2 (`blog-vrt`) に置いてあり、CI 側で取得・比較する。
+
+## Lint / Format
+
+Biome 2 に統一済み (ESLint / Prettier は撤去)。設定は `biome.json`。
+
+- 生成物 (`dist`, `.contentlayer`, `routeTree.gen.ts`) と `worktrees`, `dev-assets`, `public` は除外済。
+- `.jsonc` (wrangler.jsonc, tsconfig 系) は `overrides` で trailing comma とコメントを許可。
 
 ## 開発時のファイル管理
 
-**dev-assets/** ディレクトリは開発時の一時ファイルや参考資料を置くためのディレクトリです。
-
-- デザインファイル（AI生成UIなど）
-- 実装時の参考資料
-- その他リポジトリにコミットしたくない開発用ファイル
-
-このディレクトリは `.gitignore` に含まれており、リポジトリには含まれません。
+**`dev-assets/`** は開発時の一時ファイル・参考資料用ディレクトリ (`.gitignore` 済)。デザインファイル、実装時のメモ、コミットしたくない実験コードなど。
 
 ## Recent Changes
 
-- feat/introduce-drizzle: drizzle-ormを導入してD1データベースアクセスを型安全に
-- refactor/unify-design-system: TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS追加
+- `refactor/vite-biome-migration`: Next.js App Router (OpenNext) を撤去し Vite + React + TanStack Router + TanStack Query に移行。ESLint + Prettier を Biome へ統一。ツイート / いいね / 管理画面と関連 API・drizzle/D1 を削除。RSS / OGP を build 時静的生成へ。

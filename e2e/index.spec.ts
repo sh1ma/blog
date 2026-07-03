@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.describe("トップページ", () => {
   test.beforeEach(async ({ page }) => {
@@ -40,25 +40,16 @@ test.describe("トップページ", () => {
     const clockIcon = metaInfo.locator('svg[class*="lucide-clock"]')
     await expect(clockIcon).toBeVisible()
 
-    // ハートアイコン（いいね数）が表示される
-    const heartIcon = metaInfo.locator('svg[class*="lucide-heart"]')
-    await expect(heartIcon).toBeVisible()
-
-    // 3つのメタ情報が同じ行に表示されていることを確認
-    // すべての要素が表示されており、親要素がflexレイアウトであることを確認
+    // 2つのメタ情報が同じ行に表示されていることを確認
     const calendarBox = await calendarIcon.boundingBox()
     const clockBox = await clockIcon.boundingBox()
-    const heartBox = await heartIcon.boundingBox()
 
-    // すべての要素が取得できることを確認
     expect(calendarBox).not.toBeNull()
     expect(clockBox).not.toBeNull()
-    expect(heartBox).not.toBeNull()
 
     // Y座標がほぼ同じ（±10px程度の許容範囲）であることを確認
-    if (calendarBox && clockBox && heartBox) {
+    if (calendarBox && clockBox) {
       expect(Math.abs(calendarBox.y - clockBox.y)).toBeLessThan(10)
-      expect(Math.abs(clockBox.y - heartBox.y)).toBeLessThan(10)
     }
   })
 

@@ -1,6 +1,5 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Calendar, Clock, Heart, ImageOff } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { Calendar, Clock, ImageOff } from "lucide-react"
 import { Tag } from "../Tag/Tag"
 
 type ArticleCardProps = {
@@ -10,7 +9,6 @@ type ArticleCardProps = {
   thumbnail?: string
   publishedAt: string
   readingTime: number
-  likes: number
   tags?: string[]
 }
 
@@ -21,19 +19,19 @@ export const ArticleCard = ({
   thumbnail,
   publishedAt,
   readingTime,
-  likes,
   tags,
 }: ArticleCardProps) => {
   return (
-    <Link href={`/articles/${id}`}>
+    <Link to="/articles/$slug" params={{ slug: id }}>
       <article className="group flex items-center gap-4 rounded-xl bg-bg-surface p-4 shadow-soft transition-all hover:-translate-y-1 hover:shadow-hover">
         <div className="size-24 shrink-0 overflow-hidden rounded-lg">
           {thumbnail ? (
-            <Image
+            <img
               src={thumbnail}
               alt={title}
               width={96}
               height={96}
+              loading="lazy"
               className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
@@ -72,11 +70,6 @@ export const ArticleCard = ({
             <span className="flex items-center gap-1">
               <Clock size={16} />
               <span>{readingTime}分</span>
-            </span>
-            <span className="size-1 rounded-full bg-gray-300" />
-            <span className="flex items-center gap-1">
-              <Heart size={16} />
-              <span>{likes}</span>
             </span>
           </div>
         </div>
