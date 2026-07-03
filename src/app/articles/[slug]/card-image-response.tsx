@@ -1,9 +1,9 @@
-import { countLikes } from "@/db"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { ImageResponse } from "next/og"
-import React, { CSSProperties } from "react"
-import { ArticlePageParams } from "./params"
+import type React from "react"
+import type { CSSProperties } from "react"
+import type { ArticlePageParams } from "./params"
 
 export const alt = "OGP画像"
 export const contentType = "image/png"
@@ -47,7 +47,6 @@ const titleFontWeight = 600
 const textColors = {
   title: "#303036",
   meta: "#6365f7",
-  like: "#fa8999",
   time: "#b8bdf2",
 }
 
@@ -79,7 +78,6 @@ const titleContainerSize = {
 
 export const CardImageResponse = async ({ params }: ArticlePageParams) => {
   const { slug } = params
-  const likeCount = (await countLikes(slug))?.["count(*)"] ?? 0
 
   const fonts = await loadFonts()
   const post = allArticles.find((post) => post.id === slug)
@@ -127,21 +125,6 @@ export const CardImageResponse = async ({ params }: ArticlePageParams) => {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <MetaField
-              icon={
-                <HeartIconOutlined
-                  style={{
-                    height: "48px",
-                    width: "48px",
-                    top: "10px",
-                    marginRight: "8px",
-                  }}
-                  stroke={textColors.like}
-                />
-              }
-              text={likeCount.toString()}
-              color={textColors.like}
-            />
             <MetaField
               icon={
                 <TimeIconOutlined
@@ -213,29 +196,6 @@ const MetaField = ({
     </div>
   )
 }
-
-const HeartIconOutlined = ({
-  style,
-  stroke,
-}: {
-  style?: CSSProperties
-  stroke: string
-}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={2}
-    stroke={stroke}
-    style={style}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-    />
-  </svg>
-)
 
 const TimeIconOutlined = ({
   style,

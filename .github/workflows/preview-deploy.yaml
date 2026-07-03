@@ -15,7 +15,6 @@ on:
       - "tailwind.config.ts"
       - "wrangler.jsonc"
       - "tsconfig.json"
-      - "drizzle/**"
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}

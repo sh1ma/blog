@@ -16,14 +16,14 @@
     "baseUrl": ".",
     "plugins": [
       {
-        "name": "next"
-      }
+        "name": "next",
+      },
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "contentlayer/generated": ["./.contentlayer/generated"]
+      "contentlayer/generated": ["./.contentlayer/generated"],
     },
-    "types": ["@types/node"]
+    "types": ["@types/node"],
   },
   "include": [
     "next-env.d.ts",
@@ -31,8 +31,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "eslint.config.mjs",
-    "src/app/console/tweet/page.txs"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "worktrees", "dev-assets", ".next", ".open-next"],
 }

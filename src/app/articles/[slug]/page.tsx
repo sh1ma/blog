@@ -1,13 +1,10 @@
-import { LikeButton } from "@/components/LikeButton/LikeButton"
-import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
-import { TableOfContents } from "@/components/TableOfContents/TableOfContents"
-import { Tag } from "@/components/Tag/Tag"
-import { countLikes } from "@/db"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { Calendar, Clock } from "lucide-react"
-import { Metadata } from "next"
-import React from "react"
+import type { Metadata } from "next"
+import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
+import { TableOfContents } from "@/components/TableOfContents/TableOfContents"
+import { Tag } from "@/components/Tag/Tag"
 import { extractHeadings } from "@/utils/extractHeadings"
 
 interface Params {
@@ -43,7 +40,6 @@ const ArticlePage = async (props: Params) => {
     return <div>404</div>
   }
 
-  const likeCount = parseInt((await countLikes(post.id))?.["count(*)"] ?? "0")
   const headings = extractHeadings(post.body.html)
 
   return (
@@ -79,10 +75,6 @@ const ArticlePage = async (props: Params) => {
       <main className="prose prose-lg max-w-none text-text-primary">
         <MarkdownContent post={post} />
       </main>
-
-      <footer className="mt-16 border-t border-gray-200 pt-8 text-center">
-        <LikeButton articleId={post.id} initialLikes={likeCount} />
-      </footer>
     </article>
   )
 }

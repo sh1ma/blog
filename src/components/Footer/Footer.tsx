@@ -1,5 +1,5 @@
+import { Github, PenLine } from "lucide-react"
 import Link from "next/link"
-import { PenLine, Github } from "lucide-react"
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()

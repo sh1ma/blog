@@ -1,7 +1,6 @@
 import bundleAnalyzer from "@next/bundle-analyzer"
-import { withContentlayer } from "next-contentlayer2"
-
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare"
+import { withContentlayer } from "next-contentlayer2"
 
 initOpenNextCloudflareForDev()
 

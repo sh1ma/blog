@@ -1,8 +1,8 @@
 import { defineDocumentType, makeSource } from "contentlayer2/source-files"
-import rehypePrettyCode, {
-  Options as RehypePrettyCodeOptions,
-} from "rehype-pretty-code"
 import rehypeAutoLinkHeadings from "rehype-autolink-headings"
+import rehypePrettyCode, {
+  type Options as RehypePrettyCodeOptions,
+} from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
 
 export const Article = defineDocumentType(() => ({

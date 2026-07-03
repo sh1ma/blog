@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import "./globals.scss"
-import React from "react"
-import { BlogHeader } from "./header"
-import { Footer } from "@/components/Footer/Footer"
-import utc from "dayjs/plugin/utc"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+import type React from "react"
+import { Footer } from "@/components/Footer/Footer"
+import { BlogHeader } from "./header"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.sh1ma.dev/"),

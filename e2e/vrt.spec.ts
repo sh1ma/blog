@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.describe("Visual Regression Tests", () => {
   test.describe("トップページ", () => {
@@ -31,22 +31,6 @@ test.describe("Visual Regression Tests", () => {
       await page.locator("main").waitFor({ state: "visible" })
 
       await expect(page).toHaveScreenshot("article-page.png", {
-        fullPage: true,
-        animations: "disabled",
-        mask: [
-          page.locator("footer button"), // いいねカウンターをマスク（動的）
-        ],
-      })
-    })
-  })
-
-  test.describe("Tweetsページ", () => {
-    test("ツイート一覧フルページスクリーンショット", async ({ page }) => {
-      await page.goto("/tweets")
-      await page.waitForLoadState("networkidle")
-      await page.locator("article").first().waitFor({ state: "visible" })
-
-      await expect(page).toHaveScreenshot("tweets-page.png", {
         fullPage: true,
         animations: "disabled",
       })

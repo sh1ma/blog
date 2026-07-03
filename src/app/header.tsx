@@ -1,8 +1,8 @@
 "use client"
 
+import { Menu, PenLine, Search } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { PenLine, Search, Menu } from "lucide-react"
 
 export const BlogHeader = () => {
   const pathname = usePathname()
@@ -37,9 +37,6 @@ export const BlogHeader = () => {
           <nav className="hidden items-center gap-8 md:flex">
             <Link href="/" className={getLinkClassName("/")}>
               Articles
-            </Link>
-            <Link href="/tweets" className={getLinkClassName("/tweets")}>
-              Tweets
             </Link>
             <Link href="/about" className={getLinkClassName("/about")}>
               About

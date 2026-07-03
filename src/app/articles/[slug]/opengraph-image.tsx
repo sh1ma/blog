@@ -1,5 +1,5 @@
 import { CardImageResponse } from "./card-image-response"
-import { ArticlePageParams } from "./params"
+import type { ArticlePageParams } from "./params"
 
 export const alt = "OGP画像"
 export const size = {

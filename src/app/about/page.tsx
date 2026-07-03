@@ -1,6 +1,6 @@
-import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import { allAbouts } from "contentlayer/generated"
-import { Metadata } from "next"
+import type { Metadata } from "next"
+import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 
 export const metadata: Metadata = {
   title: "About - blog.sh1ma.dev",
