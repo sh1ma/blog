@@ -92,7 +92,48 @@ const withRotation = (elem: unknown, cx: number, cy: number, angle: number) => {
   }
 }
 
-// bbox の中に 1 つの図形を返す (ランダム回転付き)
+// 角丸のかかる比率 (図形の代表サイズに対して)。全種で共通の "同じ程度" の丸み
+const RADIUS_RATIO = 0.18
+
+// N 個の頂点で構成される多角形の頂点列に、共通半径 r で角丸を付けた SVG path
+// (二次ベジェで角を丸める)
+const roundedPolygonPath = (points: [number, number][], r: number): string => {
+  const n = points.length
+  const parts: string[] = []
+  for (let i = 0; i < n; i++) {
+    const prev = points[(i - 1 + n) % n]
+    const curr = points[i]
+    const next = points[(i + 1) % n]
+
+    const dxIn = prev[0] - curr[0]
+    const dyIn = prev[1] - curr[1]
+    const inLen = Math.hypot(dxIn, dyIn) || 1
+    const dxOut = next[0] - curr[0]
+    const dyOut = next[1] - curr[1]
+    const outLen = Math.hypot(dxOut, dyOut) || 1
+
+    // 隣接辺の長さで丸め半径を制限 (辺の中点を超えない)
+    const rr = Math.min(r, inLen / 2, outLen / 2)
+
+    const p1x = curr[0] + (dxIn / inLen) * rr
+    const p1y = curr[1] + (dyIn / inLen) * rr
+    const p2x = curr[0] + (dxOut / outLen) * rr
+    const p2y = curr[1] + (dyOut / outLen) * rr
+
+    parts.push(
+      i === 0
+        ? `M ${p1x.toFixed(2)} ${p1y.toFixed(2)}`
+        : `L ${p1x.toFixed(2)} ${p1y.toFixed(2)}`,
+    )
+    parts.push(
+      `Q ${curr[0].toFixed(2)} ${curr[1].toFixed(2)} ${p2x.toFixed(2)} ${p2y.toFixed(2)}`,
+    )
+  }
+  parts.push("Z")
+  return parts.join(" ")
+}
+
+// bbox の中に 1 つの図形を返す (すべて線対称 & 角丸)
 const buildShape = (
   type: ShapeType,
   bbox: BBox,
@@ -103,161 +144,118 @@ const buildShape = (
   const rand = (min: number, max: number) => min + rng() * (max - min)
   const cx = x + w / 2
   const cy = y + h / 2
-  // 柄っぽさを維持するため、回転は控えめ (±25°)
+  const size = Math.min(w, h)
+  const half = size / 2
+  const radius = size * RADIUS_RATIO
   const rotation = rand(-25, 25)
 
   const buildElement = () => {
     if (type === "triangle") {
-      const p1 = [x + rand(0, w * 0.25), y + h]
-      const p2 = [x + w - rand(0, w * 0.25), y + h]
-      const p3 = [x + rand(0.3, 0.7) * w, y + rand(0, w * 0.15)]
+      // 正三角形 (equilateral): 外接円半径 = half、頂点は上向き
+      const angles = [
+        -Math.PI / 2,
+        -Math.PI / 2 + (2 * Math.PI) / 3,
+        -Math.PI / 2 - (2 * Math.PI) / 3,
+      ]
+      const pts: [number, number][] = angles.map(
+        (a) =>
+          [cx + half * Math.cos(a), cy + half * Math.sin(a)] as [
+            number,
+            number,
+          ],
+      )
       return {
-        type: "polygon",
-        props: {
-          points: [p1, p2, p3].map(([px, py]) => `${px},${py}`).join(" "),
-          fill: color,
-        },
+        type: "path",
+        props: { d: roundedPolygonPath(pts, radius), fill: color },
       }
     }
 
     if (type === "ellipse") {
+      // 円 (両軸で線対称、無限軸)
       return {
-        type: "ellipse",
-        props: {
-          cx,
-          cy,
-          rx: (w / 2) * rand(0.75, 1),
-          ry: (h / 2) * rand(0.75, 1),
-          fill: color,
-        },
+        type: "circle",
+        props: { cx, cy, r: half, fill: color },
       }
     }
 
     if (type === "rectangle") {
-      const rectW = w * rand(0.55, 0.95)
-      const rectH = h * rand(0.55, 0.95)
+      // 正方形または長方形 (2 軸線対称) を角丸 rect で
       return {
         type: "rect",
         props: {
-          x: x + (w - rectW) / 2,
-          y: y + (h - rectH) / 2,
-          width: rectW,
-          height: rectH,
-          rx: rng() < 0.4 ? rand(10, 24) : 0,
+          x,
+          y,
+          width: w,
+          height: h,
+          rx: radius,
           fill: color,
         },
       }
     }
 
-    // geometric: 円環 / 十字 / 菱形 / X のいずれか
+    // geometric: ring / plus / diamond / X (X は plus を 45°回転)
     const variant = Math.floor(rng() * 4)
-    const r = Math.min(w, h) / 2
 
     if (variant === 0) {
-      // ring (輪郭のみの円)
+      // ring (輪郭円)
+      const strokeW = size * 0.15
       return {
         type: "circle",
         props: {
           cx,
           cy,
-          r: r * 0.85,
+          r: half - strokeW / 2,
           fill: "transparent",
           stroke: color,
-          strokeWidth: rand(12, 18),
+          strokeWidth: strokeW,
         },
       }
     }
 
-    if (variant === 1) {
-      // plus (+)
-      const armLong = r * 1.7
-      const armShort = r * 0.55
+    if (variant === 1 || variant === 3) {
+      // plus (+) と X は同じ形。X は 45° 回した plus とする
+      const armLong = size * 0.9
+      const armShort = size * 0.34
+      const L = armLong / 2
+      const S = armShort / 2
+      const pts: [number, number][] = [
+        [cx - S, cy - L],
+        [cx + S, cy - L],
+        [cx + S, cy - S],
+        [cx + L, cy - S],
+        [cx + L, cy + S],
+        [cx + S, cy + S],
+        [cx + S, cy + L],
+        [cx - S, cy + L],
+        [cx - S, cy + S],
+        [cx - L, cy + S],
+        [cx - L, cy - S],
+        [cx - S, cy - S],
+      ]
+      const extraRotate = variant === 3 ? 45 : 0
+      // 角丸半径は他図形と揃えるが、細腕の凹角では armShort/2 で制限される
+      const path = roundedPolygonPath(pts, radius)
+      const elem = { type: "path", props: { d: path, fill: color } }
+      if (extraRotate === 0) return elem
       return {
         type: "g",
         props: {
-          children: [
-            {
-              type: "rect",
-              props: {
-                x: cx - armLong / 2,
-                y: cy - armShort / 2,
-                width: armLong,
-                height: armShort,
-                fill: color,
-              },
-            },
-            {
-              type: "rect",
-              props: {
-                x: cx - armShort / 2,
-                y: cy - armLong / 2,
-                width: armShort,
-                height: armLong,
-                fill: color,
-              },
-            },
-          ],
+          transform: `rotate(${extraRotate} ${cx.toFixed(2)} ${cy.toFixed(2)})`,
+          children: elem,
         },
       }
     }
 
-    if (variant === 2) {
-      // diamond (菱形)
-      const rx = r * 0.9
-      const ry = r * 0.75
-      const pts = [
-        [cx, cy - ry],
-        [cx + rx, cy],
-        [cx, cy + ry],
-        [cx - rx, cy],
-      ]
-      return {
-        type: "polygon",
-        props: {
-          points: pts.map(([px, py]) => `${px},${py}`).join(" "),
-          fill: color,
-        },
-      }
-    }
-
-    // variant 3: X 型
-    const thick = r * 0.35
-    const long = r * 1.6
-    const s = Math.SQRT1_2
-    const arm = long / 2
-    const t = thick / 2
-    const bar1 = [
-      [cx - arm * s - t * s, cy - arm * s + t * s],
-      [cx - arm * s + t * s, cy - arm * s - t * s],
-      [cx + arm * s + t * s, cy + arm * s - t * s],
-      [cx + arm * s - t * s, cy + arm * s + t * s],
-    ]
-    const bar2 = [
-      [cx + arm * s - t * s, cy - arm * s - t * s],
-      [cx + arm * s + t * s, cy - arm * s + t * s],
-      [cx - arm * s + t * s, cy + arm * s + t * s],
-      [cx - arm * s - t * s, cy + arm * s - t * s],
+    // variant === 2: diamond (菱形: 頂点を上下左右)
+    const pts: [number, number][] = [
+      [cx, cy - half],
+      [cx + half, cy],
+      [cx, cy + half],
+      [cx - half, cy],
     ]
     return {
-      type: "g",
-      props: {
-        children: [
-          {
-            type: "polygon",
-            props: {
-              points: bar1.map(([px, py]) => `${px},${py}`).join(" "),
-              fill: color,
-            },
-          },
-          {
-            type: "polygon",
-            props: {
-              points: bar2.map(([px, py]) => `${px},${py}`).join(" "),
-              fill: color,
-            },
-          },
-        ],
-      },
+      type: "path",
+      props: { d: roundedPolygonPath(pts, radius), fill: color },
     }
   }
 
