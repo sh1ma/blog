@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { Menu, PenLine } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ChevronDown, PenLine } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
 const HIDE_DELAY_MS = 3000
@@ -12,19 +12,27 @@ export const BlogHeader = () => {
   const pathname = useLocation({ select: (loc) => loc.pathname })
   const [scrolled, setScrolled] = useState(false)
   const [visible, setVisible] = useState(true)
+  const [userExpanded, setUserExpanded] = useState(false)
+  const userExpandedRef = useRef(false)
+  userExpandedRef.current = userExpanded
 
   useEffect(() => {
     let hideTimer: ReturnType<typeof setTimeout> | undefined
 
     const scheduleHide = () => {
       if (hideTimer) clearTimeout(hideTimer)
-      if (window.scrollY > SCROLL_THRESHOLD) {
+      if (window.scrollY > SCROLL_THRESHOLD && !userExpandedRef.current) {
         hideTimer = setTimeout(() => setVisible(false), HIDE_DELAY_MS)
       }
     }
 
     const onActivity = () => {
-      setScrolled(window.scrollY > SCROLL_THRESHOLD)
+      const s = window.scrollY > SCROLL_THRESHOLD
+      setScrolled(s)
+      if (!s && userExpandedRef.current) {
+        setUserExpanded(false)
+        userExpandedRef.current = false
+      }
       setVisible(true)
       scheduleHide()
     }
@@ -43,6 +51,8 @@ export const BlogHeader = () => {
       window.removeEventListener("touchstart", onActivity)
     }
   }, [])
+
+  const isCompact = scrolled && !userExpanded
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -64,52 +74,49 @@ export const BlogHeader = () => {
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
-      <div className="relative mx-auto max-w-3xl">
-        <header
-          className={`${glassSurface} flex w-full items-center justify-between gap-4 rounded-2xl px-6 py-4 transition-all duration-500 ease-out ${
-            scrolled
-              ? "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
-              : "translate-y-0 scale-100 opacity-100"
+      <div className="mx-auto max-w-3xl">
+        <div
+          className={`${glassSurface} relative ml-auto overflow-hidden transition-[width,height,border-radius] duration-500 ease-out ${
+            isCompact ? "h-12 w-12 rounded-full" : "h-[72px] w-full rounded-2xl"
           }`}
         >
-          <Link to="/" className="flex items-center gap-3">
-            <div className="bg-brand-primary/10 flex size-10 shrink-0 items-center justify-center rounded-lg text-brand-primary">
-              <PenLine className="text-3xl" />
-            </div>
-            <div className="whitespace-nowrap text-xl font-bold tracking-tight text-text-primary">
-              blog.<span className="text-brand-primary">sh1ma.dev</span>
-            </div>
-          </Link>
+          <header
+            className={`absolute inset-y-0 left-0 flex w-full min-w-full items-center justify-between gap-4 px-6 transition-opacity duration-300 ease-out ${
+              isCompact ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}
+          >
+            <Link to="/" className="flex items-center gap-3">
+              <div className="bg-brand-primary/10 flex size-10 shrink-0 items-center justify-center rounded-lg text-brand-primary">
+                <PenLine className="text-3xl" />
+              </div>
+              <div className="whitespace-nowrap text-xl font-bold tracking-tight text-text-primary">
+                blog.<span className="text-brand-primary">sh1ma.dev</span>
+              </div>
+            </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link to="/" className={getLinkClassName("/")}>
-              Articles
-            </Link>
-            <Link to="/about" className={getLinkClassName("/about")}>
-              About
-            </Link>
-          </nav>
+            <nav className="hidden items-center gap-8 md:flex">
+              <Link to="/" className={getLinkClassName("/")}>
+                Articles
+              </Link>
+              <Link to="/about" className={getLinkClassName("/about")}>
+                About
+              </Link>
+            </nav>
+          </header>
 
           <button
             type="button"
-            aria-label="Menu"
-            className="shrink-0 p-2 text-text-muted transition-colors hover:text-brand-primary md:hidden"
+            aria-label="ヘッダーを展開"
+            onClick={() => setUserExpanded(true)}
+            className={`absolute inset-0 flex items-center justify-center text-text-muted transition-opacity duration-300 ease-out hover:text-brand-primary ${
+              isCompact
+                ? "opacity-100 delay-200"
+                : "pointer-events-none opacity-0"
+            }`}
           >
-            <Menu />
+            <ChevronDown />
           </button>
-        </header>
-
-        <button
-          type="button"
-          aria-label="Menu"
-          className={`${glassSurface} absolute top-0 right-0 flex size-12 items-center justify-center rounded-full text-text-muted transition-all duration-500 ease-out hover:text-brand-primary ${
-            scrolled
-              ? "translate-y-0 scale-100 opacity-100"
-              : "pointer-events-none -translate-y-1 scale-90 opacity-0"
-          }`}
-        >
-          <Menu />
-        </button>
+        </div>
       </div>
     </div>
   )
