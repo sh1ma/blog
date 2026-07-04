@@ -1,0 +1,108 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "手動で cleanup したい PR 番号"
+        required: true
+        type: string
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  WORKER_NAME: blog
+
+jobs:
+  preview-cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Delete preview alias versions
+        id: cleanup
+        env:
+          PR_NUM: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          ALIAS="pr-${PR_NUM}"
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
+
+          # pr-{N} alias が振られている version を全て取得。
+          # alias は version の annotation なので、対象 version を消せば alias も消える。
+          # Cloudflare 側の 1 alias = 1 version (最新のみ有効) だが、alias 履歴として
+          # 過去に pr-{N} が振られていた version も含めて掃除しておく。
+          VERSIONS=$(curl -fsS \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${API}/workers/scripts/${WORKER_NAME}/versions?per_page=100" \
+            | jq -r --arg alias "${ALIAS}" \
+                '.result.items[] | select(.annotations["workers/alias"] == $alias) | .id')
+
+          if [ -z "${VERSIONS}" ]; then
+            echo "No preview version found for alias ${ALIAS}. Nothing to delete."
+            echo "deleted=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          COUNT=0
+          for VID in ${VERSIONS}; do
+            echo "Deleting version ${VID} (alias=${ALIAS})"
+            HTTP_CODE=$(curl -sS -o /tmp/resp.json -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${API}/workers/workers/${WORKER_NAME}/versions/${VID}")
+            if [ "${HTTP_CODE}" != "200" ] && [ "${HTTP_CODE}" != "204" ]; then
+              echo "Failed to delete version ${VID} (HTTP ${HTTP_CODE}):"
+              cat /tmp/resp.json
+              exit 1
+            fi
+            COUNT=$((COUNT + 1))
+          done
+
+          echo "Deleted ${COUNT} version(s) for alias ${ALIAS}."
+          echo "deleted=${COUNT}" >> "$GITHUB_OUTPUT"
+
+      - name: Update PR comment
+        if: always()
+        uses: actions/github-script@v8
+        env:
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
+          DELETED_COUNT: ${{ steps.cleanup.outputs.deleted }}
+        with:
+          script: |
+            const prNum = context.issue.number;
+            const outcome = process.env.CLEANUP_OUTCOME;
+            const deleted = process.env.DELETED_COUNT;
+
+            let body;
+            if (outcome === 'success') {
+              body = deleted === '0'
+                ? `## Preview Deploy\n\n**Status**: :information_source: 削除対象の preview version はありませんでした。`
+                : `## Preview Deploy\n\n**Status**: :wastebasket: PR がクローズされたため、preview version (${deleted} 件) を削除しました。`;
+            } else {
+              const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+              body = `## Preview Deploy\n\n**Status**: :warning: preview の削除に失敗しました。[ワークフローログ](${runUrl}) を確認してください。`;
+            }
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNum,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Preview Deploy')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            }
