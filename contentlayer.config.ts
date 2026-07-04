@@ -1,9 +1,37 @@
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import { defineDocumentType, makeSource } from "contentlayer2/source-files"
 import rehypeAutoLinkHeadings from "rehype-autolink-headings"
 import rehypePrettyCode, {
   type Options as RehypePrettyCodeOptions,
 } from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
+import type { Element, Root } from "hast"
+import type { ThemeRegistrationRaw } from "shiki"
+import { visit } from "unist-util-visit"
+
+const atomOneDark = {
+  ...JSON.parse(
+    readFileSync(
+      resolve(process.cwd(), "themes/atom-one-dark.json"),
+      "utf-8",
+    ),
+  ),
+  type: "dark",
+} as ThemeRegistrationRaw
+
+const enableLineNumbers = () => (tree: Root) => {
+  visit(tree, "element", (node: Element) => {
+    if (
+      node.tagName === "code" &&
+      node.properties &&
+      typeof (node.properties["data-language"] ??
+        node.properties.dataLanguage) === "string"
+    ) {
+      node.properties["data-line-numbers"] = ""
+    }
+  })
+}
 
 export const Article = defineDocumentType(() => ({
   name: "Article",
@@ -68,13 +96,14 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
-          theme: "one-dark-pro",
+          theme: atomOneDark,
           defaultLang: {
             block: "plaintext",
           },
           keepBackground: false,
         } satisfies RehypePrettyCodeOptions,
       ],
+      enableLineNumbers,
     ],
   },
 })
