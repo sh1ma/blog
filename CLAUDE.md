@@ -78,7 +78,9 @@ pnpm cf-typegen    # Cloudflare 環境変数の型生成 → cloudflare-env.d.ts
 ### コンテンツパイプライン
 
 - Markdown は `src/markdown/posts/*.md` (記事) と `src/markdown/about.md` に配置。
-- `contentlayer.config.ts` で Article / About の 2 ドキュメントタイプを定義。`rehype-slug` + `rehype-autolink-headings` + `rehype-pretty-code` (shiki `one-dark-pro`) を通す。
+- `contentlayer.config.ts` で Article / About の 2 ドキュメントタイプを定義。`rehype-slug` + `rehype-autolink-headings` + `rehype-pretty-code` (shiki + `themes/atom-one-dark.json`) を通し、独自 rehype 変換で全コードブロックに `data-line-numbers` を付与する。
+- コードブロックの見た目は `src/syntax-highlight.css` で管理。行番号は CSS `counter` + `::before` で表示 (選択・コピー対象外)。コピーボタンは `src/components/MarkdownContent/MarkdownContent.tsx` の `useEffect` で `<figure>` 内に注入される。
+- コードブロックに任意でファイル名を表示できる: `` ```ts title="foo.ts" `` のように書くと `<figcaption>` として左上に表示される (rehype-pretty-code のネイティブサポート)。
 - `pnpm build:content` が `.contentlayer/generated` に型付き JSON を生成する。ランタイムは `contentlayer/generated` を alias 経由でインポートする。
 
 ### ルーティング / データ
