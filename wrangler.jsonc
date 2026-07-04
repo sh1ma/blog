@@ -7,7 +7,7 @@
     "not_found_handling": "single-page-application",
   },
   "vars": {
-    "NODE_VERSION": "24.12.0",
+    "NODE_VERSION": "24.16.0",
   },
   "observability": {
     "enabled": true,
