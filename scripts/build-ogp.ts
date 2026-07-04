@@ -33,10 +33,10 @@ const textColors = {
 
 // テキスト安全領域 (この矩形の内側には図形を配置しない)
 // タイトル最大 3 行 + 日付 / サイト名行が入るサイズ
-const TEXT_ZONE = { x: 120, y: 175, w: WIDTH - 240, h: 280 }
+const TEXT_ZONE = { x: 130, y: 175, w: WIDTH - 260, h: 280 }
 
 // キャンバス外への overflow 許容量
-const OVERFLOW_MARGIN = 90
+const OVERFLOW_MARGIN = 120
 
 const loadFonts = async () => {
   return Promise.all(
@@ -80,7 +80,19 @@ const SHAPE_TYPES: readonly ShapeType[] = [
 
 type BBox = { x: number; y: number; w: number; h: number }
 
-// bbox の中に 1 つの図形を返す
+// 図形をランダム回転でラップする (transform="rotate(angle cx cy)")
+const withRotation = (elem: unknown, cx: number, cy: number, angle: number) => {
+  if (Math.abs(angle) < 0.5) return elem
+  return {
+    type: "g",
+    props: {
+      transform: `rotate(${angle.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})`,
+      children: elem,
+    },
+  }
+}
+
+// bbox の中に 1 つの図形を返す (ランダム回転付き)
 const buildShape = (
   type: ShapeType,
   bbox: BBox,
@@ -89,97 +101,157 @@ const buildShape = (
 ) => {
   const { x, y, w, h } = bbox
   const rand = (min: number, max: number) => min + rng() * (max - min)
-
-  if (type === "triangle") {
-    // bbox 底辺の 2 点 + 上辺のどこか 1 点 (二等辺気味〜スケール気味)
-    const p1 = [x + rand(0, w * 0.25), y + h]
-    const p2 = [x + w - rand(0, w * 0.25), y + h]
-    const p3 = [x + rand(0.3, 0.7) * w, y + rand(0, w * 0.15)]
-    return {
-      type: "polygon",
-      props: {
-        points: [p1, p2, p3].map(([px, py]) => `${px},${py}`).join(" "),
-        fill: color,
-      },
-    }
-  }
-
-  if (type === "ellipse") {
-    return {
-      type: "ellipse",
-      props: {
-        cx: x + w / 2,
-        cy: y + h / 2,
-        rx: (w / 2) * rand(0.75, 1),
-        ry: (h / 2) * rand(0.75, 1),
-        fill: color,
-      },
-    }
-  }
-
-  if (type === "rectangle") {
-    // 一部を角丸にしてバリエーションを出す
-    const rectW = w * rand(0.6, 0.95)
-    const rectH = h * rand(0.6, 0.95)
-    return {
-      type: "rect",
-      props: {
-        x: x + (w - rectW) / 2,
-        y: y + (h - rectH) / 2,
-        width: rectW,
-        height: rectH,
-        rx: rng() < 0.4 ? rand(10, 24) : 0,
-        fill: color,
-      },
-    }
-  }
-
-  // geometric: 円環 / 十字 / 菱形 / X のいずれか
-  const variant = Math.floor(rng() * 4)
   const cx = x + w / 2
   const cy = y + h / 2
-  const r = Math.min(w, h) / 2
+  const rotation = rand(-180, 180)
 
-  if (variant === 0) {
-    // ring (輪郭のみの円)
-    return {
-      type: "circle",
-      props: {
-        cx,
-        cy,
-        r: r * 0.85,
-        fill: "transparent",
-        stroke: color,
-        strokeWidth: rand(12, 18),
-      },
+  const buildElement = () => {
+    if (type === "triangle") {
+      const p1 = [x + rand(0, w * 0.25), y + h]
+      const p2 = [x + w - rand(0, w * 0.25), y + h]
+      const p3 = [x + rand(0.3, 0.7) * w, y + rand(0, w * 0.15)]
+      return {
+        type: "polygon",
+        props: {
+          points: [p1, p2, p3].map(([px, py]) => `${px},${py}`).join(" "),
+          fill: color,
+        },
+      }
     }
-  }
 
-  if (variant === 1) {
-    // plus (+)
-    const armLong = r * 1.7
-    const armShort = r * 0.55
+    if (type === "ellipse") {
+      return {
+        type: "ellipse",
+        props: {
+          cx,
+          cy,
+          rx: (w / 2) * rand(0.75, 1),
+          ry: (h / 2) * rand(0.75, 1),
+          fill: color,
+        },
+      }
+    }
+
+    if (type === "rectangle") {
+      const rectW = w * rand(0.55, 0.95)
+      const rectH = h * rand(0.55, 0.95)
+      return {
+        type: "rect",
+        props: {
+          x: x + (w - rectW) / 2,
+          y: y + (h - rectH) / 2,
+          width: rectW,
+          height: rectH,
+          rx: rng() < 0.4 ? rand(10, 24) : 0,
+          fill: color,
+        },
+      }
+    }
+
+    // geometric: 円環 / 十字 / 菱形 / X のいずれか
+    const variant = Math.floor(rng() * 4)
+    const r = Math.min(w, h) / 2
+
+    if (variant === 0) {
+      // ring (輪郭のみの円)
+      return {
+        type: "circle",
+        props: {
+          cx,
+          cy,
+          r: r * 0.85,
+          fill: "transparent",
+          stroke: color,
+          strokeWidth: rand(12, 18),
+        },
+      }
+    }
+
+    if (variant === 1) {
+      // plus (+)
+      const armLong = r * 1.7
+      const armShort = r * 0.55
+      return {
+        type: "g",
+        props: {
+          children: [
+            {
+              type: "rect",
+              props: {
+                x: cx - armLong / 2,
+                y: cy - armShort / 2,
+                width: armLong,
+                height: armShort,
+                fill: color,
+              },
+            },
+            {
+              type: "rect",
+              props: {
+                x: cx - armShort / 2,
+                y: cy - armLong / 2,
+                width: armShort,
+                height: armLong,
+                fill: color,
+              },
+            },
+          ],
+        },
+      }
+    }
+
+    if (variant === 2) {
+      // diamond (菱形)
+      const rx = r * 0.9
+      const ry = r * 0.75
+      const pts = [
+        [cx, cy - ry],
+        [cx + rx, cy],
+        [cx, cy + ry],
+        [cx - rx, cy],
+      ]
+      return {
+        type: "polygon",
+        props: {
+          points: pts.map(([px, py]) => `${px},${py}`).join(" "),
+          fill: color,
+        },
+      }
+    }
+
+    // variant 3: X 型
+    const thick = r * 0.35
+    const long = r * 1.6
+    const s = Math.SQRT1_2
+    const arm = long / 2
+    const t = thick / 2
+    const bar1 = [
+      [cx - arm * s - t * s, cy - arm * s + t * s],
+      [cx - arm * s + t * s, cy - arm * s - t * s],
+      [cx + arm * s + t * s, cy + arm * s - t * s],
+      [cx + arm * s - t * s, cy + arm * s + t * s],
+    ]
+    const bar2 = [
+      [cx + arm * s - t * s, cy - arm * s - t * s],
+      [cx + arm * s + t * s, cy - arm * s + t * s],
+      [cx - arm * s + t * s, cy + arm * s + t * s],
+      [cx - arm * s - t * s, cy + arm * s - t * s],
+    ]
     return {
       type: "g",
       props: {
         children: [
           {
-            type: "rect",
+            type: "polygon",
             props: {
-              x: cx - armLong / 2,
-              y: cy - armShort / 2,
-              width: armLong,
-              height: armShort,
+              points: bar1.map(([px, py]) => `${px},${py}`).join(" "),
               fill: color,
             },
           },
           {
-            type: "rect",
+            type: "polygon",
             props: {
-              x: cx - armShort / 2,
-              y: cy - armLong / 2,
-              width: armShort,
-              height: armLong,
+              points: bar2.map(([px, py]) => `${px},${py}`).join(" "),
               fill: color,
             },
           },
@@ -188,134 +260,7 @@ const buildShape = (
     }
   }
 
-  if (variant === 2) {
-    // diamond (回転四角)
-    const rx = r * 0.9
-    const ry = r * 0.75
-    const pts = [
-      [cx, cy - ry],
-      [cx + rx, cy],
-      [cx, cy + ry],
-      [cx - rx, cy],
-    ]
-    return {
-      type: "polygon",
-      props: {
-        points: pts.map(([px, py]) => `${px},${py}`).join(" "),
-        fill: color,
-      },
-    }
-  }
-
-  // variant 3: X 型 (2 本の細長い長方形を回転させたポリゴン)
-  const thick = r * 0.35
-  const long = r * 1.6
-  // 45 度回転で 2 本のバーを描く。ここではポリゴンで表現
-  const s = Math.SQRT1_2
-  const arm = long / 2
-  const t = thick / 2
-  // バー1: 左上 → 右下方向
-  const bar1 = [
-    [cx - arm * s - t * s, cy - arm * s + t * s],
-    [cx - arm * s + t * s, cy - arm * s - t * s],
-    [cx + arm * s + t * s, cy + arm * s - t * s],
-    [cx + arm * s - t * s, cy + arm * s + t * s],
-  ]
-  // バー2: 右上 → 左下方向
-  const bar2 = [
-    [cx + arm * s - t * s, cy - arm * s - t * s],
-    [cx + arm * s + t * s, cy - arm * s + t * s],
-    [cx - arm * s + t * s, cy + arm * s + t * s],
-    [cx - arm * s - t * s, cy + arm * s - t * s],
-  ]
-  return {
-    type: "g",
-    props: {
-      children: [
-        {
-          type: "polygon",
-          props: {
-            points: bar1.map(([px, py]) => `${px},${py}`).join(" "),
-            fill: color,
-          },
-        },
-        {
-          type: "polygon",
-          props: {
-            points: bar2.map(([px, py]) => `${px},${py}`).join(" "),
-            fill: color,
-          },
-        },
-      ],
-    },
-  }
-}
-
-// TEXT_ZONE の外周上の点 (パラメータ t で 1 周する) と、外向き法線
-type PerimeterPoint = {
-  x: number
-  y: number
-  nx: number
-  ny: number
-  edge: "top" | "right" | "bottom" | "left"
-  // corner 付近では法線を斜め方向にブレンドしたい
-  cornerBias: number // 0=辺の中央, 1=完全な角
-}
-
-const perimeterAt = (t: number): PerimeterPoint => {
-  const z = TEXT_ZONE
-  const p = 2 * (z.w + z.h)
-  let s = ((t % p) + p) % p
-  const cornerBand = 60 // 角から60px以内は cornerBias が上がる
-
-  const bias = (distToCorner: number) =>
-    Math.max(0, 1 - distToCorner / cornerBand)
-
-  if (s < z.w) {
-    const distCorner = Math.min(s, z.w - s)
-    return {
-      x: z.x + s,
-      y: z.y,
-      nx: 0,
-      ny: -1,
-      edge: "top",
-      cornerBias: bias(distCorner),
-    }
-  }
-  s -= z.w
-  if (s < z.h) {
-    const distCorner = Math.min(s, z.h - s)
-    return {
-      x: z.x + z.w,
-      y: z.y + s,
-      nx: 1,
-      ny: 0,
-      edge: "right",
-      cornerBias: bias(distCorner),
-    }
-  }
-  s -= z.h
-  if (s < z.w) {
-    const distCorner = Math.min(s, z.w - s)
-    return {
-      x: z.x + z.w - s,
-      y: z.y + z.h,
-      nx: 0,
-      ny: 1,
-      edge: "bottom",
-      cornerBias: bias(distCorner),
-    }
-  }
-  s -= z.w
-  const distCorner = Math.min(s, z.h - s)
-  return {
-    x: z.x,
-    y: z.y + z.h - s,
-    nx: -1,
-    ny: 0,
-    edge: "left",
-    cornerBias: bias(distCorner),
-  }
+  return withRotation(buildElement(), cx, cy, rotation)
 }
 
 // bbox と TEXT_ZONE の重なり判定
@@ -328,68 +273,150 @@ const intersectsTextZone = (bbox: BBox) => {
   )
 }
 
-// 「デザインされたランダム感」: 外周を N 分割し、各セグメントに 1 個ずつ
-// 図形を置く。位置は少しジッター、サイズは 3 段階から傾斜サンプリング
+// 外周を 4 バンドに分け、それぞれに図形を密に配置する。
+// - 上下 (横に長い): 多くの図形
+// - 左右 (縦に長い、幅は狭い): 少なめだが必ず存在
+// - サイズと位置はジッター、キャンバス端に到達 (overflow) しやすい
+type Band = "top" | "right" | "bottom" | "left"
+
+const bandExtents = (band: Band) => {
+  const O = OVERFLOW_MARGIN
+  if (band === "top") {
+    return { xMin: -O, xMax: WIDTH + O, yMin: -O, yMax: TEXT_ZONE.y }
+  }
+  if (band === "bottom") {
+    return {
+      xMin: -O,
+      xMax: WIDTH + O,
+      yMin: TEXT_ZONE.y + TEXT_ZONE.h,
+      yMax: HEIGHT + O,
+    }
+  }
+  if (band === "left") {
+    return {
+      xMin: -O,
+      xMax: TEXT_ZONE.x,
+      yMin: TEXT_ZONE.y,
+      yMax: TEXT_ZONE.y + TEXT_ZONE.h,
+    }
+  }
+  return {
+    xMin: TEXT_ZONE.x + TEXT_ZONE.w,
+    xMax: WIDTH + O,
+    yMin: TEXT_ZONE.y,
+    yMax: TEXT_ZONE.y + TEXT_ZONE.h,
+  }
+}
+
+// 与えられた band 内にランダムに 1 個の bbox を返す (テキスト領域と非交差)
+const sampleInBand = (
+  band: Band,
+  size: number,
+  rand: (a: number, b: number) => number,
+): BBox | null => {
+  const ext = bandExtents(band)
+  const half = size / 2
+  const availW = ext.xMax - ext.xMin
+  const availH = ext.yMax - ext.yMin
+  if (availW < 20 || availH < 20) return null
+  // half がバンド寸法より大きいときは "半分以上はみ出す" 状態を許容するので、
+  // 中心座標を band 範囲でクランプ
+  const cxMin = ext.xMin + Math.min(half, availW / 2 - 10)
+  const cxMax = ext.xMax - Math.min(half, availW / 2 - 10)
+  const cyMin = ext.yMin + Math.min(half, availH / 2 - 10)
+  const cyMax = ext.yMax - Math.min(half, availH / 2 - 10)
+  const cx = rand(cxMin, cxMax)
+  const cy = rand(cyMin, cyMax)
+  const bbox: BBox = { x: cx - half, y: cy - half, w: size, h: size }
+  if (intersectsTextZone(bbox)) return null
+  return bbox
+}
+
+const pickSize = (
+  rng: () => number,
+  rand: (a: number, b: number) => number,
+) => {
+  const r = rng()
+  if (r < 0.2) return rand(50, 90) // 小 (点描)
+  if (r < 0.7) return rand(90, 170) // 中
+  if (r < 0.92) return rand(170, 240) // 大
+  return rand(240, 320) // 特大アクセント
+}
+
 const generateShapeBBoxes = (rng: () => number): BBox[] => {
   const rand = (min: number, max: number) => min + rng() * (max - min)
-  const p = 2 * (TEXT_ZONE.w + TEXT_ZONE.h)
   const bboxes: BBox[] = []
-  // 個数: 16〜22
-  const n = 16 + Math.floor(rng() * 7)
 
-  for (let i = 0; i < n; i++) {
-    // 均等 t + ジッター (隣接セグメントの中央までのみブレる)
-    const baseT = ((i + 0.5) * p) / n
-    const jitterT = (rng() - 0.5) * (p / n) * 0.85
-    const t = baseT + jitterT
-    const pt = perimeterAt(t)
-
-    // サイズ分布: 小さめ 20% / 中 55% / 大 25%
-    const r = rng()
-    let size: number
-    if (r < 0.2) size = rand(50, 90)
-    else if (r < 0.75) size = rand(90, 160)
-    else size = rand(160, 230)
-    const half = size / 2
-
-    // 外向きに押し出す距離。half より少し多めで、少しジッター
-    const push = half + rand(0, 55)
-
-    // 角付近では法線を斜めに寄せる (辺方向の tangent 成分を混ぜる)
-    // top/bottom 辺の tangent は ±x, left/right の tangent は ±y
-    let nx = pt.nx
-    let ny = pt.ny
-    if (pt.cornerBias > 0) {
-      // どちらのコーナー寄りか (辺の前半 or 後半)
-      // ここでは単純に「角の近く」の場合、tangent 成分を追加して斜めにする
-      const tangentSign = rng() < 0.5 ? 1 : -1
-      const tx = pt.edge === "top" || pt.edge === "bottom" ? tangentSign : 0
-      const ty = pt.edge === "left" || pt.edge === "right" ? tangentSign : 0
-      const w = pt.cornerBias * 0.9
-      nx = nx * (1 - w) + tx * w
-      ny = ny * (1 - w) + ty * w
-      const mag = Math.hypot(nx, ny) || 1
-      nx /= mag
-      ny /= mag
-    }
-
-    const cx = pt.x + nx * push
-    const cy = pt.y + ny * push
-
-    const bbox = { x: cx - half, y: cy - half, w: size, h: size }
-    // 念のためテキスト領域と重なる場合はスキップ
-    if (intersectsTextZone(bbox)) continue
-    // キャンバス外側にほとんど出過ぎているものもスキップ
-    if (
-      bbox.x + bbox.w < -OVERFLOW_MARGIN ||
-      bbox.x > WIDTH + OVERFLOW_MARGIN ||
-      bbox.y + bbox.h < -OVERFLOW_MARGIN ||
-      bbox.y > HEIGHT + OVERFLOW_MARGIN
-    ) {
-      continue
-    }
-    bboxes.push(bbox)
+  // 各辺に必ず十分な数を割り当てる
+  // 上下: 12〜16 個ずつ、左右: 5〜8 個ずつ → 合計 34〜48 個
+  const counts: Record<Band, number> = {
+    top: 12 + Math.floor(rng() * 5),
+    bottom: 12 + Math.floor(rng() * 5),
+    left: 5 + Math.floor(rng() * 4),
+    right: 5 + Math.floor(rng() * 4),
   }
+
+  const bands: Band[] = ["top", "bottom", "left", "right"]
+  for (const band of bands) {
+    for (let i = 0; i < counts[band]; i++) {
+      // 十分な回数試行 (テキスト非交差の bbox を得るため)
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const size = pickSize(rng, rand)
+        const bbox = sampleInBand(band, size, rand)
+        if (bbox) {
+          bboxes.push(bbox)
+          break
+        }
+      }
+    }
+  }
+
+  // 4 辺すべてに canvas 端に接する図形が最低 1 個は欲しい
+  // (中心を端 or 端の少し外に置いて、bbox が端をまたぐようにする)
+  const ensureEdgeContact: {
+    edge: "top" | "bottom" | "left" | "right"
+    band: Band
+  }[] = [
+    { edge: "top", band: "top" },
+    { edge: "bottom", band: "bottom" },
+    { edge: "left", band: "left" },
+    { edge: "right", band: "right" },
+  ]
+  for (const { edge, band } of ensureEdgeContact) {
+    // 既に接している bbox があるかチェック
+    const hasContact = bboxes.some((b) => {
+      if (edge === "top") return b.y <= 0
+      if (edge === "bottom") return b.y + b.h >= HEIGHT
+      if (edge === "left") return b.x <= 0
+      return b.x + b.w >= WIDTH
+    })
+    if (hasContact) continue
+    // 端を跨ぐ図形を無理やり追加
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const size = rand(140, 220)
+      const half = size / 2
+      let cx: number, cy: number
+      if (edge === "top" || edge === "bottom") {
+        cx = rand(80, WIDTH - 80)
+        cy =
+          edge === "top"
+            ? rand(-half + 15, -20)
+            : rand(HEIGHT + 20, HEIGHT + half - 15)
+      } else {
+        cy = rand(TEXT_ZONE.y + 20, TEXT_ZONE.y + TEXT_ZONE.h - 20)
+        cx =
+          edge === "left"
+            ? rand(-half + 15, -20)
+            : rand(WIDTH + 20, WIDTH + half - 15)
+      }
+      const bbox: BBox = { x: cx - half, y: cy - half, w: size, h: size }
+      if (intersectsTextZone(bbox)) continue
+      bboxes.push(bbox)
+      break
+    }
+    void band
+  }
+
   return bboxes
 }
 
