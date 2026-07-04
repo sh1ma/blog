@@ -35,16 +35,17 @@ const textColors = {
 // タイトル最大 3 行 + 日付 / サイト名行が入るサイズ
 const TEXT_ZONE = { x: 60, y: 165, w: WIDTH - 120, h: 300 }
 
-// 図形を置ける 6 個のスロット。TEXT_ZONE と交差しない位置
-type BBox = { x: number; y: number; w: number; h: number }
-const SLOTS: BBox[] = [
-  { x: 40, y: 25, w: 190, h: 120 }, // top-left
-  { x: 505, y: 20, w: 190, h: 120 }, // top-center
-  { x: 970, y: 25, w: 190, h: 120 }, // top-right
-  { x: 40, y: 485, w: 190, h: 120 }, // bottom-left
-  { x: 505, y: 490, w: 190, h: 120 }, // bottom-center
-  { x: 970, y: 485, w: 190, h: 120 }, // bottom-right
-]
+// 上下バンドの余白 (キャンバス外へ多少はみ出しても OK)
+const OVERFLOW_MARGIN = 80
+// バンド幅 (テキスト安全領域の上下、上端 / 下端は overflow 分だけ広げる)
+const TOP_BAND = {
+  yMin: -OVERFLOW_MARGIN,
+  yMax: TEXT_ZONE.y,
+}
+const BOTTOM_BAND = {
+  yMin: TEXT_ZONE.y + TEXT_ZONE.h,
+  yMax: HEIGHT + OVERFLOW_MARGIN,
+}
 
 const loadFonts = async () => {
   return Promise.all(
@@ -86,8 +87,9 @@ const SHAPE_TYPES: readonly ShapeType[] = [
   "geometric",
 ]
 
-// 各スロットの bbox 内に 1 つの図形を返す。返り値は satori 用の
-// SVG ノードツリー
+type BBox = { x: number; y: number; w: number; h: number }
+
+// bbox の中に 1 つの図形を返す
 const buildShape = (
   type: ShapeType,
   bbox: BBox,
@@ -258,20 +260,51 @@ const buildShape = (
   }
 }
 
+// テキスト安全領域と交差しない、上下バンドに散らばった bbox を生成
+const generateShapeBBoxes = (rng: () => number): BBox[] => {
+  const rand = (min: number, max: number) => min + rng() * (max - min)
+  const bboxes: BBox[] = []
+  // 12〜20 個。数もランダム
+  const n = 12 + Math.floor(rng() * 9)
+
+  for (let i = 0; i < n; i++) {
+    // サイズは 70〜240 (円やX などは実サイズより小さくレンダリングされる)
+    const size = rand(70, 240)
+    const half = size / 2
+    // 上バンドか下バンドか (半々くらい)
+    const useTop = rng() < 0.5
+    const band = useTop ? TOP_BAND : BOTTOM_BAND
+
+    // 縦位置: bbox が band 内に入るように選ぶ
+    const cyMin = band.yMin + half
+    const cyMax = band.yMax - half
+    if (cyMax <= cyMin) continue
+    const cy = rand(cyMin, cyMax)
+
+    // 横位置: overflow 許容で左右少しはみ出し
+    const cx = rand(-OVERFLOW_MARGIN + half, WIDTH + OVERFLOW_MARGIN - half)
+
+    bboxes.push({ x: cx - half, y: cy - half, w: size, h: size })
+  }
+  return bboxes
+}
+
 const buildBackgroundSvg = (slug: string) => {
   const rng = seededRandom(slug)
-  // カラーはスロットごとに独立に選ぶ (ただし直前と同じ色は避ける)
+  const bboxes = generateShapeBBoxes(rng)
+
+  // カラーは前と別の色を選ぶ (連続同色を避ける)
   let lastColor: string | null = null
   const pickColor = () => {
     let c: string
     do {
       c = pick(PALETTE, rng)
-    } while (c === lastColor)
+    } while (c === lastColor && PALETTE.length > 1)
     lastColor = c
     return c
   }
 
-  const children = SLOTS.map((bbox) => {
+  const children = bboxes.map((bbox) => {
     const type = pick(SHAPE_TYPES, rng)
     return buildShape(type, bbox, pickColor(), rng)
   })
@@ -282,7 +315,7 @@ const buildBackgroundSvg = (slug: string) => {
       width: WIDTH,
       height: HEIGHT,
       viewBox: `0 0 ${WIDTH} ${HEIGHT}`,
-      style: { position: "absolute", top: 0, left: 0 },
+      style: { position: "absolute", top: 0, left: 0, overflow: "visible" },
       children,
     },
   }
