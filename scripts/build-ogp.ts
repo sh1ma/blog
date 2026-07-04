@@ -11,26 +11,40 @@ const OG_DIR = path.join(DIST_DIR, "og")
 const SHELL_HTML = path.join(DIST_DIR, "index.html")
 const WIDTH = 1200
 const HEIGHT = 630
-const FONT_FAMILY = "IBM Plex Sans JP"
+const FONT_FAMILY = "Zen Maru Gothic"
 
 const FONT_URLS = [
   {
     weight: 400 as const,
-    url: "https://fonts.gstatic.com/s/ibmplexsansjp/v5/Z9XNDn9KbTDf6_f7dISNqYf_tvPT1Cr4iNJ-pwc.ttf",
+    url: "https://fonts.gstatic.com/s/zenmarugothic/v19/o-0SIpIxzW5b-RxT-6A8jWAtCp-k7Q.ttf",
   },
   {
-    weight: 600 as const,
-    url: "https://fonts.gstatic.com/s/ibmplexsansjp/v5/Z9XKDn9KbTDf6_f7dISNqYf_tvPT7PLWrNpVuw5_BAM.ttf",
+    weight: 700 as const,
+    url: "https://fonts.gstatic.com/s/zenmarugothic/v19/o-0XIpIxzW5b-RxT-6A8jWAtCp-cUW1CPA.ttf",
   },
 ]
 
-// 元のグラデーション枠と揃えた4色。角ごとにシャッフルされる
-const CORNER_PALETTE = ["#6365f7", "#f8dbe9", "#afdee8", "#b8bdf2"]
+const PALETTE = ["#6365f7", "#f8dbe9", "#afdee8", "#b8bdf2"]
 const textColors = {
   title: "#303036",
   meta: "#6365f7",
-  time: "#b8bdf2",
+  time: "#8f92c9",
 }
+
+// テキスト安全領域 (この矩形の内側には図形を配置しない)
+// タイトル最大 3 行 + 日付 / サイト名行が入るサイズ
+const TEXT_ZONE = { x: 60, y: 165, w: WIDTH - 120, h: 300 }
+
+// 図形を置ける 6 個のスロット。TEXT_ZONE と交差しない位置
+type BBox = { x: number; y: number; w: number; h: number }
+const SLOTS: BBox[] = [
+  { x: 40, y: 25, w: 190, h: 120 }, // top-left
+  { x: 505, y: 20, w: 190, h: 120 }, // top-center
+  { x: 970, y: 25, w: 190, h: 120 }, // top-right
+  { x: 40, y: 485, w: 190, h: 120 }, // bottom-left
+  { x: 505, y: 490, w: 190, h: 120 }, // bottom-center
+  { x: 970, y: 485, w: 190, h: 120 }, // bottom-right
+]
 
 const loadFonts = async () => {
   return Promise.all(
@@ -50,7 +64,6 @@ const loadFonts = async () => {
   )
 }
 
-// slug をシードにした決定的な乱数
 const seededRandom = (seed: string) => {
   let state = 0x811c9dc5
   for (let i = 0; i < seed.length; i++) {
@@ -62,79 +75,221 @@ const seededRandom = (seed: string) => {
   }
 }
 
-const shuffle = <T>(arr: T[], rng: () => number): T[] => {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
+const pick = <T>(arr: readonly T[], rng: () => number): T =>
+  arr[Math.floor(rng() * arr.length)]
 
-// 4隅の不定形ポリゴンを生成する。各ポリゴンは対応する角と、
-// その角に接する2辺の各1点、内部の2〜3点を経由する五角形〜六角形。
-// これにより「4辺に完全に接する」を担保しつつランダム感を出す
-const buildCornerPolygons = (rng: () => number) => {
+type ShapeType = "triangle" | "ellipse" | "rectangle" | "geometric"
+const SHAPE_TYPES: readonly ShapeType[] = [
+  "triangle",
+  "ellipse",
+  "rectangle",
+  "geometric",
+]
+
+// 各スロットの bbox 内に 1 つの図形を返す。返り値は satori 用の
+// SVG ノードツリー
+const buildShape = (
+  type: ShapeType,
+  bbox: BBox,
+  color: string,
+  rng: () => number,
+) => {
+  const { x, y, w, h } = bbox
   const rand = (min: number, max: number) => min + rng() * (max - min)
-  const jitter = (base: number, spread: number) =>
-    base + (rng() - 0.5) * 2 * spread
 
-  const palette = shuffle(CORNER_PALETTE, rng)
-
-  // 各コーナー: 辺沿いの延長距離と内部の凹凸点
-  // edgeH: 縦辺方向の延長, edgeW: 横辺方向の延長
-  const buildPoints = (
-    corner: "tl" | "tr" | "bl" | "br",
-    edgeW: number,
-    edgeH: number,
-    innerPts: Array<{ x: number; y: number }>,
-  ) => {
-    // 角の座標
-    const cx = corner === "tl" || corner === "bl" ? 0 : WIDTH
-    const cy = corner === "tl" || corner === "tr" ? 0 : HEIGHT
-    const signX = corner === "tl" || corner === "bl" ? 1 : -1
-    const signY = corner === "tl" || corner === "tr" ? 1 : -1
-
-    // 頂点順: 角 → 横辺沿いの点 → 内部点 → 縦辺沿いの点 → 角 (自動 close)
-    const pts: Array<[number, number]> = [
-      [cx, cy],
-      [cx + signX * edgeW, cy],
-      ...innerPts.map(
-        (p) => [cx + signX * p.x, cy + signY * p.y] as [number, number],
-      ),
-      [cx, cy + signY * edgeH],
-    ]
-    return pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")
+  if (type === "triangle") {
+    // bbox 底辺の 2 点 + 上辺のどこか 1 点 (二等辺気味〜スケール気味)
+    const p1 = [x + rand(0, w * 0.25), y + h]
+    const p2 = [x + w - rand(0, w * 0.25), y + h]
+    const p3 = [x + rand(0.3, 0.7) * w, y + rand(0, w * 0.15)]
+    return {
+      type: "polygon",
+      props: {
+        points: [p1, p2, p3].map(([px, py]) => `${px},${py}`).join(" "),
+        fill: color,
+      },
+    }
   }
 
-  // 下側 (bl/br) は下端に載る meta 行を避けるため縦方向を短めに、
-  // 上側 (tl/tr) は多少大きくても OK
-  const corners = (["tl", "tr", "bl", "br"] as const).map((corner, i) => {
-    const isBottom = corner === "bl" || corner === "br"
-    const edgeW = rand(300, 460)
-    const edgeH = isBottom ? rand(120, 200) : rand(220, 340)
-    const innerPts = [
-      { x: jitter(edgeW * 0.72, 40), y: jitter(edgeH * 0.28, 20) },
-      { x: jitter(edgeW * 0.55, 60), y: jitter(edgeH * 0.55, 30) },
-      { x: jitter(edgeW * 0.28, 30), y: jitter(edgeH * 0.78, 20) },
+  if (type === "ellipse") {
+    return {
+      type: "ellipse",
+      props: {
+        cx: x + w / 2,
+        cy: y + h / 2,
+        rx: (w / 2) * rand(0.75, 1),
+        ry: (h / 2) * rand(0.75, 1),
+        fill: color,
+      },
+    }
+  }
+
+  if (type === "rectangle") {
+    // 一部を角丸にしてバリエーションを出す
+    const rectW = w * rand(0.6, 0.95)
+    const rectH = h * rand(0.6, 0.95)
+    return {
+      type: "rect",
+      props: {
+        x: x + (w - rectW) / 2,
+        y: y + (h - rectH) / 2,
+        width: rectW,
+        height: rectH,
+        rx: rng() < 0.4 ? rand(10, 24) : 0,
+        fill: color,
+      },
+    }
+  }
+
+  // geometric: 円環 / 十字 / 菱形 / X のいずれか
+  const variant = Math.floor(rng() * 4)
+  const cx = x + w / 2
+  const cy = y + h / 2
+  const r = Math.min(w, h) / 2
+
+  if (variant === 0) {
+    // ring (輪郭のみの円)
+    return {
+      type: "circle",
+      props: {
+        cx,
+        cy,
+        r: r * 0.85,
+        fill: "transparent",
+        stroke: color,
+        strokeWidth: rand(12, 18),
+      },
+    }
+  }
+
+  if (variant === 1) {
+    // plus (+)
+    const armLong = r * 1.7
+    const armShort = r * 0.55
+    return {
+      type: "g",
+      props: {
+        children: [
+          {
+            type: "rect",
+            props: {
+              x: cx - armLong / 2,
+              y: cy - armShort / 2,
+              width: armLong,
+              height: armShort,
+              fill: color,
+            },
+          },
+          {
+            type: "rect",
+            props: {
+              x: cx - armShort / 2,
+              y: cy - armLong / 2,
+              width: armShort,
+              height: armLong,
+              fill: color,
+            },
+          },
+        ],
+      },
+    }
+  }
+
+  if (variant === 2) {
+    // diamond (回転四角)
+    const rx = r * 0.9
+    const ry = r * 0.75
+    const pts = [
+      [cx, cy - ry],
+      [cx + rx, cy],
+      [cx, cy + ry],
+      [cx - rx, cy],
     ]
     return {
-      color: palette[i],
-      points: buildPoints(corner, edgeW, edgeH, innerPts),
+      type: "polygon",
+      props: {
+        points: pts.map(([px, py]) => `${px},${py}`).join(" "),
+        fill: color,
+      },
     }
+  }
+
+  // variant 3: X 型 (2 本の細長い長方形を回転させたポリゴン)
+  const thick = r * 0.35
+  const long = r * 1.6
+  // 45 度回転で 2 本のバーを描く。ここではポリゴンで表現
+  const s = Math.SQRT1_2
+  const arm = long / 2
+  const t = thick / 2
+  // バー1: 左上 → 右下方向
+  const bar1 = [
+    [cx - arm * s - t * s, cy - arm * s + t * s],
+    [cx - arm * s + t * s, cy - arm * s - t * s],
+    [cx + arm * s + t * s, cy + arm * s - t * s],
+    [cx + arm * s - t * s, cy + arm * s + t * s],
+  ]
+  // バー2: 右上 → 左下方向
+  const bar2 = [
+    [cx + arm * s - t * s, cy - arm * s - t * s],
+    [cx + arm * s + t * s, cy - arm * s + t * s],
+    [cx - arm * s + t * s, cy + arm * s + t * s],
+    [cx - arm * s - t * s, cy + arm * s - t * s],
+  ]
+  return {
+    type: "g",
+    props: {
+      children: [
+        {
+          type: "polygon",
+          props: {
+            points: bar1.map(([px, py]) => `${px},${py}`).join(" "),
+            fill: color,
+          },
+        },
+        {
+          type: "polygon",
+          props: {
+            points: bar2.map(([px, py]) => `${px},${py}`).join(" "),
+            fill: color,
+          },
+        },
+      ],
+    },
+  }
+}
+
+const buildBackgroundSvg = (slug: string) => {
+  const rng = seededRandom(slug)
+  // カラーはスロットごとに独立に選ぶ (ただし直前と同じ色は避ける)
+  let lastColor: string | null = null
+  const pickColor = () => {
+    let c: string
+    do {
+      c = pick(PALETTE, rng)
+    } while (c === lastColor)
+    lastColor = c
+    return c
+  }
+
+  const children = SLOTS.map((bbox) => {
+    const type = pick(SHAPE_TYPES, rng)
+    return buildShape(type, bbox, pickColor(), rng)
   })
 
-  return corners
+  return {
+    type: "svg",
+    props: {
+      width: WIDTH,
+      height: HEIGHT,
+      viewBox: `0 0 ${WIDTH} ${HEIGHT}`,
+      style: { position: "absolute", top: 0, left: 0 },
+      children,
+    },
+  }
 }
 
 const buildNode = (title: string, publishedAt: string, slug: string) => {
-  const rng = seededRandom(slug)
-  const corners = buildCornerPolygons(rng)
-
-  const svgChildren = corners.map((c) => ({
-    type: "polygon",
-    props: { points: c.points, fill: c.color },
-  }))
+  const bgSvg = buildBackgroundSvg(slug)
 
   return {
     type: "div",
@@ -149,21 +304,7 @@ const buildNode = (title: string, publishedAt: string, slug: string) => {
         fontFamily: FONT_FAMILY,
       },
       children: [
-        // 背景の4隅ポリゴン
-        {
-          type: "svg",
-          props: {
-            width: WIDTH,
-            height: HEIGHT,
-            viewBox: `0 0 ${WIDTH} ${HEIGHT}`,
-            style: {
-              position: "absolute",
-              top: 0,
-              left: 0,
-            },
-            children: svgChildren,
-          },
-        },
+        bgSvg,
         // 前景のテキストレイヤー
         {
           type: "div",
@@ -174,7 +315,9 @@ const buildNode = (title: string, publishedAt: string, slug: string) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              padding: "96px 96px 72px",
+              padding: `${TEXT_ZONE.y}px ${TEXT_ZONE.x}px ${
+                HEIGHT - (TEXT_ZONE.y + TEXT_ZONE.h)
+              }px`,
               position: "relative",
             },
             children: [
@@ -183,10 +326,9 @@ const buildNode = (title: string, publishedAt: string, slug: string) => {
                 props: {
                   style: {
                     display: "flex",
-                    fontSize: 64,
-                    fontWeight: 600,
+                    fontSize: 54,
+                    fontWeight: 700,
                     lineHeight: 1.25,
-                    marginTop: 48,
                   },
                   children: title,
                 },
@@ -198,7 +340,7 @@ const buildNode = (title: string, publishedAt: string, slug: string) => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-end",
-                    fontSize: 44,
+                    fontSize: 36,
                   },
                   children: [
                     {
@@ -214,7 +356,7 @@ const buildNode = (title: string, publishedAt: string, slug: string) => {
                         style: {
                           display: "flex",
                           color: textColors.meta,
-                          fontWeight: 600,
+                          fontWeight: 700,
                         },
                         children: "blog.sh1ma.dev",
                       },
