@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 import satori from "satori"
 import { allArticles } from "../.contentlayer/generated/index.mjs"
 
-const SITE_URL = "https://blog.sh1ma.dev"
+const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
 const DIST_DIR = path.resolve("./dist")
 const OG_DIR = path.join(DIST_DIR, "og")
 const SHELL_HTML = path.join(DIST_DIR, "index.html")

@@ -4,7 +4,7 @@ import dayjs from "dayjs"
 import { Feed } from "feed"
 import { allArticles } from "../.contentlayer/generated/index.mjs"
 
-const SITE_URL = "https://blog.sh1ma.dev"
+const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
 const OUT_DIR = path.resolve("./dist")
 const OUT_FILE = path.join(OUT_DIR, "feed.xml")
 

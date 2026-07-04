@@ -84,19 +84,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Compute preview URL
+        id: preview
+        run: |
+          PR_NUM=${{ github.event.pull_request.number }}
+          ALIAS="pr-${PR_NUM}"
+          PREVIEW_URL="https://${ALIAS}-${{ env.WORKER_NAME }}.${{ env.WORKERS_SUBDOMAIN }}.workers.dev"
+          echo "alias=${ALIAS}" >> $GITHUB_OUTPUT
+          echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+
       - name: Build
+        env:
+          SITE_URL: ${{ steps.preview.outputs.preview_url }}
         run: pnpm build
 
       - name: Deploy preview
         id: deploy
         run: |
-          PR_NUM=${{ github.event.pull_request.number }}
-          ALIAS="pr-${PR_NUM}"
-
-          pnpm exec wrangler versions upload --preview-alias ${ALIAS}
-
-          PREVIEW_URL="https://${ALIAS}-${{ env.WORKER_NAME }}.${{ env.WORKERS_SUBDOMAIN }}.workers.dev"
-          echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+          pnpm exec wrangler versions upload --preview-alias ${{ steps.preview.outputs.alias }}
+          echo "preview_url=${{ steps.preview.outputs.preview_url }}" >> $GITHUB_OUTPUT
 
       - name: Update comment on success
         if: success()

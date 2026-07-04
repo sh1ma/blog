@@ -47,6 +47,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        env:
+          SITE_URL: https://staging-${{ env.WORKER_NAME }}.${{ env.WORKERS_SUBDOMAIN }}.workers.dev
         run: pnpm build
 
       - name: Deploy to staging
