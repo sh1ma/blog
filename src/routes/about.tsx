@@ -93,13 +93,24 @@ function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8">
       <section className="mb-12 rounded-2xl bg-bg-surface p-8 shadow-soft">
-        <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-brand-primary-light/20 px-3 py-1 text-xs font-medium text-brand-primary">
-          <Sparkles size={14} />
-          <span>About me</span>
+        <div className="mb-6 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+          <img
+            src="/anon-icon-200x200.webp"
+            alt="sh1ma のアイコン"
+            width={96}
+            height={96}
+            className="size-24 shrink-0 rounded-full object-cover shadow-soft ring-2 ring-brand-primary-light/40"
+          />
+          <div>
+            <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-brand-primary-light/20 px-3 py-1 text-xs font-medium text-brand-primary">
+              <Sparkles size={14} />
+              <span>About me</span>
+            </div>
+            <h2 className="text-4xl font-bold tracking-tight text-text-primary">
+              sh1ma
+            </h2>
+          </div>
         </div>
-        <h2 className="mb-3 text-4xl font-bold tracking-tight text-text-primary">
-          sh1ma
-        </h2>
         <p className="mb-6 text-lg leading-relaxed text-text-secondary">
           エンジニアをしています。普段はサーバーサイドや低レイヤ寄りのことを触ることが多いです。
         </p>
