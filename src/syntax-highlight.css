@@ -57,14 +57,17 @@ figure[data-rehype-pretty-code-figure] [data-highlighted-line] {
 
 /* タイトル (rehype-pretty-code の title) */
 figure[data-rehype-pretty-code-figure] [data-rehype-pretty-code-title] {
-  padding: 0.5rem 1rem;
-  background-color: #21252b;
-  color: #abb2bf;
-  font-size: 0.8125rem;
+  display: inline-block;
+  margin: 0.5rem 0.75rem 0;
+  padding: 0.125rem 0.625rem;
+  background-color: #3a3f4b;
+  color: #d7dae0;
+  font-size: 0.75rem;
+  font-weight: 500;
   font-family:
     ui-monospace, "SFMono-Regular", "Menlo", "Monaco", "Consolas",
     "Liberation Mono", "Courier New", monospace;
-  border-bottom: 1px solid #181a1f;
+  border-radius: 0.25rem;
 }
 
 /* コピー用ボタン (クライアント側で注入) */
