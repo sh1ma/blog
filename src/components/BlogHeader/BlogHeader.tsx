@@ -1,9 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { ChevronDown, PenLine } from "lucide-react"
+import { ChevronLeft, PenLine } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
 const HIDE_DELAY_MS = 3000
+const AUTO_COLLAPSE_DELAY_MS = 3000
 
 const glassSurface =
   "bg-bg-surface/60 border border-white/40 shadow-soft backdrop-blur-xl backdrop-saturate-150"
@@ -15,6 +16,19 @@ export const BlogHeader = () => {
   const [userExpanded, setUserExpanded] = useState(false)
   const userExpandedRef = useRef(false)
   userExpandedRef.current = userExpanded
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  const handleExpand = () => {
+    setUserExpanded(true)
+    userExpandedRef.current = true
+    if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current)
+    collapseTimerRef.current = setTimeout(() => {
+      setUserExpanded(false)
+      userExpandedRef.current = false
+    }, AUTO_COLLAPSE_DELAY_MS)
+  }
 
   useEffect(() => {
     let hideTimer: ReturnType<typeof setTimeout> | undefined
@@ -32,6 +46,10 @@ export const BlogHeader = () => {
       if (!s && userExpandedRef.current) {
         setUserExpanded(false)
         userExpandedRef.current = false
+        if (collapseTimerRef.current) {
+          clearTimeout(collapseTimerRef.current)
+          collapseTimerRef.current = undefined
+        }
       }
       setVisible(true)
       scheduleHide()
@@ -45,6 +63,7 @@ export const BlogHeader = () => {
 
     return () => {
       if (hideTimer) clearTimeout(hideTimer)
+      if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current)
       window.removeEventListener("scroll", onActivity)
       window.removeEventListener("pointerdown", onActivity)
       window.removeEventListener("keydown", onActivity)
@@ -107,14 +126,14 @@ export const BlogHeader = () => {
           <button
             type="button"
             aria-label="ヘッダーを展開"
-            onClick={() => setUserExpanded(true)}
+            onClick={handleExpand}
             className={`absolute inset-0 flex items-center justify-center text-text-muted transition-opacity duration-300 ease-out hover:text-brand-primary ${
               isCompact
                 ? "opacity-100 delay-200"
                 : "pointer-events-none opacity-0"
             }`}
           >
-            <ChevronDown />
+            <ChevronLeft />
           </button>
         </div>
       </div>
