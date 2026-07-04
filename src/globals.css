@@ -1,9 +1,6 @@
-@use "sass:meta";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@include meta.load-css("syntax-highlight.scss");
+@import "tailwindcss";
+@import "./syntax-highlight.css";
+@config "../tailwind.config.ts";
 
 :root {
   /* ===== プリミティブカラー ===== */
@@ -89,85 +86,77 @@ body {
   color: var(--text-primary);
   text-decoration: none !important;
   overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   min-height: 120px;
-
-  &:hover {
-    border-color: var(--border-brand);
-    box-shadow: 0 4px 12px rgba(81, 79, 201, 0.12);
-  }
-
-  &__body {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.4rem;
-    padding: 0.9rem 1rem;
-    min-width: 0;
-  }
-
-  &__title {
-    font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    color: var(--text-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  &__desc {
-    font-size: 0.8rem;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-
-  &__favicon {
-    width: 16px;
-    height: 16px;
-    margin: 0 !important;
-    display: inline-block;
-  }
-
-  &__thumb {
-    flex: 0 0 auto;
-    width: 200px;
-    max-width: 40%;
-    background: var(--bg-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      margin: 0 !important;
-    }
-  }
+}
+.link-card:hover {
+  border-color: var(--border-brand);
+  box-shadow: 0 4px 12px rgba(81, 79, 201, 0.12);
+}
+.link-card__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.9rem 1rem;
+  min-width: 0;
+}
+.link-card__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.link-card__desc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.link-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.link-card__favicon {
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  display: inline-block;
+}
+.link-card__thumb {
+  flex: 0 0 auto;
+  width: 200px;
+  max-width: 40%;
+  background: var(--bg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.link-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0 !important;
 }
 
 @media (max-width: 640px) {
-  .link-card {
-    &__thumb {
-      width: 120px;
-      max-width: 35%;
-    }
+  .link-card__thumb {
+    width: 120px;
+    max-width: 35%;
   }
 }
 
@@ -175,19 +164,19 @@ body {
   margin: 1.25rem auto !important;
 }
 
-h2,
-h3,
-h4,
-h5,
-h6 {
-  .heading-link {
-    margin-left: 0.2rem;
-    opacity: 0;
-    text-decoration: none;
-  }
-  &:hover {
-    .heading-link {
-      opacity: 1;
-    }
-  }
+h2 .heading-link,
+h3 .heading-link,
+h4 .heading-link,
+h5 .heading-link,
+h6 .heading-link {
+  margin-left: 0.2rem;
+  opacity: 0;
+  text-decoration: none;
+}
+h2:hover .heading-link,
+h3:hover .heading-link,
+h4:hover .heading-link,
+h5:hover .heading-link,
+h6:hover .heading-link {
+  opacity: 1;
 }

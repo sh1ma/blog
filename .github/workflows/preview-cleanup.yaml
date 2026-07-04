@@ -33,15 +33,42 @@ jobs:
           ALIAS="pr-${PR_NUM}"
           API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
-          # pr-{N} alias が振られている version を全て取得。
-          # alias は version の annotation なので、対象 version を消せば alias も消える。
-          # Cloudflare 側の 1 alias = 1 version (最新のみ有効) だが、alias 履歴として
-          # 過去に pr-{N} が振られていた version も含めて掃除しておく。
-          VERSIONS=$(curl -fsS \
-            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-            "${API}/workers/scripts/${WORKER_NAME}/versions?per_page=100" \
-            | jq -r --arg alias "${ALIAS}" \
-                '.result.items[] | select(.annotations["workers/alias"] == $alias) | .id')
+          # 全 version から pr-{N} alias が付いているものを収集。
+          # 全ページ舐めるのは重いので、対象 alias が見つからないページが続いたら早期打ち切り。
+          # alias は最新の version が保持する annotation なので、通常は最初の数ページで見つかる。
+          # ただし過去に何度も upload された PR は複数ページに散っている可能性あり。
+          VERSIONS=""
+          PAGE=1
+          EMPTY_PAGES=0
+          while [ "${PAGE}" -le 20 ]; do
+            PAGE_JSON=$(curl -fsS \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${API}/workers/scripts/${WORKER_NAME}/versions?per_page=100&page=${PAGE}")
+            COUNT_ON_PAGE=$(echo "${PAGE_JSON}" | jq -r '.result.items | length')
+            if [ "${COUNT_ON_PAGE}" = "0" ]; then
+              break
+            fi
+            MATCH_IDS=$(echo "${PAGE_JSON}" | jq -r --arg alias "${ALIAS}" \
+              '.result.items[] | select(.annotations["workers/alias"] == $alias) | .id')
+            if [ -n "${MATCH_IDS}" ]; then
+              VERSIONS="${VERSIONS}${MATCH_IDS}"$'\n'
+              EMPTY_PAGES=0
+            else
+              EMPTY_PAGES=$((EMPTY_PAGES + 1))
+              # 3 ページ連続でヒットしなくなったら打ち切り
+              if [ "${EMPTY_PAGES}" -ge 3 ] && [ -n "${VERSIONS}" ]; then
+                break
+              fi
+              # まだ 1 件もヒットしていない場合は 5 ページまで探す
+              if [ "${EMPTY_PAGES}" -ge 5 ] && [ -z "${VERSIONS}" ]; then
+                break
+              fi
+            fi
+            PAGE=$((PAGE + 1))
+          done
+
+          # 重複除去 + 空行削除
+          VERSIONS=$(echo "${VERSIONS}" | awk 'NF' | sort -u)
 
           if [ -z "${VERSIONS}" ]; then
             echo "No preview version found for alias ${ALIAS}. Nothing to delete."
@@ -72,9 +99,15 @@ jobs:
         env:
           CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
           DELETED_COUNT: ${{ steps.cleanup.outputs.deleted }}
+          PR_NUM: ${{ github.event.pull_request.number || inputs.pr_number }}
         with:
           script: |
-            const prNum = context.issue.number;
+            const prNum = Number(process.env.PR_NUM);
+            if (!Number.isInteger(prNum) || prNum <= 0) {
+              core.info(`No valid PR number (got ${process.env.PR_NUM}); skipping comment update.`);
+              return;
+            }
+
             const outcome = process.env.CLEANUP_OUTCOME;
             const deleted = process.env.DELETED_COUNT;
 

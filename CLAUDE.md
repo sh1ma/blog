@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - 常に日本語で説明してください。
 - **依存追加は必ず `pnpm add` / `pnpm add -D` を使うこと**。`package.json` を直接編集して依存を書き込むのは禁止。バージョン指定は pnpm に解決させ、`pnpm-lock.yaml` と一貫させる。
+- **`biome-ignore` (および `eslint-disable` 等の Lint 無効化コメント) は絶対に書かない**。Lint エラーは黙らせるのではなく、コードを直して解消する。`useExhaustiveDependencies` で困ったら関数を `useCallback` にして deps に載せる、`useEffect` 内へ移す、ref にする、などの手段でルールを守る形にリファクタする。
 
 ## ブランチ命名規則
 
@@ -78,7 +79,9 @@ pnpm cf-typegen    # Cloudflare 環境変数の型生成 → cloudflare-env.d.ts
 ### コンテンツパイプライン
 
 - Markdown は `src/markdown/posts/*.md` (記事) と `src/markdown/about.md` に配置。
-- `contentlayer.config.ts` で Article / About の 2 ドキュメントタイプを定義。`rehype-slug` + `rehype-autolink-headings` + `rehype-pretty-code` (shiki `one-dark-pro`) を通す。
+- `contentlayer.config.ts` で Article / About の 2 ドキュメントタイプを定義。`rehype-slug` + `rehype-autolink-headings` + `rehype-pretty-code` (shiki + `themes/atom-one-dark.json`) を通し、独自 rehype 変換で全コードブロックに `data-line-numbers` を付与する。
+- コードブロックの見た目は `src/syntax-highlight.css` で管理。行番号は CSS `counter` + `::before` で表示 (選択・コピー対象外)。コピーボタンは `src/components/MarkdownContent/MarkdownContent.tsx` の `useEffect` で `<figure>` 内に注入される。
+- コードブロックに任意でファイル名を表示できる: `` ```ts title="foo.ts" `` のように書くと `<figcaption>` として左上に表示される (rehype-pretty-code のネイティブサポート)。
 - `pnpm build:content` が `.contentlayer/generated` に型付き JSON を生成する。ランタイムは `contentlayer/generated` を alias 経由でインポートする。
 
 ### ルーティング / データ
