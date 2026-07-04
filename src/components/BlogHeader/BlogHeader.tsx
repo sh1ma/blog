@@ -7,7 +7,7 @@ const HIDE_DELAY_MS = 3000
 const AUTO_COLLAPSE_DELAY_MS = 3000
 
 const glassSurface =
-  "bg-bg-surface/60 border border-white/40 shadow-soft backdrop-blur-xl backdrop-saturate-150"
+  "bg-bg-surface/75 border border-white/50 shadow-soft backdrop-blur-xl backdrop-saturate-150"
 
 export const BlogHeader = () => {
   const pathname = useLocation({ select: (loc) => loc.pathname })
