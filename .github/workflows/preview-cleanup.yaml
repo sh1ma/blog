@@ -18,46 +18,69 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.12.0
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Overwrite preview alias with tombstone Worker
+      - name: Delete preview alias versions
         id: cleanup
+        env:
+          PR_NUM: ${{ github.event.pull_request.number }}
         run: |
-          PR_NUM=${{ github.event.pull_request.number }}
+          set -euo pipefail
           ALIAS="pr-${PR_NUM}"
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
-          # Cloudflare には preview alias を明示的に削除する API がないため、
-          # 410 Gone を返すだけのスタブ Worker を同じ alias に再アップロードし、
-          # 実質的にプレビューを無効化する。
-          pnpm exec wrangler versions upload \
-            --config wrangler.preview-cleanup.jsonc \
-            --preview-alias "${ALIAS}" \
-            --message "Cleanup preview for PR #${PR_NUM}"
+          # pr-{N} alias が振られている version を全て取得。
+          # alias は version の annotation なので、対象 version を消せば alias も消える。
+          # Cloudflare 側の 1 alias = 1 version (最新のみ有効) だが、alias 履歴として
+          # 過去に pr-{N} が振られていた version も含めて掃除しておく。
+          VERSIONS=$(curl -fsS \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${API}/workers/scripts/${WORKER_NAME}/versions?per_page=100" \
+            | jq -r --arg alias "${ALIAS}" \
+                '.result.items[] | select(.annotations["workers/alias"] == $alias) | .id')
+
+          if [ -z "${VERSIONS}" ]; then
+            echo "No preview version found for alias ${ALIAS}. Nothing to delete."
+            echo "deleted=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          COUNT=0
+          for VID in ${VERSIONS}; do
+            echo "Deleting version ${VID} (alias=${ALIAS})"
+            HTTP_CODE=$(curl -sS -o /tmp/resp.json -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${API}/workers/workers/${WORKER_NAME}/versions/${VID}")
+            if [ "${HTTP_CODE}" != "200" ] && [ "${HTTP_CODE}" != "204" ]; then
+              echo "Failed to delete version ${VID} (HTTP ${HTTP_CODE}):"
+              cat /tmp/resp.json
+              exit 1
+            fi
+            COUNT=$((COUNT + 1))
+          done
+
+          echo "Deleted ${COUNT} version(s) for alias ${ALIAS}."
+          echo "deleted=${COUNT}" >> "$GITHUB_OUTPUT"
 
       - name: Update PR comment
         if: always()
         uses: actions/github-script@v8
+        env:
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
+          DELETED_COUNT: ${{ steps.cleanup.outputs.deleted }}
         with:
           script: |
             const prNum = context.issue.number;
-            const success = '${{ steps.cleanup.outcome }}' === 'success';
-            const body = success
-              ? `## Preview Deploy\n\n**Status**: :wastebasket: PR がクローズされたため、このプレビューは削除されました (410 Gone を返します)`
-              : `## Preview Deploy\n\n**Status**: :warning: プレビュー削除に失敗しました。手動で確認してください。`;
+            const outcome = process.env.CLEANUP_OUTCOME;
+            const deleted = process.env.DELETED_COUNT;
+
+            let body;
+            if (outcome === 'success') {
+              body = deleted === '0'
+                ? `## Preview Deploy\n\n**Status**: :information_source: 削除対象の preview version はありませんでした。`
+                : `## Preview Deploy\n\n**Status**: :wastebasket: PR がクローズされたため、preview version (${deleted} 件) を削除しました。`;
+            } else {
+              const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+              body = `## Preview Deploy\n\n**Status**: :warning: preview の削除に失敗しました。[ワークフローログ](${runUrl}) を確認してください。`;
+            }
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
