@@ -32,14 +32,9 @@ export const Article = defineDocumentType(() => ({
   },
 }))
 
-export const About = defineDocumentType(() => ({
-  name: "About",
-  filePathPattern: `**/about.md`,
-}))
-
 export default makeSource({
   contentDirPath: "./src/markdown/",
-  documentTypes: [Article, About],
+  documentTypes: [Article],
   markdown: {
     rehypePlugins: [
       rehypeSlug,
