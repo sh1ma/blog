@@ -5,6 +5,9 @@ import { useEffect, useState } from "react"
 const SCROLL_THRESHOLD = 80
 const HIDE_DELAY_MS = 3000
 
+const glassSurface =
+  "bg-bg-surface/60 border border-white/40 shadow-soft backdrop-blur-xl backdrop-saturate-150"
+
 export const BlogHeader = () => {
   const pathname = useLocation({ select: (loc) => loc.pathname })
   const [scrolled, setScrolled] = useState(false)
@@ -56,25 +59,20 @@ export const BlogHeader = () => {
   }
 
   return (
-    <div className="sticky top-4 z-50 mb-8 w-full px-4 sm:px-6 lg:px-8">
-      <div
-        className={`mx-auto flex max-w-3xl transition-opacity duration-500 ease-out ${
-          scrolled ? "justify-end" : ""
-        } ${visible ? "opacity-100" : "pointer-events-none opacity-0"}`}
-      >
+    <div
+      className={`sticky top-4 z-50 mb-8 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 lg:px-8 ${
+        visible ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
+    >
+      <div className="relative mx-auto max-w-3xl">
         <header
-          className={`bg-bg-surface/90 flex items-center gap-4 rounded-xl border border-gray-200/50 shadow-soft backdrop-blur-md transition-all duration-500 ease-out ${
-            scrolled ? "px-2 py-2" : "w-full justify-between px-6 py-4"
+          className={`${glassSurface} flex w-full items-center justify-between gap-4 rounded-2xl px-6 py-4 transition-all duration-500 ease-out ${
+            scrolled
+              ? "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
+              : "translate-y-0 scale-100 opacity-100"
           }`}
         >
-          <Link
-            to="/"
-            className={`flex items-center gap-3 overflow-hidden transition-all duration-500 ease-out ${
-              scrolled
-                ? "pointer-events-none w-0 opacity-0"
-                : "w-auto opacity-100"
-            }`}
-          >
+          <Link to="/" className="flex items-center gap-3">
             <div className="bg-brand-primary/10 flex size-10 shrink-0 items-center justify-center rounded-lg text-brand-primary">
               <PenLine className="text-3xl" />
             </div>
@@ -83,13 +81,7 @@ export const BlogHeader = () => {
             </div>
           </Link>
 
-          <nav
-            className={`hidden items-center gap-8 overflow-hidden transition-all duration-500 ease-out md:flex ${
-              scrolled
-                ? "pointer-events-none md:w-0 md:opacity-0"
-                : "opacity-100"
-            }`}
-          >
+          <nav className="hidden items-center gap-8 md:flex">
             <Link to="/" className={getLinkClassName("/")}>
               Articles
             </Link>
@@ -101,13 +93,23 @@ export const BlogHeader = () => {
           <button
             type="button"
             aria-label="Menu"
-            className={`shrink-0 p-2 text-text-muted transition-colors hover:text-brand-primary ${
-              scrolled ? "" : "md:hidden"
-            }`}
+            className="shrink-0 p-2 text-text-muted transition-colors hover:text-brand-primary md:hidden"
           >
             <Menu />
           </button>
         </header>
+
+        <button
+          type="button"
+          aria-label="Menu"
+          className={`${glassSurface} absolute top-0 right-0 flex size-12 items-center justify-center rounded-full text-text-muted transition-all duration-500 ease-out hover:text-brand-primary ${
+            scrolled
+              ? "translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none -translate-y-1 scale-90 opacity-0"
+          }`}
+        >
+          <Menu />
+        </button>
       </div>
     </div>
   )
