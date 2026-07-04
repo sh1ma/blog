@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - 常に日本語で説明してください。
 - **依存追加は必ず `pnpm add` / `pnpm add -D` を使うこと**。`package.json` を直接編集して依存を書き込むのは禁止。バージョン指定は pnpm に解決させ、`pnpm-lock.yaml` と一貫させる。
+- **`biome-ignore` (および `eslint-disable` 等の Lint 無効化コメント) は絶対に書かない**。Lint エラーは黙らせるのではなく、コードを直して解消する。`useExhaustiveDependencies` で困ったら関数を `useCallback` にして deps に載せる、`useEffect` 内へ移す、ref にする、などの手段でルールを守る形にリファクタする。
 
 ## ブランチ命名規則
 

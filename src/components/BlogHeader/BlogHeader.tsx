@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { ChevronLeft, PenLine } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
 const HIDE_DELAY_MS = 3000
@@ -23,19 +23,19 @@ export const BlogHeader = () => {
     undefined,
   )
 
-  const clearHideTimer = () => {
+  const clearHideTimer = useCallback(() => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current)
       hideTimerRef.current = undefined
     }
-  }
+  }, [])
 
-  const scheduleHide = () => {
+  const scheduleHide = useCallback(() => {
     clearHideTimer()
     if (window.scrollY > SCROLL_THRESHOLD && !userExpandedRef.current) {
       hideTimerRef.current = setTimeout(() => setVisible(false), HIDE_DELAY_MS)
     }
-  }
+  }, [clearHideTimer])
 
   const handleExpand = () => {
     setUserExpanded(true)
@@ -49,7 +49,6 @@ export const BlogHeader = () => {
     }, AUTO_COLLAPSE_DELAY_MS)
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scheduleHide is stable across renders (only uses refs)
   useEffect(() => {
     const onActivity = () => {
       const s = window.scrollY > SCROLL_THRESHOLD
@@ -80,7 +79,7 @@ export const BlogHeader = () => {
       window.removeEventListener("keydown", onActivity)
       window.removeEventListener("touchstart", onActivity)
     }
-  }, [])
+  }, [scheduleHide, clearHideTimer])
 
   const isCompact = scrolled && !userExpanded
 
