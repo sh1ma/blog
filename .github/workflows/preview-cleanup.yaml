@@ -5,6 +5,12 @@ on:
     types: [closed]
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "手動で cleanup したい PR 番号"
+        required: true
+        type: string
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
@@ -21,7 +27,7 @@ jobs:
       - name: Delete preview alias versions
         id: cleanup
         env:
-          PR_NUM: ${{ github.event.pull_request.number }}
+          PR_NUM: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: |
           set -euo pipefail
           ALIAS="pr-${PR_NUM}"
