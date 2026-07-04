@@ -4,7 +4,7 @@ import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import "./globals.scss"
+import "./globals.css"
 import { routeTree } from "./routeTree.gen"
 
 dayjs.extend(utc)

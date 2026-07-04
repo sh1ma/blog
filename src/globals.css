@@ -1,9 +1,6 @@
-@use "sass:meta";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@include meta.load-css("syntax-highlight.scss");
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+@import "./syntax-highlight.css";
 
 :root {
   /* ===== プリミティブカラー ===== */
