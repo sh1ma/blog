@@ -343,86 +343,103 @@ const pickSize = (
   return rand(240, 320) // 特大アクセント
 }
 
-const generateShapeBBoxes = (rng: () => number): BBox[] => {
-  const rand = (min: number, max: number) => min + rng() * (max - min)
-  const bboxes: BBox[] = []
+// 図形の分類: "anchor" は canvas 端に必ず接触させる図形 (回転なし・bbox 一杯)
+// "free" は装飾的な自由配置図形 (回転あり)
+type ShapeSpec = { bbox: BBox; kind: "anchor" | "free"; edge?: Edge }
+type Edge = "top" | "bottom" | "left" | "right"
 
-  // 各辺に必ず十分な数を割り当てる
-  // 上下: 12〜16 個ずつ、左右: 5〜8 個ずつ → 合計 34〜48 個
-  const counts: Record<Band, number> = {
-    top: 12 + Math.floor(rng() * 5),
-    bottom: 12 + Math.floor(rng() * 5),
-    left: 5 + Math.floor(rng() * 4),
-    right: 5 + Math.floor(rng() * 4),
+const generateShapeSpecs = (rng: () => number): ShapeSpec[] => {
+  const rand = (min: number, max: number) => min + rng() * (max - min)
+  const specs: ShapeSpec[] = []
+
+  // ------ 1. Edge anchors: 各辺に 5〜7 個、必ず canvas 端をまたぐ ------
+  const edges: Edge[] = ["top", "bottom", "left", "right"]
+  for (const edge of edges) {
+    const isHorizontal = edge === "top" || edge === "bottom"
+    const anchorCount = 5 + Math.floor(rng() * 3) // 5〜7
+
+    for (let i = 0; i < anchorCount; i++) {
+      // 辺方向に均等分布 + ジッター
+      const baseT = (i + 0.5) / anchorCount
+      const jitterT = (rng() - 0.5) * (1 / anchorCount) * 0.9
+      const t = Math.max(0.02, Math.min(0.98, baseT + jitterT))
+      const size = rand(90, 210)
+      const half = size / 2
+
+      let cx: number, cy: number
+      if (isHorizontal) {
+        cx = t * WIDTH
+        // 中心 Y は canvas 端 (y=0 か y=HEIGHT) の外側 30〜(half-20) にする
+        // → bbox が確実に端 (y=0 or y=HEIGHT) をまたぐ
+        const outside = rand(20, half - 25)
+        cy = edge === "top" ? -outside : HEIGHT + outside
+      } else {
+        // 縦辺は TEXT_ZONE の高さ範囲内に配置
+        cy = TEXT_ZONE.y + t * TEXT_ZONE.h
+        const outside = rand(20, half - 25)
+        cx = edge === "left" ? -outside : WIDTH + outside
+      }
+
+      const bbox = { x: cx - half, y: cy - half, w: size, h: size }
+      if (intersectsTextZone(bbox)) continue
+      specs.push({ bbox, kind: "anchor", edge })
+    }
   }
 
+  // ------ 2. Free-form 装飾: 4 バンドに追加で散らばす ------
+  const counts: Record<Band, number> = {
+    top: 10 + Math.floor(rng() * 4),
+    bottom: 10 + Math.floor(rng() * 4),
+    left: 4 + Math.floor(rng() * 3),
+    right: 4 + Math.floor(rng() * 3),
+  }
   const bands: Band[] = ["top", "bottom", "left", "right"]
   for (const band of bands) {
     for (let i = 0; i < counts[band]; i++) {
-      // 十分な回数試行 (テキスト非交差の bbox を得るため)
       for (let attempt = 0; attempt < 6; attempt++) {
         const size = pickSize(rng, rand)
         const bbox = sampleInBand(band, size, rand)
         if (bbox) {
-          bboxes.push(bbox)
+          specs.push({ bbox, kind: "free" })
           break
         }
       }
     }
   }
+  return specs
+}
 
-  // 4 辺すべてに canvas 端に接する図形が最低 1 個は欲しい
-  // (中心を端 or 端の少し外に置いて、bbox が端をまたぐようにする)
-  const ensureEdgeContact: {
-    edge: "top" | "bottom" | "left" | "right"
-    band: Band
-  }[] = [
-    { edge: "top", band: "top" },
-    { edge: "bottom", band: "bottom" },
-    { edge: "left", band: "left" },
-    { edge: "right", band: "right" },
-  ]
-  for (const { edge, band } of ensureEdgeContact) {
-    // 既に接している bbox があるかチェック
-    const hasContact = bboxes.some((b) => {
-      if (edge === "top") return b.y <= 0
-      if (edge === "bottom") return b.y + b.h >= HEIGHT
-      if (edge === "left") return b.x <= 0
-      return b.x + b.w >= WIDTH
-    })
-    if (hasContact) continue
-    // 端を跨ぐ図形を無理やり追加
-    for (let attempt = 0; attempt < 20; attempt++) {
-      const size = rand(140, 220)
-      const half = size / 2
-      let cx: number, cy: number
-      if (edge === "top" || edge === "bottom") {
-        cx = rand(80, WIDTH - 80)
-        cy =
-          edge === "top"
-            ? rand(-half + 15, -20)
-            : rand(HEIGHT + 20, HEIGHT + half - 15)
-      } else {
-        cy = rand(TEXT_ZONE.y + 20, TEXT_ZONE.y + TEXT_ZONE.h - 20)
-        cx =
-          edge === "left"
-            ? rand(-half + 15, -20)
-            : rand(WIDTH + 20, WIDTH + half - 15)
-      }
-      const bbox: BBox = { x: cx - half, y: cy - half, w: size, h: size }
-      if (intersectsTextZone(bbox)) continue
-      bboxes.push(bbox)
-      break
+// anchor 用: bbox 一杯の楕円 or 矩形。回転なし、canvas 端まで確実に届く
+const buildAnchorShape = (bbox: BBox, color: string, rng: () => number) => {
+  // 楕円 60% / 矩形 40% で振り分け (共に bbox 一杯)
+  if (rng() < 0.6) {
+    return {
+      type: "ellipse",
+      props: {
+        cx: bbox.x + bbox.w / 2,
+        cy: bbox.y + bbox.h / 2,
+        rx: bbox.w / 2,
+        ry: bbox.h / 2,
+        fill: color,
+      },
     }
-    void band
   }
-
-  return bboxes
+  return {
+    type: "rect",
+    props: {
+      x: bbox.x,
+      y: bbox.y,
+      width: bbox.w,
+      height: bbox.h,
+      rx: rng() < 0.3 ? 12 : 0,
+      fill: color,
+    },
+  }
 }
 
 const buildBackgroundSvg = (slug: string) => {
   const rng = seededRandom(slug)
-  const bboxes = generateShapeBBoxes(rng)
+  const specs = generateShapeSpecs(rng)
 
   // カラーは前と別の色を選ぶ (連続同色を避ける)
   let lastColor: string | null = null
@@ -435,9 +452,13 @@ const buildBackgroundSvg = (slug: string) => {
     return c
   }
 
-  const children = bboxes.map((bbox) => {
+  const children = specs.map((spec) => {
+    const color = pickColor()
+    if (spec.kind === "anchor") {
+      return buildAnchorShape(spec.bbox, color, rng)
+    }
     const type = pick(SHAPE_TYPES, rng)
-    return buildShape(type, bbox, pickColor(), rng)
+    return buildShape(type, spec.bbox, color, rng)
   })
 
   return {
