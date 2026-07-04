@@ -19,27 +19,38 @@ export const BlogHeader = () => {
   const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   )
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  const clearHideTimer = () => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current)
+      hideTimerRef.current = undefined
+    }
+  }
+
+  const scheduleHide = () => {
+    clearHideTimer()
+    if (window.scrollY > SCROLL_THRESHOLD && !userExpandedRef.current) {
+      hideTimerRef.current = setTimeout(() => setVisible(false), HIDE_DELAY_MS)
+    }
+  }
 
   const handleExpand = () => {
     setUserExpanded(true)
     userExpandedRef.current = true
+    clearHideTimer()
     if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current)
     collapseTimerRef.current = setTimeout(() => {
       setUserExpanded(false)
       userExpandedRef.current = false
+      scheduleHide()
     }, AUTO_COLLAPSE_DELAY_MS)
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: scheduleHide is stable across renders (only uses refs)
   useEffect(() => {
-    let hideTimer: ReturnType<typeof setTimeout> | undefined
-
-    const scheduleHide = () => {
-      if (hideTimer) clearTimeout(hideTimer)
-      if (window.scrollY > SCROLL_THRESHOLD && !userExpandedRef.current) {
-        hideTimer = setTimeout(() => setVisible(false), HIDE_DELAY_MS)
-      }
-    }
-
     const onActivity = () => {
       const s = window.scrollY > SCROLL_THRESHOLD
       setScrolled(s)
@@ -62,7 +73,7 @@ export const BlogHeader = () => {
     window.addEventListener("touchstart", onActivity, { passive: true })
 
     return () => {
-      if (hideTimer) clearTimeout(hideTimer)
+      clearHideTimer()
       if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current)
       window.removeEventListener("scroll", onActivity)
       window.removeEventListener("pointerdown", onActivity)
