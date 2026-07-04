@@ -95,7 +95,7 @@ function AboutPage() {
       <section className="mb-12 rounded-2xl bg-bg-surface p-8 shadow-soft">
         <div className="mb-6 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
           <img
-            src="/anon-icon-200x200.webp"
+            src="/anon-illust.jpeg"
             alt="sh1ma のアイコン"
             width={96}
             height={96}
