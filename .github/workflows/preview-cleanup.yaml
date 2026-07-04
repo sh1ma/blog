@@ -1,0 +1,79 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  WORKER_NAME: blog
+
+jobs:
+  preview-cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.12.0
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Overwrite preview alias with tombstone Worker
+        id: cleanup
+        run: |
+          PR_NUM=${{ github.event.pull_request.number }}
+          ALIAS="pr-${PR_NUM}"
+
+          # Cloudflare には preview alias を明示的に削除する API がないため、
+          # 410 Gone を返すだけのスタブ Worker を同じ alias に再アップロードし、
+          # 実質的にプレビューを無効化する。
+          pnpm exec wrangler versions upload \
+            --config wrangler.preview-cleanup.jsonc \
+            --preview-alias "${ALIAS}" \
+            --message "Cleanup preview for PR #${PR_NUM}"
+
+      - name: Update PR comment
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prNum = context.issue.number;
+            const success = '${{ steps.cleanup.outcome }}' === 'success';
+            const body = success
+              ? `## Preview Deploy\n\n**Status**: :wastebasket: PR がクローズされたため、このプレビューは削除されました (410 Gone を返します)`
+              : `## Preview Deploy\n\n**Status**: :warning: プレビュー削除に失敗しました。手動で確認してください。`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNum,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Preview Deploy')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            }
