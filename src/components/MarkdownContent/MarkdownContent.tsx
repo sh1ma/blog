@@ -1,6 +1,53 @@
 import type { Markdown } from "contentlayer2/core"
+import { useEffect, useRef } from "react"
+
+const TWITTER_WIDGET_SRC = "https://platform.twitter.com/widgets.js"
+
+declare global {
+  interface Window {
+    twttr?: {
+      widgets?: {
+        load: (el?: HTMLElement) => void
+      }
+    }
+  }
+}
+
+function loadTwitterWidgets(container: HTMLElement) {
+  if (!container.querySelector(".twitter-tweet")) return
+
+  const hydrate = () => {
+    window.twttr?.widgets?.load(container)
+  }
+
+  if (window.twttr?.widgets) {
+    hydrate()
+    return
+  }
+
+  const existing = document.querySelector<HTMLScriptElement>(
+    `script[src="${TWITTER_WIDGET_SRC}"]`,
+  )
+  if (existing) {
+    existing.addEventListener("load", hydrate, { once: true })
+    return
+  }
+
+  const script = document.createElement("script")
+  script.src = TWITTER_WIDGET_SRC
+  script.async = true
+  script.charset = "utf-8"
+  script.addEventListener("load", hydrate, { once: true })
+  document.body.appendChild(script)
+}
 
 export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (ref.current) loadTwitterWidgets(ref.current)
+  }, [])
+
   return (
     <div
       className="
@@ -22,7 +69,7 @@ export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
     prose-li:marker:text-black
     "
     >
-      <div dangerouslySetInnerHTML={{ __html: post.body.html }}></div>
+      <div ref={ref} dangerouslySetInnerHTML={{ __html: post.body.html }}></div>
     </div>
   )
 }

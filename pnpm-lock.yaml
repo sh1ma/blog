@@ -100,6 +100,9 @@ importers:
       '@tanstack/router-plugin':
         specifier: ^1.94.0
         version: 1.168.19(@tanstack/react-router@1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(esbuild@0.28.1)(rollup@4.62.2)(vite@6.4.3(@types/node@24.12.4)(jiti@1.21.7)(sass@1.97.2)(terser@5.16.9)(tsx@4.22.4)(yaml@2.8.2))
+      '@types/hast':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.4
@@ -124,6 +127,9 @@ importers:
       tsx:
         specifier: ^4.20.6
         version: 4.22.4
+      unified:
+        specifier: ^11.0.5
+        version: 11.0.5
       vite:
         specifier: ^6.0.0
         version: 6.4.3(@types/node@24.12.4)(jiti@1.21.7)(sass@1.97.2)(terser@5.16.9)(tsx@4.22.4)(yaml@2.8.2)

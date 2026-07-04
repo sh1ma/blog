@@ -4,6 +4,7 @@ import rehypePrettyCode, {
   type Options as RehypePrettyCodeOptions,
 } from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
+import { rehypeRichEmbeds } from "./lib/rehype-rich-embeds"
 
 export const Article = defineDocumentType(() => ({
   name: "Article",
@@ -42,6 +43,7 @@ export default makeSource({
   documentTypes: [Article, About],
   markdown: {
     rehypePlugins: [
+      rehypeRichEmbeds,
       rehypeSlug,
       [
         rehypeAutoLinkHeadings,
