@@ -33,19 +33,10 @@ const textColors = {
 
 // テキスト安全領域 (この矩形の内側には図形を配置しない)
 // タイトル最大 3 行 + 日付 / サイト名行が入るサイズ
-const TEXT_ZONE = { x: 60, y: 165, w: WIDTH - 120, h: 300 }
+const TEXT_ZONE = { x: 120, y: 175, w: WIDTH - 240, h: 280 }
 
-// 上下バンドの余白 (キャンバス外へ多少はみ出しても OK)
-const OVERFLOW_MARGIN = 80
-// バンド幅 (テキスト安全領域の上下、上端 / 下端は overflow 分だけ広げる)
-const TOP_BAND = {
-  yMin: -OVERFLOW_MARGIN,
-  yMax: TEXT_ZONE.y,
-}
-const BOTTOM_BAND = {
-  yMin: TEXT_ZONE.y + TEXT_ZONE.h,
-  yMax: HEIGHT + OVERFLOW_MARGIN,
-}
+// キャンバス外への overflow 許容量
+const OVERFLOW_MARGIN = 90
 
 const loadFonts = async () => {
   return Promise.all(
@@ -260,31 +251,144 @@ const buildShape = (
   }
 }
 
-// テキスト安全領域と交差しない、上下バンドに散らばった bbox を生成
+// TEXT_ZONE の外周上の点 (パラメータ t で 1 周する) と、外向き法線
+type PerimeterPoint = {
+  x: number
+  y: number
+  nx: number
+  ny: number
+  edge: "top" | "right" | "bottom" | "left"
+  // corner 付近では法線を斜め方向にブレンドしたい
+  cornerBias: number // 0=辺の中央, 1=完全な角
+}
+
+const perimeterAt = (t: number): PerimeterPoint => {
+  const z = TEXT_ZONE
+  const p = 2 * (z.w + z.h)
+  let s = ((t % p) + p) % p
+  const cornerBand = 60 // 角から60px以内は cornerBias が上がる
+
+  const bias = (distToCorner: number) =>
+    Math.max(0, 1 - distToCorner / cornerBand)
+
+  if (s < z.w) {
+    const distCorner = Math.min(s, z.w - s)
+    return {
+      x: z.x + s,
+      y: z.y,
+      nx: 0,
+      ny: -1,
+      edge: "top",
+      cornerBias: bias(distCorner),
+    }
+  }
+  s -= z.w
+  if (s < z.h) {
+    const distCorner = Math.min(s, z.h - s)
+    return {
+      x: z.x + z.w,
+      y: z.y + s,
+      nx: 1,
+      ny: 0,
+      edge: "right",
+      cornerBias: bias(distCorner),
+    }
+  }
+  s -= z.h
+  if (s < z.w) {
+    const distCorner = Math.min(s, z.w - s)
+    return {
+      x: z.x + z.w - s,
+      y: z.y + z.h,
+      nx: 0,
+      ny: 1,
+      edge: "bottom",
+      cornerBias: bias(distCorner),
+    }
+  }
+  s -= z.w
+  const distCorner = Math.min(s, z.h - s)
+  return {
+    x: z.x,
+    y: z.y + z.h - s,
+    nx: -1,
+    ny: 0,
+    edge: "left",
+    cornerBias: bias(distCorner),
+  }
+}
+
+// bbox と TEXT_ZONE の重なり判定
+const intersectsTextZone = (bbox: BBox) => {
+  return (
+    bbox.x < TEXT_ZONE.x + TEXT_ZONE.w &&
+    bbox.x + bbox.w > TEXT_ZONE.x &&
+    bbox.y < TEXT_ZONE.y + TEXT_ZONE.h &&
+    bbox.y + bbox.h > TEXT_ZONE.y
+  )
+}
+
+// 「デザインされたランダム感」: 外周を N 分割し、各セグメントに 1 個ずつ
+// 図形を置く。位置は少しジッター、サイズは 3 段階から傾斜サンプリング
 const generateShapeBBoxes = (rng: () => number): BBox[] => {
   const rand = (min: number, max: number) => min + rng() * (max - min)
+  const p = 2 * (TEXT_ZONE.w + TEXT_ZONE.h)
   const bboxes: BBox[] = []
-  // 12〜20 個。数もランダム
-  const n = 12 + Math.floor(rng() * 9)
+  // 個数: 16〜22
+  const n = 16 + Math.floor(rng() * 7)
 
   for (let i = 0; i < n; i++) {
-    // サイズは 70〜240 (円やX などは実サイズより小さくレンダリングされる)
-    const size = rand(70, 240)
+    // 均等 t + ジッター (隣接セグメントの中央までのみブレる)
+    const baseT = ((i + 0.5) * p) / n
+    const jitterT = (rng() - 0.5) * (p / n) * 0.85
+    const t = baseT + jitterT
+    const pt = perimeterAt(t)
+
+    // サイズ分布: 小さめ 20% / 中 55% / 大 25%
+    const r = rng()
+    let size: number
+    if (r < 0.2) size = rand(50, 90)
+    else if (r < 0.75) size = rand(90, 160)
+    else size = rand(160, 230)
     const half = size / 2
-    // 上バンドか下バンドか (半々くらい)
-    const useTop = rng() < 0.5
-    const band = useTop ? TOP_BAND : BOTTOM_BAND
 
-    // 縦位置: bbox が band 内に入るように選ぶ
-    const cyMin = band.yMin + half
-    const cyMax = band.yMax - half
-    if (cyMax <= cyMin) continue
-    const cy = rand(cyMin, cyMax)
+    // 外向きに押し出す距離。half より少し多めで、少しジッター
+    const push = half + rand(0, 55)
 
-    // 横位置: overflow 許容で左右少しはみ出し
-    const cx = rand(-OVERFLOW_MARGIN + half, WIDTH + OVERFLOW_MARGIN - half)
+    // 角付近では法線を斜めに寄せる (辺方向の tangent 成分を混ぜる)
+    // top/bottom 辺の tangent は ±x, left/right の tangent は ±y
+    let nx = pt.nx
+    let ny = pt.ny
+    if (pt.cornerBias > 0) {
+      // どちらのコーナー寄りか (辺の前半 or 後半)
+      // ここでは単純に「角の近く」の場合、tangent 成分を追加して斜めにする
+      const tangentSign = rng() < 0.5 ? 1 : -1
+      const tx = pt.edge === "top" || pt.edge === "bottom" ? tangentSign : 0
+      const ty = pt.edge === "left" || pt.edge === "right" ? tangentSign : 0
+      const w = pt.cornerBias * 0.9
+      nx = nx * (1 - w) + tx * w
+      ny = ny * (1 - w) + ty * w
+      const mag = Math.hypot(nx, ny) || 1
+      nx /= mag
+      ny /= mag
+    }
 
-    bboxes.push({ x: cx - half, y: cy - half, w: size, h: size })
+    const cx = pt.x + nx * push
+    const cy = pt.y + ny * push
+
+    const bbox = { x: cx - half, y: cy - half, w: size, h: size }
+    // 念のためテキスト領域と重なる場合はスキップ
+    if (intersectsTextZone(bbox)) continue
+    // キャンバス外側にほとんど出過ぎているものもスキップ
+    if (
+      bbox.x + bbox.w < -OVERFLOW_MARGIN ||
+      bbox.x > WIDTH + OVERFLOW_MARGIN ||
+      bbox.y + bbox.h < -OVERFLOW_MARGIN ||
+      bbox.y > HEIGHT + OVERFLOW_MARGIN
+    ) {
+      continue
+    }
+    bboxes.push(bbox)
   }
   return bboxes
 }
