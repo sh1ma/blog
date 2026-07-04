@@ -103,7 +103,8 @@ const buildShape = (
   const rand = (min: number, max: number) => min + rng() * (max - min)
   const cx = x + w / 2
   const cy = y + h / 2
-  const rotation = rand(-180, 180)
+  // 柄っぽさを維持するため、回転は控えめ (±25°)
+  const rotation = rand(-25, 25)
 
   const buildElement = () => {
     if (type === "triangle") {
@@ -273,168 +274,136 @@ const intersectsTextZone = (bbox: BBox) => {
   )
 }
 
-// 外周を 4 バンドに分け、それぞれに図形を密に配置する。
-// - 上下 (横に長い): 多くの図形
-// - 左右 (縦に長い、幅は狭い): 少なめだが必ず存在
-// - サイズと位置はジッター、キャンバス端に到達 (overflow) しやすい
-type Band = "top" | "right" | "bottom" | "left"
+// 図形は "柄" として扱う。上下左右のストリップにグリッド + ジッタで並べる
+type ShapeSpec = { bbox: BBox; kind: "free" }
 
-const bandExtents = (band: Band) => {
-  const O = OVERFLOW_MARGIN
-  if (band === "top") {
-    return { xMin: -O, xMax: WIDTH + O, yMin: -O, yMax: TEXT_ZONE.y }
-  }
-  if (band === "bottom") {
-    return {
-      xMin: -O,
-      xMax: WIDTH + O,
-      yMin: TEXT_ZONE.y + TEXT_ZONE.h,
-      yMax: HEIGHT + O,
-    }
-  }
-  if (band === "left") {
-    return {
-      xMin: -O,
-      xMax: TEXT_ZONE.x,
-      yMin: TEXT_ZONE.y,
-      yMax: TEXT_ZONE.y + TEXT_ZONE.h,
-    }
-  }
-  return {
-    xMin: TEXT_ZONE.x + TEXT_ZONE.w,
-    xMax: WIDTH + O,
-    yMin: TEXT_ZONE.y,
-    yMax: TEXT_ZONE.y + TEXT_ZONE.h,
-  }
-}
-
-// 与えられた band 内にランダムに 1 個の bbox を返す (テキスト領域と非交差)
-const sampleInBand = (
-  band: Band,
-  size: number,
-  rand: (a: number, b: number) => number,
-): BBox | null => {
-  const ext = bandExtents(band)
-  const half = size / 2
-  const availW = ext.xMax - ext.xMin
-  const availH = ext.yMax - ext.yMin
-  if (availW < 20 || availH < 20) return null
-  // half がバンド寸法より大きいときは "半分以上はみ出す" 状態を許容するので、
-  // 中心座標を band 範囲でクランプ
-  const cxMin = ext.xMin + Math.min(half, availW / 2 - 10)
-  const cxMax = ext.xMax - Math.min(half, availW / 2 - 10)
-  const cyMin = ext.yMin + Math.min(half, availH / 2 - 10)
-  const cyMax = ext.yMax - Math.min(half, availH / 2 - 10)
-  const cx = rand(cxMin, cxMax)
-  const cy = rand(cyMin, cyMax)
-  const bbox: BBox = { x: cx - half, y: cy - half, w: size, h: size }
-  if (intersectsTextZone(bbox)) return null
-  return bbox
-}
-
-const pickSize = (
+// 1 ストリップ内にグリッドで図形を並べる。
+// nCols/nRows でセル数、cellSize でセル 1 個の一辺、jitter でセル内の揺らぎ、
+// shapeMin/shapeMax でセル内の実サイズ範囲
+const placeGrid = (
   rng: () => number,
   rand: (a: number, b: number) => number,
+  opts: {
+    xStart: number
+    xEnd: number
+    yStart: number
+    yEnd: number
+    cell: number
+    jitter: number
+    shapeMin: number
+    shapeMax: number
+    staggerRows?: boolean
+  },
+  specs: ShapeSpec[],
 ) => {
-  const r = rng()
-  if (r < 0.2) return rand(50, 90) // 小 (点描)
-  if (r < 0.7) return rand(90, 170) // 中
-  if (r < 0.92) return rand(170, 240) // 大
-  return rand(240, 320) // 特大アクセント
-}
+  const width = opts.xEnd - opts.xStart
+  const height = opts.yEnd - opts.yStart
+  const nCols = Math.max(1, Math.round(width / opts.cell))
+  const nRows = Math.max(1, Math.round(height / opts.cell))
+  const stepX = width / nCols
+  const stepY = height / nRows
 
-// 図形の分類: "anchor" は canvas 端に必ず接触させる図形 (回転なし・bbox 一杯)
-// "free" は装飾的な自由配置図形 (回転あり)
-type ShapeSpec = { bbox: BBox; kind: "anchor" | "free"; edge?: Edge }
-type Edge = "top" | "bottom" | "left" | "right"
+  for (let r = 0; r < nRows; r++) {
+    const rowShift = opts.staggerRows && r % 2 === 1 ? stepX * 0.5 : 0
+    for (let c = 0; c < nCols; c++) {
+      const cx =
+        opts.xStart +
+        (c + 0.5) * stepX +
+        rowShift +
+        rand(-opts.jitter, opts.jitter)
+      const cy =
+        opts.yStart + (r + 0.5) * stepY + rand(-opts.jitter, opts.jitter)
+      const size = rand(opts.shapeMin, opts.shapeMax)
+      const half = size / 2
+      const bbox = { x: cx - half, y: cy - half, w: size, h: size }
+      if (intersectsTextZone(bbox)) continue
+      specs.push({ bbox, kind: "free" })
+    }
+    // 未使用パラメータ警告を避ける
+    void rng
+  }
+}
 
 const generateShapeSpecs = (rng: () => number): ShapeSpec[] => {
   const rand = (min: number, max: number) => min + rng() * (max - min)
   const specs: ShapeSpec[] = []
 
-  // ------ 1. Edge anchors: 各辺に 5〜7 個、必ず canvas 端をまたぐ ------
-  const edges: Edge[] = ["top", "bottom", "left", "right"]
-  for (const edge of edges) {
-    const isHorizontal = edge === "top" || edge === "bottom"
-    const anchorCount = 5 + Math.floor(rng() * 3) // 5〜7
+  const O = OVERFLOW_MARGIN
+  const CELL = 140 // グリッドの一辺 (図形間の中心間隔)
+  const JITTER = 14 // セル内のランダム変位 (柄が揺らぐ程度)
+  // 図形サイズはセルの 45〜75% (被らないよう控えめ)
+  const SHAPE_MIN = CELL * 0.45
+  const SHAPE_MAX = CELL * 0.72
 
-    for (let i = 0; i < anchorCount; i++) {
-      // 辺方向に均等分布 + ジッター
-      const baseT = (i + 0.5) / anchorCount
-      const jitterT = (rng() - 0.5) * (1 / anchorCount) * 0.9
-      const t = Math.max(0.02, Math.min(0.98, baseT + jitterT))
-      const size = rand(90, 210)
-      const half = size / 2
-
-      let cx: number, cy: number
-      if (isHorizontal) {
-        cx = t * WIDTH
-        // 中心 Y は canvas 端 (y=0 か y=HEIGHT) の外側 30〜(half-20) にする
-        // → bbox が確実に端 (y=0 or y=HEIGHT) をまたぐ
-        const outside = rand(20, half - 25)
-        cy = edge === "top" ? -outside : HEIGHT + outside
-      } else {
-        // 縦辺は TEXT_ZONE の高さ範囲内に配置
-        cy = TEXT_ZONE.y + t * TEXT_ZONE.h
-        const outside = rand(20, half - 25)
-        cx = edge === "left" ? -outside : WIDTH + outside
-      }
-
-      const bbox = { x: cx - half, y: cy - half, w: size, h: size }
-      if (intersectsTextZone(bbox)) continue
-      specs.push({ bbox, kind: "anchor", edge })
-    }
-  }
-
-  // ------ 2. Free-form 装飾: 4 バンドに追加で散らばす ------
-  const counts: Record<Band, number> = {
-    top: 10 + Math.floor(rng() * 4),
-    bottom: 10 + Math.floor(rng() * 4),
-    left: 4 + Math.floor(rng() * 3),
-    right: 4 + Math.floor(rng() * 3),
-  }
-  const bands: Band[] = ["top", "bottom", "left", "right"]
-  for (const band of bands) {
-    for (let i = 0; i < counts[band]; i++) {
-      for (let attempt = 0; attempt < 6; attempt++) {
-        const size = pickSize(rng, rand)
-        const bbox = sampleInBand(band, size, rand)
-        if (bbox) {
-          specs.push({ bbox, kind: "free" })
-          break
-        }
-      }
-    }
-  }
-  return specs
-}
-
-// anchor 用: bbox 一杯の楕円 or 矩形。回転なし、canvas 端まで確実に届く
-const buildAnchorShape = (bbox: BBox, color: string, rng: () => number) => {
-  // 楕円 60% / 矩形 40% で振り分け (共に bbox 一杯)
-  if (rng() < 0.6) {
-    return {
-      type: "ellipse",
-      props: {
-        cx: bbox.x + bbox.w / 2,
-        cy: bbox.y + bbox.h / 2,
-        rx: bbox.w / 2,
-        ry: bbox.h / 2,
-        fill: color,
-      },
-    }
-  }
-  return {
-    type: "rect",
-    props: {
-      x: bbox.x,
-      y: bbox.y,
-      width: bbox.w,
-      height: bbox.h,
-      rx: rng() < 0.3 ? 12 : 0,
-      fill: color,
+  // Top strip: canvas 端から少しはみ出させて 2 行
+  placeGrid(
+    rng,
+    rand,
+    {
+      xStart: -O + 20,
+      xEnd: WIDTH + O - 20,
+      yStart: -O + 20,
+      yEnd: TEXT_ZONE.y - 15,
+      cell: CELL,
+      jitter: JITTER,
+      shapeMin: SHAPE_MIN,
+      shapeMax: SHAPE_MAX,
+      staggerRows: true,
     },
-  }
+    specs,
+  )
+  // Bottom strip
+  placeGrid(
+    rng,
+    rand,
+    {
+      xStart: -O + 20,
+      xEnd: WIDTH + O - 20,
+      yStart: TEXT_ZONE.y + TEXT_ZONE.h + 15,
+      yEnd: HEIGHT + O - 20,
+      cell: CELL,
+      jitter: JITTER,
+      shapeMin: SHAPE_MIN,
+      shapeMax: SHAPE_MAX,
+      staggerRows: true,
+    },
+    specs,
+  )
+  // Left column
+  placeGrid(
+    rng,
+    rand,
+    {
+      xStart: -O + 20,
+      xEnd: TEXT_ZONE.x - 15,
+      yStart: TEXT_ZONE.y + 15,
+      yEnd: TEXT_ZONE.y + TEXT_ZONE.h - 15,
+      cell: CELL,
+      jitter: JITTER,
+      shapeMin: SHAPE_MIN,
+      shapeMax: SHAPE_MAX,
+      staggerRows: true,
+    },
+    specs,
+  )
+  // Right column
+  placeGrid(
+    rng,
+    rand,
+    {
+      xStart: TEXT_ZONE.x + TEXT_ZONE.w + 15,
+      xEnd: WIDTH + O - 20,
+      yStart: TEXT_ZONE.y + 15,
+      yEnd: TEXT_ZONE.y + TEXT_ZONE.h - 15,
+      cell: CELL,
+      jitter: JITTER,
+      shapeMin: SHAPE_MIN,
+      shapeMax: SHAPE_MAX,
+      staggerRows: true,
+    },
+    specs,
+  )
+  return specs
 }
 
 const buildBackgroundSvg = (slug: string) => {
@@ -454,9 +423,6 @@ const buildBackgroundSvg = (slug: string) => {
 
   const children = specs.map((spec) => {
     const color = pickColor()
-    if (spec.kind === "anchor") {
-      return buildAnchorShape(spec.bbox, color, rng)
-    }
     const type = pick(SHAPE_TYPES, rng)
     return buildShape(type, spec.bbox, color, rng)
   })
