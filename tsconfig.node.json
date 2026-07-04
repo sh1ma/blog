@@ -15,5 +15,5 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
   },
-  "include": ["vite.config.ts", "contentlayer.config.ts"],
+  "include": ["vite.config.ts", "contentlayer.config.ts", "lib/**/*.ts"],
 }

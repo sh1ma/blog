@@ -9,6 +9,7 @@ import rehypePrettyCode, {
 import rehypeSlug from "rehype-slug"
 import type { ThemeRegistrationRaw } from "shiki"
 import { visit } from "unist-util-visit"
+import { rehypeRichEmbeds } from "./lib/rehype-rich-embeds"
 
 const atomOneDark = {
   ...JSON.parse(
@@ -63,6 +64,7 @@ export default makeSource({
   documentTypes: [Article],
   markdown: {
     rehypePlugins: [
+      rehypeRichEmbeds,
       rehypeSlug,
       [
         rehypeAutoLinkHeadings,
