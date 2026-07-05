@@ -1,7 +1,4 @@
-"use client"
-
 import { ChevronDown } from "lucide-react"
-import { useState } from "react"
 
 export type TocItem = {
   id: string
@@ -18,48 +15,44 @@ export const TableOfContents = ({
   headings,
   initialOpen = false,
 }: TableOfContentsProps) => {
-  const [isOpen, setIsOpen] = useState(initialOpen)
-
   if (!headings || headings.length === 0) {
     return null
   }
 
   return (
-    <div className="mb-10 border-b border-gray-200 pb-6">
+    <div className="mb-10 rounded-lg border border-border-subtle bg-bg-muted px-5 py-3">
       <details className="group" open={initialOpen}>
-        <summary
-          className="flex cursor-pointer items-center justify-between py-2 text-lg font-semibold text-text-primary transition-colors hover:text-brand-primary"
-          onClick={(e) => {
-            e.preventDefault()
-            setIsOpen(!isOpen)
-          }}
-        >
+        <summary className="flex cursor-pointer list-none items-center justify-between py-1 text-lg font-semibold text-text-primary transition-colors hover:text-brand-primary [&::-webkit-details-marker]:hidden">
           目次
           <ChevronDown
-            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className="transition-transform group-open:rotate-180"
             size={20}
           />
         </summary>
 
-        {isOpen && (
-          <nav className="mt-4 pl-4 text-base leading-relaxed text-text-muted">
-            <ul className="list-none space-y-2">
-              {headings.map((heading) => (
-                <li
-                  key={heading.id}
-                  className={`${heading.level === 3 ? "pl-4" : heading.level === 4 ? "pl-8" : ""}`}
+        <nav className="mt-3 border-t border-border-subtle pt-3 pl-4 text-base leading-relaxed text-text-primary">
+          <ul className="list-none space-y-2">
+            {headings.map((heading) => (
+              <li
+                key={heading.id}
+                className={
+                  heading.level === 3
+                    ? "pl-4"
+                    : heading.level === 4
+                      ? "pl-8"
+                      : ""
+                }
+              >
+                <a
+                  href={`#${heading.id}`}
+                  className="transition-colors hover:text-brand-primary"
                 >
-                  <a
-                    href={`#${heading.id}`}
-                    className="transition-colors hover:text-brand-primary"
-                  >
-                    {heading.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </details>
     </div>
   )
