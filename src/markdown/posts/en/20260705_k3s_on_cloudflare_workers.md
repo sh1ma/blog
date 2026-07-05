@@ -1,6 +1,8 @@
 ---
-title: "Running k3s on Cloudflare Workers Containers"
-publishedAt: "2026-07-05"
+  title: "Running k3s on Cloudflare Workers Containers"
+  publishedAt: "2026-07-05"
+  description: "A walkthrough of stuffing a single-node k3s cluster into one Firecracker microVM and putting a Worker in front as a thin gateway."
+  tags: ["Cloudflare", "Kubernetes", "k3s", "Cloudflare Workers"]
 ---
 
 I stuffed a whole **single-node k3s cluster** into Cloudflare Workers Containers and got it to the point where I can drive it with plain `kubectl`. This post walks through how the setup works.
