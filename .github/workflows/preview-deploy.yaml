@@ -112,7 +112,7 @@ jobs:
             const prNum = context.issue.number;
             const previewUrl = '${{ steps.deploy.outputs.preview_url }}';
 
-            const body = `## Preview Deploy\n\n**Status**: :white_check_mark: デプロイ完了\n\n**Preview URL**: ${previewUrl}\n\n---\n*PR がクローズされると自動的にプレビューは無効化されます。*`;
+            const body = `## Preview Deploy\n\n**Status**: :white_check_mark: デプロイ完了\n\n**Preview URL**: ${previewUrl}`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
