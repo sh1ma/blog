@@ -22,13 +22,36 @@ test.describe("英語版ページ", () => {
     await expect(page.getByText("I'm a software engineer.")).toBeVisible()
   })
 
-  test("記事以外のページには Read in English 吊り下げバーは無い", async ({
+  test("Read in English 吊り下げバーはどのページにも存在しない", async ({
     page,
   }) => {
-    for (const path of ["/", "/about", "/en", "/en/about"]) {
+    for (const path of [
+      "/",
+      "/about",
+      "/en",
+      "/en/about",
+      "/articles/20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian",
+      "/en/articles/20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian",
+    ]) {
       await page.goto(path)
       await expect(page.getByTestId("language-tab")).toHaveCount(0)
     }
+  })
+
+  test("デスクトップ nav に英語版へのリンクがある", async ({ page }) => {
+    await page.goto("/")
+    const link = page.getByTestId("desktop-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/English/)
+    await expect(link).toHaveAttribute("href", "/en")
+  })
+
+  test("デスクトップ nav の日本語版リンク (en→ja)", async ({ page }) => {
+    await page.goto("/en")
+    const link = page.getByTestId("desktop-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/日本語/)
+    await expect(link).toHaveAttribute("href", "/")
   })
 
   test("日本語版ホームのモバイル nav に英語版へのリンクがある", async ({

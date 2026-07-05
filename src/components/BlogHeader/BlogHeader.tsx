@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
-import { ChevronLeft, Languages, Link as LinkIcon, PenLine } from "lucide-react"
+import { ChevronLeft, Link as LinkIcon, PenLine } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -161,12 +161,10 @@ export const BlogHeader = () => {
   }
 
   const languageTarget = resolveLanguageTarget(pathname)
-  const isArticlePage =
-    pathname.startsWith("/articles/") || pathname.startsWith("/en/articles/")
 
   return (
     <div
-      className={`sticky top-4 z-50 mb-20 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 md:mb-8 lg:px-8 ${
+      className={`sticky top-4 z-50 mb-16 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 md:mb-8 lg:px-8 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
@@ -181,9 +179,7 @@ export const BlogHeader = () => {
         >
           <nav
             data-testid="mobile-nav-tab"
-            className={`pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center border border-t-0 border-white/50 bg-bg-surface/85 pl-5 pt-2 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden ${
-              languageTarget && isArticlePage ? "border-b-0" : "rounded-b-lg"
-            }`}
+            className="pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pl-5 pt-2 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
           >
             {isEnglish ? (
               <>
@@ -219,17 +215,6 @@ export const BlogHeader = () => {
               </a>
             )}
           </nav>
-          {languageTarget && isArticlePage && (
-            <a
-              href={languageTarget.href}
-              lang={languageTarget.lang}
-              data-testid="language-tab"
-              className="pointer-events-auto flex w-[90%] items-center justify-center gap-1 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface md:-mt-2 md:ml-6 md:inline-flex md:w-auto md:justify-start md:self-start md:pb-1 md:pl-2.5 md:pr-3 md:pt-2.5"
-            >
-              <Languages size={12} />
-              {languageTarget.label}
-            </a>
-          )}
         </div>
         <div
           className={`${glassSurface} relative z-10 ml-auto overflow-hidden transition-[width,height,border-radius] duration-500 ease-out ${
@@ -272,6 +257,17 @@ export const BlogHeader = () => {
                     About
                   </Link>
                 </>
+              )}
+              {languageTarget && (
+                <a
+                  href={languageTarget.href}
+                  lang={languageTarget.lang}
+                  data-testid="desktop-nav-language-link"
+                  className="inline-flex items-center gap-1 border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+                >
+                  <LinkIcon size={14} />
+                  {isEnglish ? "日本語" : "English"}
+                </a>
               )}
             </nav>
           </header>
