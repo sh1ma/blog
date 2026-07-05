@@ -8,7 +8,7 @@ import { Tag } from "@/components/Tag/Tag"
 import { TranslationNotice } from "@/components/TranslationNotice/TranslationNotice"
 import { extractHeadings } from "@/utils/extractHeadings"
 
-export const Route = createFileRoute("/articles/en/$slug")({
+export const Route = createFileRoute("/en/articles/$slug")({
   component: EnglishArticlePage,
   loader: ({ params }) => {
     const post = allArticles.find(

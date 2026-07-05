@@ -1,5 +1,5 @@
 ---
-title: Moving Blog Hosting from Vercel to Cloudflare Pages: ContentLayer Edition
+title: "Moving Blog Hosting from Vercel to Cloudflare Pages: ContentLayer Edition"
 publishedAt: "2024-06-09"
 ---
 

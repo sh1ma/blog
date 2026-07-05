@@ -559,7 +559,7 @@ const buildArticleHtml = (
   description: string | undefined,
   locale: "ja" | "en",
 ) => {
-  const path = locale === "en" ? `articles/en/${slug}` : `articles/${slug}`
+  const path = locale === "en" ? `en/articles/${slug}` : `articles/${slug}`
   const url = `${SITE_URL}/${path}`
   const ogImage = `${SITE_URL}/og/${locale === "en" ? `en/${slug}` : slug}.png`
   const desc = description ?? (locale === "en" ? "Blog article" : "ブログ記事")
@@ -597,7 +597,7 @@ for (const article of allArticles) {
 
   const articleDir =
     locale === "en"
-      ? path.join(DIST_DIR, "articles", "en", article.id)
+      ? path.join(DIST_DIR, "en", "articles", article.id)
       : path.join(DIST_DIR, "articles", article.id)
   await mkdir(articleDir, { recursive: true })
   const html = buildArticleHtml(

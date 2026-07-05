@@ -83,9 +83,19 @@ export const BlogHeader = () => {
 
   const isCompact = scrolled && !userExpanded
 
+  const isEnglish = pathname === "/en" || pathname.startsWith("/en/")
+
   const isActive = (path: string) => {
     if (path === "/") {
-      return pathname === "/" || pathname.startsWith("/articles")
+      return (
+        !isEnglish && (pathname === "/" || pathname.startsWith("/articles"))
+      )
+    }
+    if (path === "/en") {
+      return (
+        pathname === "/en" ||
+        (pathname.startsWith("/en/") && !pathname.startsWith("/en/about"))
+      )
     }
     return pathname.startsWith(path)
   }
@@ -124,12 +134,42 @@ export const BlogHeader = () => {
             </Link>
 
             <nav className="hidden items-center gap-8 md:flex">
-              <Link to="/" className={getLinkClassName("/")}>
-                Articles
-              </Link>
-              <Link to="/about" className={getLinkClassName("/about")}>
-                About
-              </Link>
+              {isEnglish ? (
+                <>
+                  <Link to="/en" className={getLinkClassName("/en")}>
+                    Articles
+                  </Link>
+                  <Link
+                    to="/en/about"
+                    className={getLinkClassName("/en/about")}
+                  >
+                    About
+                  </Link>
+                  <Link
+                    to="/"
+                    className="border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+                    lang="ja"
+                  >
+                    日本語
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/" className={getLinkClassName("/")}>
+                    Articles
+                  </Link>
+                  <Link to="/about" className={getLinkClassName("/about")}>
+                    About
+                  </Link>
+                  <Link
+                    to="/en"
+                    className="border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+                    lang="en"
+                  >
+                    English
+                  </Link>
+                </>
+              )}
             </nav>
           </header>
 

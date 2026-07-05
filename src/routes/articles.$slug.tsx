@@ -63,7 +63,7 @@ function ArticlePage() {
       </header>
 
       {hasEnglishVersion && (
-        <TranslationNotice targetLocale="en" href={`/articles/en/${post.id}`} />
+        <TranslationNotice targetLocale="en" href={`/en/articles/${post.id}`} />
       )}
 
       <TableOfContents headings={headings} initialOpen={false} />
