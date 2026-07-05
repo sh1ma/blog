@@ -169,15 +169,15 @@ export const BlogHeader = () => {
                 : "translate-y-0 opacity-100"
             }`}
           >
-            <Link
-              to={languageTarget.href}
+            <a
+              href={languageTarget.href}
               lang={languageTarget.lang}
               data-testid="language-tab"
               className="pointer-events-auto -mt-2 inline-flex items-center gap-1 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-2.5 pr-3 pt-2.5 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface"
             >
               <Languages size={12} />
               {languageTarget.label}
-            </Link>
+            </a>
           </div>
         )}
         <div

@@ -1,10 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query"
-import {
-  createRootRouteWithContext,
-  Outlet,
-  useLocation,
-} from "@tanstack/react-router"
-import { useEffect } from "react"
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
 import { BlogHeader } from "@/components/BlogHeader/BlogHeader"
 import { Footer } from "@/components/Footer/Footer"
 
@@ -23,13 +18,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootLayout() {
-  const pathname = useLocation({ select: (loc) => loc.pathname })
-  const lang = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "ja"
-
-  useEffect(() => {
-    document.documentElement.lang = lang
-  }, [lang])
-
   return (
     <div className="flex min-h-screen flex-col">
       <BlogHeader />

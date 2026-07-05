@@ -74,25 +74,29 @@ test.describe("英語版ページ", () => {
     ).toHaveCount(0)
   })
 
-  test("日本語ページでは <html lang=\"ja\">", async ({ page }) => {
+  test('日本語ページでは <html lang="ja">', async ({ page }) => {
     await page.goto("/")
     await expect(page.locator("html")).toHaveAttribute("lang", "ja")
   })
 
-  test("英語ページでは <html lang=\"en\">", async ({ page }) => {
+  test('英語ページでは <html lang="en">', async ({ page }) => {
     await page.goto("/en")
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
   })
 
-  test("SPA 遷移 (ja→en) で lang が en に切り替わる", async ({ page }) => {
+  test("言語切替タブ (ja→en) をクリックすると lang が en の HTML が読まれる", async ({
+    page,
+  }) => {
     await page.goto("/")
     await expect(page.locator("html")).toHaveAttribute("lang", "ja")
     await page.getByTestId("language-tab").click()
-    await expect(page).toHaveURL(/\/en$/)
+    await expect(page).toHaveURL(/\/en\/?$/)
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
   })
 
-  test("SPA 遷移 (en→ja) で lang が ja に戻る", async ({ page }) => {
+  test("言語切替タブ (en→ja) をクリックすると lang が ja の HTML が読まれる", async ({
+    page,
+  }) => {
     await page.goto("/en")
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
     await page.getByTestId("language-tab").click()
