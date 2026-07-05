@@ -112,6 +112,6 @@ curl -X POST -d sh1ma https://localhost:8787
 
 こんな感じでただのrustプログラムをCloudflare Workersで動かすことができました。
 
-ただ現状WASIからCloudflare d1のAPIなどを叩くことはできない？らしい(人に聞いた)です。
+ただ現状WASIからCloudflare d1のAPIなどを叩くことはできない？らしい（人に聞いた）です。
 
 これを使って画像からexifを削除した結果を返すFunctionを作ってみようと思ってるので出来たらgithubにコードあげると思います。

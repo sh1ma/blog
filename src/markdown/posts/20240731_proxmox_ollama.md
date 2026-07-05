@@ -57,7 +57,7 @@ sudo apt install -y ca-certificates curl
 ```
 
 次に`/etc/apt/keyrings`ディレクトリを作ってgpgキーを引っ張ってくる。どうやら最近は`/etc/apt/keyrings`にkeyringを置くのが最適解っぽい。
-参考: [apt-key の非推奨化と keyring の扱い方](https://zenn.dev/kariya_mitsuru/articles/a950e0996fb703#fnref-48d3-2)
+参考： [apt-key の非推奨化と keyring の扱い方](https://zenn.dev/kariya_mitsuru/articles/a950e0996fb703#fnref-48d3-2)
 
 ```sh
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -193,7 +193,7 @@ docker compose up
 CPU does not have vector extensions
 ```
 
-`Type`の欄を`Host`にすることでこの問題は解消されるはず。(↓参考画像)
+`Type`の欄を`Host`にすることでこの問題は解消されるはず。（↓参考画像）
 
 ![ProxmoxのVMのCPU設定](https://cdn.sh1ma.dev/20240731_proxmox_ollama-1.png)
 

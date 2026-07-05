@@ -21,6 +21,6 @@ Vercel上にデプロイしたブログをcloudflareで管理している`sh1ma.
 
 私の場合は1番目の暗号化モードの不備でした。
 
-Cloudflareのダッシュボードにいき、「SSL/TLS」ページ -> 「overview」ページに行き、
+Cloudflareのダッシュボードにいき、「SSL/TLS」ページ →「overview」ページに行き、
 下の画像のようにSSL/TLS encryption modeを`Full`にすることで解決しました。
 ![Cloudflareのダッシュボードのスクリーンショット](https://cdn.sh1ma.dev/20231110.png)

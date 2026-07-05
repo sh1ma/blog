@@ -39,7 +39,7 @@ export PATH="$HOME/.local/share/mise/shims:$PATH"
 mise -V
 ```
 
-出力:
+出力：
 
 ```
 2024.1.12 macos-arm64 (3750934 2024-01-07)
@@ -67,7 +67,7 @@ mise use --global node@20
 node -v
 ```
 
-出力:
+出力：
 
 ```
 v20.10.0
@@ -79,7 +79,7 @@ v20.10.0
 ## ディレクトリごとの環境変数管理
 
 次にディレクトリごとの環境変数管理を試してみます。  
-direnvとは違い、`.envrc`ではなく`.mise.toml`というファイルを作るようです。(.envrcを使う方法・設定もありますが割愛します)
+direnvとは違い、`.envrc`ではなく`.mise.toml`というファイルを作るようです。（.envrcを使う方法・設定もありますが割愛します）
 
 適当なディレクトリに入り、`.mise.toml`を作成します。
 
@@ -94,7 +94,7 @@ HELLO = "WORLD"
 mise trust
 ```
 
-出力:
+出力：
 
 ```
 mise trusted /Users/sh1ma/tmp/.mise.toml
@@ -106,7 +106,7 @@ mise trusted /Users/sh1ma/tmp/.mise.toml
 mise env | grep HELLO
 ```
 
-出力:
+出力：
 
 ```
 export HELLO=WORLD
@@ -116,7 +116,7 @@ export HELLO=WORLD
 echo $HELLO
 ```
 
-出力:
+出力：
 
 ```
 WORLD

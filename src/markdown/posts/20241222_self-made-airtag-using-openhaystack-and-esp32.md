@@ -49,7 +49,7 @@ git clone --depth 1 https://github.com/seemoo-lab/openhaystack.git
 rm OpenHaystack/OpenHaystack.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 ```
 
-ビルドが完了するとこんな感じのアプリケーションが開きます。（セットアップ済みの画面なので既にアクセサリが表示されていますが実際には何も表示されていないと思います。）
+ビルドが完了するとこんな感じのアプリケーションが開きます。（セットアップ済みの画面なので既にアクセサリが表示されていますが実際には何も表示されていないと思います）
 
 ![](https://cdn.sh1ma.dev/7b6b6d8a1dd5b890880e18c41ab2485a030ca33543c3c30299f1ac2de942f6c0.png)
 
@@ -108,7 +108,7 @@ chmod +x flash_esp32.sh
 ./flash_esp32.sh -p /dev/yourSerialPort "Base64-encoded advertisement key"
 ```
 
-ここまででセットアップは完了です。しばらくするとOpenHaystackの画面にデバイスの位置が表示されるはずです。（アプリ右上の更新ボタンを押すと位置情報が表示されるはずです。）ファームウェアを焼いてから表示されるまで5分ほどラグがあるように思いました。
+ここまででセットアップは完了です。しばらくするとOpenHaystackの画面にデバイスの位置が表示されるはずです。（アプリ右上の更新ボタンを押すと位置情報が表示されるはずです）ファームウェアを焼いてから表示されるまで5分ほどラグがあるように思いました。
 
 ## まとめ
 

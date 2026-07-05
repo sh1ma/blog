@@ -16,7 +16,7 @@ Cloudflare Workers + DiscordのOauthを使ってOpenID Connectに使える認証
 ### 前提
 
 - Cloudflareに登録済みなこと
-- wrangler(cloudflareのcli)をセットアップしていること。[セットアップ方法は公式サイトに解説があります。](https://developers.cloudflare.com/workers/get-started/guide/)
+- wrangler（cloudflareのcli）をセットアップしていること。[セットアップ方法は公式サイトに解説があります。](https://developers.cloudflare.com/workers/get-started/guide/)
 
 ### 1. Discord Developer Portalでアプリを作る
 

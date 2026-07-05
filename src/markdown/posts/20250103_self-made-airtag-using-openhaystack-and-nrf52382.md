@@ -6,7 +6,7 @@ publishedAt: "2025-01-03"
 あけましておめでとうございます！  
 OpenHaystack記事二個目です。nRF52832が乗った基板を調達できたので、これも偽AirTag化することにしました。  
 今回はその備忘録です。  
-（あけおめ記事はまた別に書きます。）
+（あけおめ記事はまた別に書きます）
 
 今回調達したnRF52832デバイスはDev KitなどのようにUSBでシリアルポート接続できたりする代物ではなく、まあせいぜいUARTとSWDで通信ができるよくらいの代物だったので、プログラマとしてOpenOCDを載せたラズパイ4でSWD経由でファームウェア書き込みを行いました。
 
@@ -75,7 +75,7 @@ openocd -f openhaystack.cfg
 ### nRF52832のファームウェアの用意
 
 ファームウェアは自分は一からビルドもできますが一番簡単なのはコンパイル済みのバイナリを焼くことですね。  
-こんかいはmacless-haystackというリポジトリのファームウェアを使用します。（使用するのはファームウェアのみです。）
+こんかいはmacless-haystackというリポジトリのファームウェアを使用します。（使用するのはファームウェアのみです）
 
 [dchristl/macless-haystack: Create your own AirTag with OpenHaystack, but without the need to own an Apple device](https://github.com/dchristl/macless-haystack)
 
