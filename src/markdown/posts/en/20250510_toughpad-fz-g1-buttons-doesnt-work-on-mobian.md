@@ -135,7 +135,7 @@ make -j$(nproc)
 
 #### 6. Copy the Build Artifacts to the TOUGHPAD
 
-Since I would run `make install` and so on on the TOUGHPAD side, copy the entire compiled Linux kernel directory to the TOUGHPAD.
+Since I would run `make install` and similar commands on the TOUGHPAD side, copy the entire compiled Linux kernel directory to the TOUGHPAD.
 
 The compiled Linux kernel directory is extremely heavy, so moving it was difficult, but when I configured rsync as follows, it finished in about 7 minutes.
 
