@@ -155,14 +155,14 @@ export const BlogHeader = () => {
 
   return (
     <div
-      className={`sticky top-4 z-50 mb-8 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 lg:px-8 ${
+      className={`sticky top-4 z-50 mb-20 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 md:mb-8 lg:px-8 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
       <div className="relative mx-auto max-w-3xl">
         <div
           aria-hidden={isCompact}
-          className={`pointer-events-none absolute inset-x-0 top-full z-0 flex flex-col items-start gap-1 pl-6 transition-all duration-500 ease-out ${
+          className={`pointer-events-none absolute inset-x-0 top-full z-0 flex flex-col items-start transition-all duration-500 ease-out ${
             isCompact
               ? "-translate-y-[calc(100%+72px)] opacity-0"
               : "translate-y-0 opacity-100"
@@ -170,7 +170,7 @@ export const BlogHeader = () => {
         >
           <nav
             data-testid="mobile-nav-tab"
-            className="pointer-events-auto -mt-2 inline-flex items-center gap-4 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-3 pr-3 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
+            className="pointer-events-auto -mt-2 flex w-[90%] items-center justify-center gap-6 self-center border-x border-b-0 border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
           >
             {isEnglish ? (
               <>
@@ -197,7 +197,7 @@ export const BlogHeader = () => {
               href={languageTarget.href}
               lang={languageTarget.lang}
               data-testid="language-tab"
-              className="pointer-events-auto inline-flex items-center gap-1 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-2.5 pr-3 pt-2.5 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface md:-mt-2"
+              className="pointer-events-auto flex w-[90%] items-center justify-center gap-1 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface md:-mt-2 md:ml-6 md:inline-flex md:w-auto md:justify-start md:self-start md:pb-1 md:pl-2.5 md:pr-3 md:pt-2.5"
             >
               <Languages size={12} />
               {languageTarget.label}
