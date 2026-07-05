@@ -21,7 +21,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 1. **worktree にいるか確認する**。`main` などのメインの working tree で直接作業しない。必要なら worktree を作る。
 2. **タスクにまつわる情報を集める**。既存コード、関連する docs / スキル、過去の PR / commit を確認する。
 3. **開発する**。バグ修正は先に再現テストを書き、一度 Failed することを確認してから直す。
-4. **PR 作成前チェックを通す**。`pnpm check` / `pnpm typecheck` / `pnpm test:e2e` がすべて通ること。自動修正できるものは `pnpm check:fix`。
+4. **PR 作成前チェックを通す**。**変更範囲に関わらず `pnpm check` (format/lint) は必ず流す**。
+   - **ブログの動作に影響するコード** (`src/`, `scripts/`, `contentlayer.config.ts`, `vite.config.ts`, `wrangler.jsonc`, `package.json` の deps, ワークフローなど) を変更した場合: 加えて `pnpm typecheck` / `pnpm test:e2e` もすべて通ること。
+   - **ブログの動作に関係ないファイル** (`.claude/`, `CLAUDE.md`, `README.md`, `docs/`, `dev-assets/` など) しか変更していない場合: `pnpm check` のみで良い。typecheck / e2e はスキップ可。
+   - 自動修正できるものは `pnpm check:fix`。
 5. **`/gh:pr` スキルで PR を作る**。
 
 ## スキル / ドキュメントのインデックス
