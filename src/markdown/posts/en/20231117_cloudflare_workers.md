@@ -1,10 +1,10 @@
 ---
-  title: "I Heard WASI Can Be Used on Cloudflare Workers, So I Tried It"
+  title: "Trying out WASI on Cloudflare Workers"
   publishedAt: "2023-11-17"
 ---
 
-I saw [an article saying WASI can apparently be used on Cloudflare Workers](https://blog.cloudflare.com/announcing-wasi-on-workers/)
-and thought it was amazing, so I tried it.
+I came across [an article saying Cloudflare Workers now supports WASI](https://blog.cloudflare.com/announcing-wasi-on-workers/).
+It looked cool, so I gave it a try.
 
 ## Environment
 
@@ -14,59 +14,59 @@ and thought it was amazing, so I tried it.
   - Required to run `npx wrangler@wasm`
 - wasmtime
 
-## Main Topic
+## Walkthrough
 
-### Preparation
+### Setup
 
-Since we’ll use `wasm32-wasi` as the build target, install `wasm32-wasi`.
+The build target is `wasm32-wasi`, so install it first.
 
 ```sh
 rustup target add wasm32-wasi
 ```
 
-First, create a project with `cargo new`.
+Create a new project with `cargo new`.
 
 ```sh
 cargo new hello_world
 ```
 
-Try running it once.
+Run it once to make sure it works.
 
 ```sh
 cargo run
 ```
 
-Naturally, the output is as follows.
+As expected, you get:
 
 ```
 Hello, world!
 ```
 
-Build this to wasm.
+Now build it to wasm.
 
 ```sh
 cargo build --target wasm32-wasi --release
 ```
 
-A `hello_world.wasm` file is created in `target/wasm32-wasi/release`.
+This produces `hello_world.wasm` under `target/wasm32-wasi/release`.
 
-I wanted to check locally whether the wasm runs, so I tried using the wasm runtime [wasmtime](https://wasmtime.dev/).
+To confirm the wasm actually runs locally, I'll use the wasm runtime [wasmtime](https://wasmtime.dev/).
 
-First, install wasmtime.
+Install wasmtime:
 
 ```sh
 curl https://wasmtime.dev/install.sh -sSf | bash
 ```
 
-Next, try running the wasm.
+Then run the wasm:
 
 ```sh
 wasmtime target/wasm32-wasi/release/hello_world.wasm
 ```
 
-This also prints `Hello, world!`. That completes the preparation.
+This prints `Hello, world!` as well. That's all the setup we need.
 
-### Running It on Cloudflare Workers
+### Running it on Cloudflare Workers
 
 ```sh
 npx wrangler@wasm dev target/wasm32-wasi/release/hello_world.wasm
@@ -78,12 +78,12 @@ npx wrangler@wasm dev target/wasm32-wasi/release/hello_world.wasm
 ⬣ Listening at http://localhost:8787
 ```
 
-A server starts up like this, so if you access it from a browser or similar, you should see `Hello, World!` printed.
-Apparently the main function is invoked when an HTTP request is triggered.
+The server comes up like this, and if you hit it from a browser you'll see `Hello, World!` in the response.
+It looks like an incoming HTTP request is what triggers the `main` function.
 
-It looks like standard input can be passed by using a POST request, so let’s try that.
+It also looks like you can pass stdin via a POST request, so let's try that.
 
-First, rewrite the code so it receives standard input.
+First, rewrite the code to read from stdin.
 
 ```rust
 fn main() {
@@ -93,25 +93,25 @@ fn main() {
 }
 ```
 
-Build it again and run it with wranlger.
+Rebuild and start it up with wrangler again.
 
 ```sh
 cargo build --target wasm32-wasi --release
 npx wrangler@wasm dev target/wasm32-wasi/release/hello_world.wasm
 ```
 
-Send a POST request with curl.
+Then send a POST request with curl:
 
 ```sh
 curl -X POST -d sh1ma https://localhost:8787
 ```
 
-The response was `Hello, World! sh1ma`.
+The response came back as `Hello, World! sh1ma`.
 
-## Summary
+## Wrap-up
 
-In this way, I was able to run an ordinary rust program on Cloudflare Workers.
+And that's how you run a plain Rust program on Cloudflare Workers.
 
-That said, at the moment it apparently isn’t possible to call APIs like Cloudflare d1 from WASI? (I heard this from someone.)
+That said, from what I've heard you can't call APIs like Cloudflare D1 from WASI at the moment (secondhand info, so take it with a grain of salt).
 
-I’m thinking of using this to make a Function that returns images with exif removed, so if I manage to do it, I’ll probably put the code on github.
+I'm thinking of using this to build a Function that returns an image with its EXIF data stripped. If I get it working, I'll probably put the code up on GitHub.

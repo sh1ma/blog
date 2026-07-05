@@ -4,29 +4,29 @@ publishedAt: "2025-05-10"
 ---
 
 It’s been a while.  
-I had been neglecting blog updates for a long time. It’s not that I don’t have topics, but because I write slowly, it became a pain to write, and there are several shelved articles.... Recently I realized that apparently I can’t add to something I left half-written a month later. Myself from a month ago is basically another person, after all. From this month, I’d like to post about once a month. That’s the feeling.
+I’ve been slacking on blog updates for a long time. It’s not that I don’t have things to write about — I’m just a slow writer, and once it starts to feel like a chore, drafts pile up in the drawer. I recently realized that I apparently can’t pick up a half-written draft a month later and keep going. Me from a month ago is basically a stranger. Starting this month, I’d like to try posting about once a month. That’s the plan, anyway.
 
-Now then, the other day I got a junk TOUGHPAD (model number: FZ-G1) from a friend in Akiba. At the time of purchase, it had been initialized and had no OS installed, so I decided to install Debian with [Phosh](https://phosh.mobi/) (a GUI environment for smartphones) integrated into it: [Mobian](https://mobian-project.org/). (It seems several TOUGHPAD units were bought among friends, and some people installed Arch Linux and used [Plasma Mobile](https://plasma-mobile.org/ja/) for the GUI.)
+Anyway, the other day a friend gave me a junk TOUGHPAD (model: FZ-G1) he’d picked up in Akihabara. It had already been wiped and had no OS on it, so I decided to install [Mobian](https://mobian-project.org/) — Debian with [Phosh](https://phosh.mobi/) (a smartphone-oriented GUI environment) integrated on top. (A few friends of mine bought TOUGHPADs too, and some went with Arch Linux and [Plasma Mobile](https://plasma-mobile.org/ja/) for the GUI.)
 
 ![Mobian splash screen](https://p.ipic.vip/z8sc26.jpeg)
 
 ![Mobian passcode input screen](https://p.ipic.vip/dhbwj2.jpeg)
 
-When I set `Scale` to `200%` from `Displays` in settings, it looked much better.
+Setting `Scale` to `200%` under `Displays` in the settings made things look a lot better.
 
 ![Mobian Displays settings. Scale is set to 200%](https://p.ipic.vip/q2ul6u.jpeg)
 
 ![Mobian home screen](https://p.ipic.vip/6csxup.jpeg)
 
-After installing Mobian, I was excited for a while that browser video playback, Discord, and other software worked, but after touching it for a while I noticed something. The A1 button and A2 button did not work. Strictly speaking, among the physical buttons, only the A1 and A2 buttons did not work. All of the friends who bought TOUGHPADs also faced this issue where the A1/A2 buttons did not work.
+After installing Mobian, I was pretty pumped that video playback in the browser, Discord, and other apps just worked. But after using it for a while, I noticed something: the A1 and A2 buttons didn’t work. To be precise, of all the physical buttons, only A1 and A2 were dead. Every friend who had bought a TOUGHPAD was hitting the same issue.
 
-At this point I could have ended with “Oh. They don’t work.” But I was intrigued by the phenomenon where “the other buttons work perfectly, but only the A1/A2 buttons do not work,” so I decided to investigate with the goal of “taking screenshots with the A1/A2 buttons.”
+I could have just shrugged and said “oh well, they don’t work.” But I was curious about the fact that every other button worked perfectly and only A1/A2 were broken, so I set myself a goal — get A1/A2 to take screenshots — and started digging in.
 
 ## Investigation
 
-### Check Whether the Input Is Recognized by the OS
+### Checking whether the input reaches the OS
 
-First, I thought I needed to identify which device the input was coming from, so I tried analyzing it with the `evtest` command. Below is the output when running the `evtest` command without arguments.
+The first thing I needed to figure out was which device the input was coming from, so I tried the `evtest` command. Here’s what running `evtest` with no arguments prints:
 
 ```
 mobian@mobian:~$ evtest
@@ -53,70 +53,70 @@ Available devices:
 Select the device event number [0-16]:
 ```
 
-After making guesses and checking several event devices, I learned the following.
+I made some educated guesses and poked at a few of the event devices, and here’s what I found:
 
-- `/dev/input/event11` fires an event when the power button is pressed
-- `/dev/input/event12` fires when the volume down and volume up buttons are pressed
-- `/dev/input/event13` fires when the Windows button and screen rotation button are pressed
+- `/dev/input/event11` fires when you press the power button
+- `/dev/input/event12` fires when you press volume down or volume up
+- `/dev/input/event13` fires when you press the Windows button or the screen rotation button
 
-However, none of the event files fired when the A1/A2 buttons were pressed. I also tried using `libinput debug-events` and `acpi_listen`, but those did not react either.
+But none of the event devices fired for the A1/A2 buttons. I also tried `libinput debug-events` and `acpi_listen`, and neither of those picked anything up either.
 
-While I was looking into ways to capture input events, a friend shared the following blog with me.
+While I was looking into other ways to capture input events, a friend shared this blog post with me:
 
 [FZ-G1-Mk3 | Wade Mealing](https://wmealing.github.io/toughpad-fz-g1-buttons-acpi.html?utm_source=chatgpt.com)
 
-The discussion in this blog, based on almost the same situation of “the A1/A2 buttons do not work on Linux installed on an FZ-G1,” was very useful to me.
+This post covers almost exactly my situation — the A1/A2 buttons not working on Linux on an FZ-G1 — and the analysis in it was really helpful.
 
-To summarize, the blog said the following.
+To summarize, the post covers the following:
 
-- The A1/A2 buttons do not react in `libinput debug-events` ← same as me
-- There is an implementation close to this in [KaarelP2rtel/panasonic-hbtn: Panasonic Toughpad FZ-M1 Tablet Button driver for Linux](https://github.com/KaarelP2rtel/panasonic-hbtn). ← This suggests these buttons operate via ACPI
-- Enabling `CONFIG_ACPI_DEBUG=y` in the Linux kernel makes the ACPI debug log feature available. When ACPI debug logging is enabled, kernel logs flow when A1/A2 buttons fire (can be checked with `dmesg`)
-- Based on the kernel logs that appeared, the author checked the ACPI table, guessed that `Device (HKEY)` was the source, and wrote a simple driver, but it had no effect
+- The A1/A2 buttons don’t show up in `libinput debug-events` — same as what I saw
+- There’s a close-ish existing implementation in [KaarelP2rtel/panasonic-hbtn: Panasonic Toughpad FZ-M1 Tablet Button driver for Linux](https://github.com/KaarelP2rtel/panasonic-hbtn) — suggesting these buttons work over ACPI
+- Enabling `CONFIG_ACPI_DEBUG=y` in the Linux kernel turns on ACPI debug logging. With that enabled, kernel log messages appear when A1/A2 is pressed (visible via `dmesg`)
+- Based on those kernel logs, the author looked at the ACPI table, guessed `Device (HKEY)` was the source, and wrote a simple driver — but it didn’t work
 
-Of these, “when ACPI debug logging is enabled, kernel logs flow when the buttons are pressed” seemed worth trying, so I decided to try it.
+Out of these, the “ACPI debug logging shows messages when the buttons are pressed” part seemed worth a shot, so I decided to try it.
 
-### Compiling and Installing the Linux Kernel
+### Compiling and installing the Linux kernel
 
-I think there are other articles where people write the Linux kernel compilation steps in detail, so here I’ll briefly write what I did.
-Considering the specs, compiling the Linux kernel on the TOUGHPAD seemed like it would take quite a long time, so for compilation I prepared a separate x86_64 machine and did it there.
+There are plenty of detailed articles about compiling the Linux kernel out there, so I’ll just briefly note what I did here.
+Given the TOUGHPAD’s specs, compiling the kernel on it would obviously take forever, so I did the compile on a separate x86_64 machine.
 
-#### 1. Prepare Linux Kernel Dependencies
+#### 1. Install the Linux kernel build dependencies
 
-Dependencies can be prepared with the following command.
+Install them with:
 
 ```bash
 sudo apt build-dep linux
 ```
 
-#### 2. Prepare the Linux Kernel Source Code
+#### 2. Get the Linux kernel source
 
-The Linux kernel version on the TOUGHPAD was 6.12.25, so I downloaded linux-6.12.28.tar.xz.
+The kernel version on the TOUGHPAD was 6.12.25, so I grabbed linux-6.12.28.tar.xz.
 
 ```
 curl -LO https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.28.tar.xz
 ```
 
-It can be extracted with the following command.
+Extract it with:
 
 ```
 tar -xf linux-6.12.25.tar.xz
 ```
 
-#### 4. Prepare .config
+#### 4. Set up .config
 
-Settings for Linux kernel compilation are written in `.config`.  
-The earlier `CONFIG_ACPI_DEBUG=y` is also written here. Because there must not be differences from Mobian’s config, I brought Mobian’s config from the TOUGHPAD, edited the `CONFIG_ACPI_DEBUG` item to `y`, and placed it inside the Linux kernel source code directory under the name `.config`. (At this time I also enabled a few other things, but I forgot what they were.)
+Kernel build settings live in `.config`.  
+This is where the `CONFIG_ACPI_DEBUG=y` above goes. To avoid drifting from Mobian’s config, I copied Mobian’s config from the TOUGHPAD, flipped `CONFIG_ACPI_DEBUG` to `y`, and dropped it into the kernel source directory as `.config`. (I flipped a few other things at the same time, but I’ve forgotten what.)
 
 ```
 CONFIG_ACPI_DEBUG=y
 ```
 
-The `.config` on my TOUGHPAD was located at `/boot/config-6.12.25`.
+On my TOUGHPAD, the `.config` was at `/boot/config-6.12.25`.
 
-**For the later work, if the following are not enabled, please enable them. If these are not enabled, you cannot override ACPI tables at boot time.**
+**You’ll need the following enabled for later steps. Without them, you can’t override ACPI tables at boot.**
 
-They were already enabled on Mobian on the TOUGHPAD, but just in case.
+They were already enabled in Mobian on the TOUGHPAD, but just in case:
 
 ```
 CONFIG_ARCH_HAS_ACPI_TABLE_UPGRADE=y
@@ -125,21 +125,21 @@ CONFIG_ACPI_TABLE_UPGRADE=y
 
 #### 5. Compile
 
-Run the following command and wait about 15 minutes. Depending on the specs of the machine doing the compilation, you may wait longer.  
-For reference: the CPU I used was `AMD Ryzen 5 7600X 6-Core Processor`.
+Run the following and wait about 15 minutes. It’ll take longer on a slower machine.  
+For reference, the CPU I used was an `AMD Ryzen 5 7600X 6-Core Processor`.
 
 ```
 make clean
 make -j$(nproc)
 ```
 
-#### 6. Copy the Build Artifacts to the TOUGHPAD
+#### 6. Copy the build artifacts to the TOUGHPAD
 
-Since I would run `make install` and so on on the TOUGHPAD side, copy the entire compiled Linux kernel directory to the TOUGHPAD.
+Since `make install` and friends need to run on the TOUGHPAD, copy the entire compiled kernel directory over to it.
 
-The compiled Linux kernel directory is extremely heavy, so moving it was difficult, but when I configured rsync as follows, it finished in about 7 minutes.
+The compiled kernel directory is huge, so transferring it is a pain, but with rsync set up like this it only took about 7 minutes.
 
-Edit `/etc/rsyncd.conf` on the machine used for compilation as follows.
+Edit `/etc/rsyncd.conf` on the build machine as follows:
 
 ```
 uid         = root
@@ -151,50 +151,50 @@ pid file    = /var/run/rsyncd.pid
 path = /home/sh1ma/workspace/linux-6.12.25
 ```
 
-Adjust `/home/sh1ma/workspace/linux-6.12.25` to match the directory where each person’s Linux kernel is located.
+Change `/home/sh1ma/workspace/linux-6.12.25` to wherever your kernel directory lives.
 
-Run the following on the machine used for compilation.
+Then on the build machine, run:
 
 ```
 rsync --daemon
 ```
 
-This starts rsyncd, making communication through the rsync protocol (TCP), rather than ssh, available.
+This starts rsyncd so you can transfer over the rsync protocol (TCP) directly instead of going through ssh.
 
-After that, run the following on the TOUGHPAD side, and files will be copied quickly.
+After that, run the following on the TOUGHPAD and the files copy over fast:
 
 ```
 rsync -azvh --info=progress2 --whole-file rsync://192.168.100.12/linux-kernel ~/workspace/
 ```
 
-#### 7. Install the Build Artifacts
+#### 7. Install the build artifacts
 
-Once the compiled Linux kernel directory has been copied, the work from here is on the TOUGHPAD side.
+Once the compiled kernel directory is on the TOUGHPAD, the rest of the work happens there.
 
-Because many kernel modules are not actually needed, edit the setting in `/etc/initramfs-tools/initramfs.conf` so that only the necessary ones are installed.
+A lot of kernel modules aren’t actually needed, so edit `/etc/initramfs-tools/initramfs.conf` so only the required ones get installed:
 
 ```
 MODULES=dep
 ```
 
-Update initramfs.
+Update initramfs:
 
 ```
 sudo update-initramfs -u -k 6.12.25
 ```
 
-Run the following.
+Then run:
 
 ```
 sudo make modules_install
 sudo make install
 ```
 
-With this, installation is complete! After rebooting, the new kernel should be applied.
+That’s it — installation is done. After a reboot, the new kernel should be running.
 
-### Viewing ACPI Debug Logs
+### Reading the ACPI debug logs
 
-When booting a Linux kernel configured with `CONFIG_ACPI_DEBUG=y` at compile time, files called `debug_level` and `debug_layer` had been added under `/sys/module/acpi/parameters`.
+Booting a kernel built with `CONFIG_ACPI_DEBUG=y` adds `debug_level` and `debug_layer` files under `/sys/module/acpi/parameters`.
 
 ```
 mobian@mobian:~$ ls /sys/module/acpi/parameters
@@ -202,21 +202,21 @@ acpica_version    debug_layer  ec_busy_polling  ec_event_clearing  ec_max_querie
 aml_debug_output  debug_level  ec_delay         ec_freeze_events   ec_no_wakeup    ec_storm_threshold  trace_debug_layer  trace_method_name
 ```
 
-Rewrite these values so that ACPI debug logs are emitted.
+Change these values to actually get ACPI debug logs printed.
 
-First, enter root with the following command. (You cannot write unless you are root, so become root first.)
+Get a root shell first — writing to these needs root:
 
 ```
 sudo su
 ```
 
-Inspect the `debug_level` parameter.
+Check the `debug_level` parameter:
 
 ```
 cat /sys/module/acpi/parameters/debug_level
 ```
 
-Output ↓
+Output:
 
 ```
 Description              	Hex        SET
@@ -254,13 +254,13 @@ ACPI_LV_EVENTS           	0x80000000 [ ]
 debug_level = 0x00000000 (* = enabled)
 ```
 
-Inspect the `debug_layer` parameter.
+Check the `debug_layer` parameter:
 
 ```
 cat /sys/module/acpi/parameters/debug_layer
 ```
 
-Output ↓
+Output:
 
 ```
 Description              	Hex        SET
@@ -283,21 +283,21 @@ ACPI_ALL_DRIVERS         	0xFFFF0000 [ ]
 debug_layer = 0x00000000 ( * = enabled)
 ```
 
-As settings for the logs that appear when the A1/A2 buttons are actually pressed, rewriting them as follows worked well.
+To get useful logs when the A1/A2 buttons are actually pressed, these values worked well:
 
 ```
 echo 0x200 > /sys/module/acpi/parameters/debug_level
 echo 0x82 > /sys/module/acpi/parameters/debug_layer
 ```
 
-- Setting `debug_level` to `0x200` makes only `ACPI_LV_EXEC` enabled
-- Setting `debug_layer` to `0x82` makes `ACPI_HARDWARE` and `ACPI_EXECUTER` enabled
+- Setting `debug_level` to `0x200` enables only `ACPI_LV_EXEC`
+- Setting `debug_layer` to `0x82` enables `ACPI_HARDWARE` and `ACPI_EXECUTER`
 
-If the above rewrite succeeds, debug logs are enabled. The settings are lost after rebooting.
+Once the writes succeed, debug logging is on. The settings don’t persist across reboots.
 
-Check the debug logs. Debug logs appear as kernel logs, so they can be checked with `dmesg -w`.
+Now check the debug output. It comes through as kernel log messages, so `dmesg -w` will show it.
 
-A large amount of logs flow, but running a command like the following should make them flow at an understandable speed.
+There’s a lot of noise, but a command like the one below slows it down to a readable pace:
 
 [Wade Mealing](https://wmealing.github.io/toughpad-fz-g1-buttons-acpi.html?utm_source=chatgpt.com#enabling-acpi-events)
 
@@ -307,7 +307,7 @@ A large amount of logs flow, but running a command like the following should mak
 dmesg -w | grep Notify -A5 -B5
 ```
 
-The logs to focus on are around Notify, like the following. No matter how many times either the A1 or A2 button is pressed, this log always appears. This is probably safe to treat as the log from pressing the A1/A2 buttons. In particular, `TBTN` in the log looks like a symbol from the DSDT in the ACPI table.
+The interesting lines are around Notify, like the ones below. This block shows up every single time you press A1 or A2, so it’s almost certainly the log for those button presses. In particular, `TBTN` in the log looks like a symbol from the DSDT in the ACPI table.
 
 ```
 [31002.859886]   exresop-0126 ex_resolve_operands   : Opcode 86 [Notify] RequiredOperandTypes=000001A6
@@ -316,35 +316,35 @@ The logs to focus on are around Notify, like the following. No matter how many t
 [31002.859895]    exdump-0603 ex_dump_operand       : 000000009e1948ee Namespace Node:  0  TBTN Device       000000009e1948ee 001 Notify Object: 00000000dfc93cab
 ```
 
-### Decompiling the ACPI Table
+### Decompiling the ACPI table
 
-Let’s organize the situation so far.
+Let me take stock of where things stand:
 
-- Button press events were not output by input analysis tools such as `libinput debug-events`, `evtest`, and `acpi_listen`
-  - From this, the following became clear
-    - Input events are not being reported to the [Linux Input SubSystem](https://docs.kernel.org/input/input_uapi.html)
-    - ACPI notifications are not reaching userland from the Linux kernel
-- Button presses could be detected in Linux kernel logs (`dmesg -w`)
+- Button press events don’t show up in input-analysis tools like `libinput debug-events`, `evtest`, or `acpi_listen`
+  - From that, two things follow:
+    - Input events aren’t making it to the [Linux Input SubSystem](https://docs.kernel.org/input/input_uapi.html)
+    - ACPI notifications aren’t reaching userland from the kernel
+- But button presses do show up in the kernel log (`dmesg -w`)
 
-From the above, I learned that “ACPI events are being ignored by the Linux kernel, or are being swallowed.”
+So the ACPI events are getting to the kernel but are being ignored or swallowed somewhere along the way.
 
-So next, as in the operations in the [FZ-G1-Mk3 | Wade Mealing](https://wmealing.github.io/toughpad-fz-g1-buttons-acpi.html?utm_source=chatgpt.com#acpi-tables) blog, dump the ACPI table and decompile the DSDT. Then investigate the definition of `TBTN` found earlier. The work of decompiling → overriding DSDT is written in more detail on the following page.
+The next step is to dump the ACPI table and decompile the DSDT, the same way the [FZ-G1-Mk3 | Wade Mealing](https://wmealing.github.io/toughpad-fz-g1-buttons-acpi.html?utm_source=chatgpt.com#acpi-tables) post does, and then track down the definition of `TBTN` that I saw earlier. The decompile → override-DSDT flow is covered in more depth here:
 
 [DSDT - ArchWiki](https://wiki.archlinux.jp/index.php/DSDT)
 
-First, install `acpica-tool`, a tool for investigation.
+First, install `acpica-tool` for this work:
 
 ```bash
 sudo apt install acpica-tool
 ```
 
-Dump the ACPI table with the `acpidump` command. (Multiple files will be generated in the current directory, so I recommend doing this in a working directory.)
+Dump the ACPI tables with `acpidump`. (It drops multiple files into the current directory, so I’d recommend running it in a scratch directory.)
 
 ```bash
 sudo acpidump -b
 ```
 
-After running it, dumped ACPI binary files are output in the current directory.
+You’ll end up with the dumped ACPI binaries in the current directory:
 
 ```
 mobian@mobian:~/tmp$ ls
@@ -354,18 +354,18 @@ mobian@mobian:~/tmp$ ls
  dmar.dat    fpdt.dat   msdm.dat   ssdt11.dat   ssdt1.dat    ssdt5.dat   ssdt9.dat
 ```
 
-Of these, only dsdt.dat is used.
-The following command generates `dsdt.dsl`, a decompiled file from `dsdt.dat`.
+Only `dsdt.dat` matters here.
+The following command decompiles it into `dsdt.dsl`:
 
 ```bash
 iasl -d dsdt.dat
 ```
 
-I saved the generated `dsdt.dsl` in the following gist.  
+I uploaded the resulting `dsdt.dsl` as a gist:  
 [TOUGHPAD FZ-G1 ACPI DSDT Table](https://gist.github.com/sh1ma/2c44b2da7445de88fdc1b599d3159da8)
 
-I’ll investigate `TBTN` from `dsdt.dsl`.  
-Searching for `TBTN` reveals a section like the following.
+Now to dig into `TBTN` in `dsdt.dsl`.  
+Searching for `TBTN` turns up this section:
 
 ```
     Scope (\_SB)
@@ -389,37 +389,35 @@ Searching for `TBTN` reveals a section like the following.
 
 [Relevant section in the gist](https://gist.github.com/sh1ma/2c44b2da7445de88fdc1b599d3159da8#file-dsdt-dsl-L18182-L18198)
 
-Several methods are tied to `Device (TBTN)`.
-Among them, `_HID` is a reference that returns a hardware-specific ID.
+`Device (TBTN)` has a few methods attached to it.
+Among them, `_HID` is the one that returns a hardware-specific ID.
 
-According to section 6.1.5 of the [latest ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf), `_HID` is described as follows.
+According to section 6.1.5 of the [latest ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf), `_HID` is described like this:
 
 > 6.1.5 \_HID (Hardware ID)
 >
-> This object is used to supply OSPM with the device’s PNP ID or ACPI ID.  
-> (Japanese translation: This object is used to provide the device’s PNP ID or ACPI ID to OSPM.)
-> ）
+> This object is used to supply OSPM with the device’s PNP ID or ACPI ID.
 
-OSPM is an abbreviation for “Operating System-directed configuration and Power Management,” and it should be fine to rephrase it as ACPI. In other words, it is reasonable to understand it as a method that tells the OS the HID.
+OSPM stands for “Operating System-directed configuration and Power Management,” which for our purposes is essentially ACPI. So it’s fine to think of `_HID` as the method that tells the OS what the device’s HID is.
 
-I understood that much, but what bothered me was that it looked different from other HIDs. Specifically, the following two points differ.
+That much I got. What caught my eye is that this `_HID` looked different from other `_HID`s in the same file. Two things in particular:
 
-- Other HIDs in `dsdt.dsl` are in a format like `Name (_HID, EisaId ("PNP0C02")`. This is defined as a constant function where `EisaId ("PNP0C02")` is always returned when the `_HID` method is invoked, whereas the `_HID` method of `TBTN` has conditional branching.
-- Other `_HID`s return strings wrapped in `EisaId()`, whereas `TBTN`’s `_HID` returns primitive numbers.
+- Most other `_HID`s in `dsdt.dsl` are in a form like `Name (_HID, EisaId ("PNP0C02"))` — basically a constant that always returns `EisaId ("PNP0C02")` when `_HID` is queried. `TBTN`’s `_HID`, in contrast, is a method with conditional branches.
+- The other `_HID`s return strings wrapped in `EisaId()`, but `TBTN`’s `_HID` returns raw integers.
 
-I wondered whether `_HID` also permits numeric types, so I continued reading the ACPI Spec and learned the following.
+I wondered whether `_HID` is even allowed to be an integer, so I kept reading the ACPI Spec. Here’s what I found:
 
-- `EisaId()` is a macro that converts a string EISA ID to a numeric type
-  - It was mentioned in _19.6.37 EISAID (EISA ID String To Integer Conversion Macro)_ of the [ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf)
-- The return value of `_HID` is either a string or a number
-  - If it is a string, it is a PNP ID or ACPI ID composed of alphanumeric characters
-    - PNP ID and ACPI ID are described in detail in [PNP ID and ACPI ID Registry | Unified Extensible Firmware Interface Forum](https://uefi.org/PNP_ACPI_Registry)
-  - If it is numeric, it is a 32-bit compressed EISA type ID
-    - This number can be converted to a string HID. In _19.3.4 ASL Macros_ of the [ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf), it is mentioned as follows
+- `EisaId()` is a macro that converts an EISA ID string into an integer
+  - Documented in _19.6.37 EISAID (EISA ID String To Integer Conversion Macro)_ of the [ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf)
+- `_HID` can return either a string or an integer
+  - If it’s a string, it’s an alphanumeric PNP ID or ACPI ID
+    - PNP IDs and ACPI IDs are documented in [PNP ID and ACPI ID Registry | Unified Extensible Firmware Interface Forum](https://uefi.org/PNP_ACPI_Registry)
+  - If it’s an integer, it’s a 32-bit compressed EISA type ID
+    - This integer can be converted back to a string HID. _19.3.4 ASL Macros_ of the [ACPI Spec](https://uefi.org/sites/default/files/resources/ACPI_Spec_6.5a_Final.pdf) puts it this way:
       > Converts and compresses the 7-character text argument into its corresponding 4-byte numeric EISA ID encoding (Integer). This can be used when declaring IDs for devices that are EISA IDs.
-    - It also introduced the procedure for converting from a 32-bit compressed EISA type ID to a string
+    - The same section also describes how to convert a 32-bit compressed EISA type ID back to a string
 
-At this point I knew that the return value of `TBTN`’s `_HID` is a 32-bit compressed EISA type ID, so I wrote a script to decode the two return values from `TBTN`’s `_HID` above.
+So now I knew `TBTN`’s `_HID` returns a 32-bit compressed EISA type ID. I wrote a quick script to decode the two return values:
 
 ```python
 def decode_eisa_id(eisa_id: int):
@@ -448,7 +446,7 @@ print(f"0x{id2:08X} -> {decode_eisa_id(id2)}")
 
 [gist](https://gist.github.com/sh1ma/e106e4503e9bbb1bcc1dbc151e9bc202)
 
-The output was as follows.
+The output:
 
 ```
 ❯ python decode.py
@@ -456,17 +454,17 @@ The output was as follows.
 0x2B003434 -> MAT002B
 ```
 
-I looked at the HIDs of several other defined devices, and there were several with the prefix `MAT`. Therefore the decoded result seems correct.
+Checking a few of the other defined devices, several of them also had HIDs with a `MAT` prefix, which suggests the decoded values look right.
 
-Once the HID is known, the rest is the work of writing a driver.
+Once we have the HID, the rest is just writing a driver.
 
-I’ll put the resulting work below.
+The finished driver is here:
 
 [sh1ma/tbtn-driver: TOUGPAD TBTN (A1, A2 buttons) Linux kernel driver](https://github.com/sh1ma/tbtn-driver)
 
-[You can watch a video of the A1/A2 buttons working here](https://cdn.sh1ma.dev/IMG_1051.mp4)
+[Here’s a video of the A1/A2 buttons actually working](https://cdn.sh1ma.dev/IMG_1051.mp4)
 
-## Summary
+## Wrapping up
 
-Before writing the real driver, I actually rewrote the DSDT `TBTN` HID to the fixed value `PNP0C40`, overrode the ACPI table, wrote a driver for that, and got it working, but I omitted that from the article. (Writing it became a pain.)  
-I’d like to write another article as a memo about how to override DSDT and such.
+The truth is, before I wrote the real driver, I first rewrote the DSDT `TBTN` HID to the fixed value `PNP0C40`, overrode the ACPI table with the patched version, wrote a driver against that, and got it working end to end — but I skipped over all of that in this article. (I got lazy about writing it up.)  
+I’d like to write a follow-up post at some point covering how to override DSDT and so on, as a note to my future self.
