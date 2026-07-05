@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { ExternalLink, Github, Sparkles } from "lucide-react"
+import { ExternalLink, Github, Sparkles, Twitter, Youtube } from "lucide-react"
 
 export const Route = createFileRoute("/en/about")({
   component: EnglishAboutPage,
@@ -86,6 +86,30 @@ const projects = [
     href: "https://github.com/sh1ma/iostrace",
     archived: false,
   },
+  {
+    name: "sh1ma/bwpk",
+    tagline: "Use Bitwarden passkeys from the CLI",
+    description:
+      "A CLI for using Bitwarden-stored passkeys (FIDO2/WebAuthn) from the command line, with master-password or TouchID unlock.",
+    href: "https://github.com/sh1ma/bwpk",
+    archived: false,
+  },
+  {
+    name: "sh1ma/Angelic-Angel",
+    tagline: "Receive tweets as a Web Push stream",
+    description:
+      "A server that mimics how a browser receives Web Push, then uses that channel to stream tweets in.",
+    href: "https://github.com/sh1ma/Angelic-Angel",
+    archived: false,
+  },
+  {
+    name: "sh1ma/try-k3s-on-cf-workers-public",
+    tagline: "Experiment: running k3s on Cloudflare Workers Containers",
+    description:
+      "An experiment that spins up a single-node k3s cluster inside a Cloudflare Workers Container and lets you deploy pods to it.",
+    href: "https://github.com/sh1ma/try-k3s-on-cf-workers-public",
+    archived: false,
+  },
 ]
 
 function EnglishAboutPage() {
@@ -134,6 +158,34 @@ function EnglishAboutPage() {
               >
                 <Github size={14} />
                 @sh1ma
+              </a>
+            </dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="text-text-muted">X</dt>
+            <dd>
+              <a
+                href="https://x.com/sh1ma"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
+              >
+                <Twitter size={14} />
+                @sh1ma
+              </a>
+            </dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="text-text-muted">YouTube</dt>
+            <dd>
+              <a
+                href="https://www.youtube.com/@am1hs"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
+              >
+                <Youtube size={14} />
+                @am1hs
               </a>
             </dd>
           </div>
