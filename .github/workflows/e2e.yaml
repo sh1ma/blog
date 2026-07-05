@@ -7,6 +7,9 @@ on:
     paths:
       - "src/**"
       - "e2e/**"
+      - "lib/**"
+      - "themes/**"
+      - "public/**"
       - "playwright.config.ts"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -19,10 +22,8 @@ on:
       - "wrangler.jsonc"
       - "tsconfig*.json"
       - ".github/workflows/e2e.yaml"
+      - ".github/actions/setup-playwright/action.yml"
   workflow_dispatch:
-
-env:
-  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
 jobs:
   wait-for-checks:
