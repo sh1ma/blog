@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { ArticleCard } from "@/components/ArticleCard/ArticleCard"
-import { TranslationNotice } from "@/components/TranslationNotice/TranslationNotice"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -30,8 +29,6 @@ function HomePage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8">
-      <TranslationNotice targetLocale="en" href="/en" />
-
       <div className="mb-12">
         <h2 className="mb-2 text-4xl font-bold tracking-tight text-text-primary">
           Latest Writings

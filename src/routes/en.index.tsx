@@ -3,7 +3,6 @@ import { allArticles } from "contentlayer/generated"
 import dayjs from "dayjs"
 import { Calendar, Clock, ImageOff } from "lucide-react"
 import { Tag } from "@/components/Tag/Tag"
-import { TranslationNotice } from "@/components/TranslationNotice/TranslationNotice"
 
 export const Route = createFileRoute("/en/")({
   component: EnglishHomePage,
@@ -31,8 +30,6 @@ function EnglishHomePage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8" lang="en">
-      <TranslationNotice targetLocale="ja" href="/" />
-
       <div className="mb-12">
         <h2 className="mb-2 text-4xl font-bold tracking-tight text-text-primary">
           Latest Writings

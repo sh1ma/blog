@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { ExternalLink, Github, Sparkles } from "lucide-react"
-import { TranslationNotice } from "@/components/TranslationNotice/TranslationNotice"
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -93,8 +92,6 @@ const projects = [
 function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8">
-      <TranslationNotice targetLocale="en" href="/en/about" />
-
       <section className="mb-12 rounded-2xl bg-bg-surface p-8 shadow-soft">
         <div className="mb-6 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
           <img

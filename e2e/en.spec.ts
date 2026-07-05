@@ -22,31 +22,55 @@ test.describe("英語版ページ", () => {
     await expect(page.getByText("I'm a software engineer.")).toBeVisible()
   })
 
-  test("日本語版ホームから英語版への導線がある", async ({ page }) => {
+  test("日本語版ホームのヘッダーに英語版への吊り下げバーがある", async ({
+    page,
+  }) => {
     await page.goto("/")
-    const link = page.getByRole("link", { name: "Read in English" })
-    await expect(link).toBeVisible()
-    await expect(link).toHaveAttribute("href", "/en")
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveText(/Read in English/)
+    await expect(tab).toHaveAttribute("href", "/en")
   })
 
-  test("日本語版 About から英語版への導線がある", async ({ page }) => {
+  test("日本語版 About のヘッダーに英語版への吊り下げバーがある", async ({
+    page,
+  }) => {
     await page.goto("/about")
-    const link = page.getByRole("link", { name: "Read in English" })
-    await expect(link).toBeVisible()
-    await expect(link).toHaveAttribute("href", "/en/about")
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveAttribute("href", "/en/about")
   })
 
-  test("英語版ホームから日本語版への導線がある", async ({ page }) => {
+  test("英語版ホームのヘッダーに日本語版への吊り下げバーがある", async ({
+    page,
+  }) => {
     await page.goto("/en")
-    const link = page.getByRole("link", { name: "日本語で読む" })
-    await expect(link).toBeVisible()
-    await expect(link).toHaveAttribute("href", "/")
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveText(/日本語版はこちら/)
+    await expect(tab).toHaveAttribute("href", "/")
   })
 
-  test("英語版 About から日本語版への導線がある", async ({ page }) => {
+  test("英語版 About のヘッダーに日本語版への吊り下げバーがある", async ({
+    page,
+  }) => {
     await page.goto("/en/about")
-    const link = page.getByRole("link", { name: "日本語で読む" })
-    await expect(link).toBeVisible()
-    await expect(link).toHaveAttribute("href", "/about")
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveAttribute("href", "/about")
+  })
+
+  test("インデックス本文に翻訳バナーは表示されない", async ({ page }) => {
+    await page.goto("/")
+    await expect(
+      page.getByText("An English version of this article is available."),
+    ).toHaveCount(0)
+  })
+
+  test("About 本文に翻訳バナーは表示されない", async ({ page }) => {
+    await page.goto("/about")
+    await expect(
+      page.getByText("An English version of this article is available."),
+    ).toHaveCount(0)
   })
 })

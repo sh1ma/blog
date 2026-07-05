@@ -58,7 +58,12 @@ test.describe("英語版記事", () => {
     page,
   }) => {
     await page.goto(`/articles/${bilingualSlug}`)
-    const notice = page.getByRole("link", { name: "Read in English" })
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveAttribute("href", `/en/articles/${bilingualSlug}`)
+    const notice = page.locator("article").getByRole("link", {
+      name: "Read in English",
+    })
     await expect(notice).toBeVisible()
     await expect(notice).toHaveAttribute(
       "href",
@@ -79,7 +84,12 @@ test.describe("英語版記事", () => {
 
   test("英語版ページから日本語版への導線が出る", async ({ page }) => {
     await page.goto(`/en/articles/${bilingualSlug}`)
-    const notice = page.getByRole("link", { name: "日本語で読む" })
+    const tab = page.getByTestId("language-tab")
+    await expect(tab).toBeVisible()
+    await expect(tab).toHaveAttribute("href", `/articles/${bilingualSlug}`)
+    const notice = page.locator("article").getByRole("link", {
+      name: "日本語で読む",
+    })
     await expect(notice).toBeVisible()
     await expect(notice).toHaveAttribute("href", `/articles/${bilingualSlug}`)
   })

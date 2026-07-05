@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { ChevronLeft, PenLine } from "lucide-react"
+import { allArticles } from "contentlayer/generated"
+import { ChevronLeft, Languages, PenLine } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -8,6 +9,47 @@ const AUTO_COLLAPSE_DELAY_MS = 3000
 
 const glassSurface =
   "bg-bg-surface/75 border border-white/50 shadow-soft backdrop-blur-xl backdrop-saturate-150"
+
+type LanguageTarget = {
+  href: string
+  label: string
+  lang: "ja" | "en"
+}
+
+const EN_LABEL = "Read in English"
+const JA_LABEL = "日本語版はこちら"
+
+const resolveLanguageTarget = (pathname: string): LanguageTarget | null => {
+  if (pathname === "/") {
+    return { href: "/en", label: EN_LABEL, lang: "en" }
+  }
+  if (pathname === "/about") {
+    return { href: "/en/about", label: EN_LABEL, lang: "en" }
+  }
+  if (pathname === "/en") {
+    return { href: "/", label: JA_LABEL, lang: "ja" }
+  }
+  if (pathname === "/en/about") {
+    return { href: "/about", label: JA_LABEL, lang: "ja" }
+  }
+  const enArticle = pathname.match(/^\/en\/articles\/(.+?)\/?$/)
+  if (enArticle) {
+    const slug = enArticle[1]
+    const hasJa = allArticles.some((p) => p.id === slug && p.locale === "ja")
+    return hasJa
+      ? { href: `/articles/${slug}`, label: JA_LABEL, lang: "ja" }
+      : null
+  }
+  const jaArticle = pathname.match(/^\/articles\/(.+?)\/?$/)
+  if (jaArticle) {
+    const slug = jaArticle[1]
+    const hasEn = allArticles.some((p) => p.id === slug && p.locale === "en")
+    return hasEn
+      ? { href: `/en/articles/${slug}`, label: EN_LABEL, lang: "en" }
+      : null
+  }
+  return null
+}
 
 export const BlogHeader = () => {
   const pathname = useLocation({ select: (loc) => loc.pathname })
@@ -107,15 +149,37 @@ export const BlogHeader = () => {
     return "border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
   }
 
+  const languageTarget = resolveLanguageTarget(pathname)
+
   return (
     <div
       className={`sticky top-4 z-50 mb-8 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 lg:px-8 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
-      <div className="mx-auto max-w-3xl">
+      <div className="relative mx-auto max-w-3xl">
+        {languageTarget && (
+          <div
+            aria-hidden={isCompact}
+            className={`pointer-events-none absolute inset-x-0 top-full z-0 flex justify-center transition-all duration-500 ease-out ${
+              isCompact
+                ? "-translate-y-[calc(100%+72px)] opacity-0"
+                : "translate-y-0 opacity-100"
+            }`}
+          >
+            <Link
+              to={languageTarget.href}
+              lang={languageTarget.lang}
+              data-testid="language-tab"
+              className="pointer-events-auto -mt-2 inline-flex items-center gap-1.5 rounded-b-xl border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pl-3 pr-3.5 pt-3 text-xs font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface"
+            >
+              <Languages size={14} />
+              {languageTarget.label}
+            </Link>
+          </div>
+        )}
         <div
-          className={`${glassSurface} relative ml-auto overflow-hidden transition-[width,height,border-radius] duration-500 ease-out ${
+          className={`${glassSurface} relative z-10 ml-auto overflow-hidden transition-[width,height,border-radius] duration-500 ease-out ${
             isCompact ? "h-12 w-12 rounded-full" : "h-[72px] w-full rounded-2xl"
           }`}
         >
@@ -145,13 +209,6 @@ export const BlogHeader = () => {
                   >
                     About
                   </Link>
-                  <Link
-                    to="/"
-                    className="border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
-                    lang="ja"
-                  >
-                    日本語
-                  </Link>
                 </>
               ) : (
                 <>
@@ -160,13 +217,6 @@ export const BlogHeader = () => {
                   </Link>
                   <Link to="/about" className={getLinkClassName("/about")}>
                     About
-                  </Link>
-                  <Link
-                    to="/en"
-                    className="border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
-                    lang="en"
-                  >
-                    English
                   </Link>
                 </>
               )}
