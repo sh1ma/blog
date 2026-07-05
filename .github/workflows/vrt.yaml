@@ -35,65 +35,7 @@ env:
   PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
 jobs:
-  wait-for-checks:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for prerequisite checks
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const sha = context.payload.pull_request.head.sha;
-            const required = [
-              { key: 'Check PR Labels', match: (n) => n === 'check-labels' },
-              { key: 'Lint & Format Check', match: (n) => n === 'lint' || n.startsWith('lint (') },
-            ];
-            const timeoutMs = 15 * 60 * 1000;
-            const intervalMs = 15 * 1000;
-            const start = Date.now();
-            while (Date.now() - start < timeoutMs) {
-              const { data } = await github.rest.checks.listForRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: sha,
-              });
-              const statuses = required.map(({ key, match }) => {
-                const runs = data.check_runs
-                  .filter((c) => match(c.name))
-                  .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
-                const latest = runs[0];
-                return {
-                  key,
-                  status: latest?.status ?? 'not_scheduled',
-                  conclusion: latest?.conclusion ?? null,
-                };
-              });
-              core.info(JSON.stringify(statuses));
-              const failed = statuses.filter(
-                (s) =>
-                  s.status === 'completed' &&
-                  !['success', 'neutral', 'skipped'].includes(s.conclusion),
-              );
-              if (failed.length > 0) {
-                core.setFailed(
-                  `Prerequisite failed: ${failed.map((f) => f.key).join(', ')}`,
-                );
-                return;
-              }
-              if (statuses.every((s) => s.status === 'completed')) {
-                core.info('All prerequisite checks passed');
-                return;
-              }
-              await new Promise((r) => setTimeout(r, intervalMs));
-            }
-            core.setFailed('Timed out waiting for prerequisite checks');
-
   vrt:
-    needs: wait-for-checks
-    if: |
-      always() &&
-      (needs.wait-for-checks.result == 'success' ||
-       needs.wait-for-checks.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       contents: read
