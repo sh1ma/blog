@@ -2,17 +2,16 @@ import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import { defineDocumentType, makeSource } from "contentlayer2/source-files"
 import type { Element, Root } from "hast"
-import rehypeAutoLinkHeadings from "rehype-autolink-headings"
 import rehypeKatex from "rehype-katex"
 import rehypePrettyCode, {
   type Options as RehypePrettyCodeOptions,
 } from "rehype-pretty-code"
-import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
 import { remarkAlert } from "remark-github-blockquote-alert"
 import remarkMath from "remark-math"
 import type { ThemeRegistrationRaw } from "shiki"
 import { visit } from "unist-util-visit"
+import { rehypeHeadingAnchors } from "./lib/rehype-heading-anchors"
 import { rehypeRichEmbeds } from "./lib/rehype-rich-embeds"
 
 const atomOneDark = {
@@ -75,30 +74,8 @@ export default makeSource({
     remarkPlugins: [remarkGfm, remarkAlert, remarkMath],
     rehypePlugins: [
       rehypeRichEmbeds,
-      rehypeSlug,
+      rehypeHeadingAnchors,
       [rehypeKatex, { strict: false, output: "html" }],
-      [
-        rehypeAutoLinkHeadings,
-        {
-          behavior: "append",
-          properties: {
-            className: ["heading-link"],
-          },
-          content: {
-            type: "element",
-            tagName: "span",
-            properties: {
-              className: [""],
-            },
-            children: [
-              {
-                type: "text",
-                value: "#",
-              },
-            ],
-          },
-        },
-      ],
       [
         rehypePrettyCode,
         {
