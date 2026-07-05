@@ -30,7 +30,7 @@ export const TableOfContents = ({
           />
         </summary>
 
-        <nav className="mt-3 border-t border-border-subtle pt-3 pl-4 text-base leading-relaxed text-text-secondary">
+        <nav className="mt-3 border-t border-border-subtle pt-3 pl-4 text-base leading-relaxed text-text-primary">
           <ul className="list-none space-y-2">
             {headings.map((heading) => (
               <li
