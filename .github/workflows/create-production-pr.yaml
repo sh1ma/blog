@@ -1,0 +1,71 @@
+name: Create Production PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create or update deploy branch
+        run: |
+          # deployブランチが存在するか確認
+          if git ls-remote --heads origin deploy | grep -q deploy; then
+            echo "deploy branch exists"
+            git fetch origin deploy
+            git checkout deploy
+          else
+            echo "Creating new deploy branch from main"
+            git checkout -b deploy
+            git push -u origin deploy
+          fi
+
+      - name: Create PR from main to deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # mainブランチに切り替え
+          git checkout main
+
+          # deployブランチとの差分を確認
+          if git diff --quiet main origin/deploy; then
+            echo "No changes to deploy"
+            exit 0
+          fi
+
+          # PRが既に存在するか確認
+          EXISTING_PR=$(gh pr list --base deploy --head main --state open --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists"
+          else
+            # PRを作成
+            gh pr create \
+              --base deploy \
+              --head main \
+              --title "本番デプロイ: $(date +'%Y-%m-%d %H:%M:%S')" \
+              --body "## 本番デプロイ
+
+このPRをマージすると本番環境へのデプロイが実行されます。
+
+### チェックリスト
+- [ ] staging環境で動作確認済み
+- [ ] すべてのテストがパス
+- [ ] 破壊的変更がないことを確認
+
+---
+*このPRは自動生成されました*" \
+              --label "production"
+          fi

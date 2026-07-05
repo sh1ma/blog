@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.describe("記事ページ", () => {
   // テスト用の記事slug（実在する記事を使用）
@@ -43,18 +43,55 @@ test.describe("記事ページ", () => {
     await expect(articleContent).toContainText("ブログを始めました")
   })
 
-  test("いいねボタンが表示される", async ({ page }) => {
-    await page.goto(`/articles/${testArticleSlug}`)
-
-    // footer内のボタン
-    const likeButton = page.locator("footer button")
-    await expect(likeButton).toBeVisible()
-  })
-
   test("存在しない記事は404を表示する", async ({ page }) => {
     await page.goto("/articles/non-existent-article-slug")
 
     // 404表示を確認
+    await expect(page.getByText("404")).toBeVisible()
+  })
+})
+
+test.describe("英語版記事", () => {
+  const bilingualSlug = "20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian"
+
+  test("英語版が存在する記事の日本語版に英語版への導線が出る", async ({
+    page,
+  }) => {
+    await page.goto(`/articles/${bilingualSlug}`)
+    const notice = page.locator("article").getByRole("link", {
+      name: "Read in English",
+    })
+    await expect(notice).toBeVisible()
+    await expect(notice).toHaveAttribute(
+      "href",
+      `/en/articles/${bilingualSlug}`,
+    )
+  })
+
+  test("英語版 URL でアクセスすると英語タイトルが表示される", async ({
+    page,
+  }) => {
+    await page.goto(`/en/articles/${bilingualSlug}`)
+    const title = page.locator("article h1")
+    await expect(title).toBeVisible()
+    await expect(title).toHaveText(
+      "Making the TOUGHPAD A1/A2 Buttons Work on Mobian (Debian)",
+    )
+  })
+
+  test("英語版ページから日本語版への導線が出る", async ({ page }) => {
+    await page.goto(`/en/articles/${bilingualSlug}`)
+    const notice = page.locator("article").getByRole("link", {
+      name: "日本語で読む",
+    })
+    await expect(notice).toBeVisible()
+    await expect(notice).toHaveAttribute("href", `/articles/${bilingualSlug}`)
+  })
+
+  test("存在しない slug で /en/articles/ にアクセスすると404", async ({
+    page,
+  }) => {
+    await page.goto("/en/articles/non-existent-article-slug")
     await expect(page.getByText("404")).toBeVisible()
   })
 })

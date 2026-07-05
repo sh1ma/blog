@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.describe("Visual Regression Tests", () => {
   test.describe("トップページ", () => {
@@ -33,9 +33,6 @@ test.describe("Visual Regression Tests", () => {
       await expect(page).toHaveScreenshot("article-page.png", {
         fullPage: true,
         animations: "disabled",
-        mask: [
-          page.locator("footer button"), // いいねカウンターをマスク（動的）
-        ],
       })
     })
   })

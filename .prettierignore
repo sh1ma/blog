@@ -1,8 +1,0 @@
-pnpm-lock.yaml
-node_modules
-.next
-.claude
-.specify
-.github
-CLAUDE.md
-cloudflare-env.d.ts

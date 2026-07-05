@@ -1,6 +1,85 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits"],
   "reviewers": ["sh1ma"],
-  "labels": ["automated", "chore"]
+  "labels": ["automated", "chore"],
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 3,
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "description": "TanStack ecosystem (router / query) をまとめて更新",
+      "matchPackageNames": ["/^@tanstack//"],
+      "groupName": "tanstack"
+    },
+    {
+      "description": "Cloudflare 関連ツール",
+      "matchPackageNames": ["wrangler", "@cloudflare/vite-plugin"],
+      "groupName": "cloudflare"
+    },
+    {
+      "description": "Vite プラグイン / ビルドツールチェイン",
+      "matchPackageNames": ["vite", "/^@vitejs//"],
+      "groupName": "vite"
+    },
+    {
+      "description": "Contentlayer / markdown 変換系",
+      "matchPackageNames": [
+        "contentlayer2",
+        "/^rehype-/",
+        "/^remark/",
+        "shiki",
+        "feed"
+      ],
+      "groupName": "contentlayer-markdown"
+    },
+    {
+      "description": "OGP 生成 (satori + resvg)",
+      "matchPackageNames": ["satori", "@resvg/resvg-js"],
+      "groupName": "ogp"
+    },
+    {
+      "description": "Biome (lint/format)",
+      "matchPackageNames": ["@biomejs/biome"],
+      "groupName": "biome"
+    },
+    {
+      "description": "Playwright 本体とブラウザバイナリ",
+      "matchPackageNames": ["@playwright/test", "playwright"],
+      "groupName": "playwright"
+    },
+    {
+      "description": "React 型定義 (実体は pnpm overrides で pin) は auto-merge",
+      "matchPackageNames": ["@types/react", "@types/react-dom"],
+      "groupName": "react-types",
+      "automerge": true,
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "description": "TypeScript / Node 型定義は patch/minor 自動マージ",
+      "matchPackageNames": ["typescript", "@types/node"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "description": "lockfile maintenance / patch は auto-merge、レビュー人には通知しない",
+      "matchUpdateTypes": ["lockFileMaintenance", "patch"],
+      "reviewers": [],
+      "automerge": true
+    },
+    {
+      "description": "major は必ずレビュー、まとめない",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["automated", "chore", "major-update"]
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "automerge": false
+  }
 }

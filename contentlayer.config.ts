@@ -1,13 +1,43 @@
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import { defineDocumentType, makeSource } from "contentlayer2/source-files"
+import type { Element, Root } from "hast"
+import rehypeKatex from "rehype-katex"
 import rehypePrettyCode, {
-  Options as RehypePrettyCodeOptions,
+  type Options as RehypePrettyCodeOptions,
 } from "rehype-pretty-code"
-import rehypeAutoLinkHeadings from "rehype-autolink-headings"
-import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
+import { remarkAlert } from "remark-github-blockquote-alert"
+import remarkMath from "remark-math"
+import type { ThemeRegistrationRaw } from "shiki"
+import { visit } from "unist-util-visit"
+import { rehypeHeadingAnchors } from "./lib/rehype-heading-anchors"
+import { rehypeRichEmbeds } from "./lib/rehype-rich-embeds"
+
+const atomOneDark = {
+  ...JSON.parse(
+    readFileSync(resolve(process.cwd(), "themes/atom-one-dark.json"), "utf-8"),
+  ),
+  type: "dark",
+} as ThemeRegistrationRaw
+
+const enableLineNumbers = () => (tree: Root) => {
+  visit(tree, "element", (node: Element) => {
+    if (
+      node.tagName === "code" &&
+      node.properties &&
+      typeof (
+        node.properties["data-language"] ?? node.properties.dataLanguage
+      ) === "string"
+    ) {
+      node.properties["data-line-numbers"] = ""
+    }
+  })
+}
 
 export const Article = defineDocumentType(() => ({
   name: "Article",
-  filePathPattern: `**/posts/*.md`,
+  filePathPattern: `**/posts/**/*.md`,
   fields: {
     title: { type: "string", required: true },
     publishedAt: { type: "date", required: true },
@@ -19,6 +49,11 @@ export const Article = defineDocumentType(() => ({
     id: {
       type: "string",
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, ""),
+    },
+    locale: {
+      type: "string",
+      resolve: (doc) =>
+        doc._raw.sourceFilePath.startsWith("posts/en/") ? "en" : "ja",
     },
     readingTime: {
       type: "number",
@@ -32,49 +67,26 @@ export const Article = defineDocumentType(() => ({
   },
 }))
 
-export const About = defineDocumentType(() => ({
-  name: "About",
-  filePathPattern: `**/about.md`,
-}))
-
 export default makeSource({
   contentDirPath: "./src/markdown/",
-  documentTypes: [Article, About],
+  documentTypes: [Article],
   markdown: {
+    remarkPlugins: [remarkGfm, remarkAlert, remarkMath],
     rehypePlugins: [
-      rehypeSlug,
-      [
-        rehypeAutoLinkHeadings,
-        {
-          behavior: "append",
-          properties: {
-            className: ["heading-link"],
-          },
-          content: {
-            type: "element",
-            tagName: "span",
-            properties: {
-              className: [""],
-            },
-            children: [
-              {
-                type: "text",
-                value: "#",
-              },
-            ],
-          },
-        },
-      ],
+      rehypeRichEmbeds,
+      rehypeHeadingAnchors,
+      [rehypeKatex, { strict: false, output: "html" }],
       [
         rehypePrettyCode,
         {
-          theme: "one-dark-pro",
+          theme: atomOneDark,
           defaultLang: {
             block: "plaintext",
           },
           keepBackground: false,
         } satisfies RehypePrettyCodeOptions,
       ],
+      enableLineNumbers,
     ],
   },
 })

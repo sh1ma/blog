@@ -2,119 +2,60 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 重要
+## プロジェクト概要
 
-常に日本語で説明してください。
+[blog.sh1ma.dev](https://blog.sh1ma.dev) で公開されている個人ブログのソースコード。Cloudflare Workers にデプロイされている静的サイト。
 
-## 作業開始前のルール
+## 絶対に守るべきルール
 
-**コード変更を伴う作業を開始する前に、必ず `/git-worktree` スキルを使用してworktreeとブランチを作成すること。**
+- **常に日本語で応答する**。
+- **依存追加は必ず `pnpm add` / `pnpm add -D` を使う**。`package.json` を直接編集して依存を書き込むのは禁止。
+- **Lint 無効化コメント (`biome-ignore`, `eslint-disable` 等) は書かない**。エラーは黙らせず、コードを直して解消する。
+- **PR 作成は必ず `/gh:pr` スキルを使う**。`gh pr create` の直接実行は禁止。
+- **推測で作業しない**。コマンド実行・コード編集・API 呼び出しなどすべての操作は、記憶に頼らず根拠を持って行う。既存の記憶 (学習時点の情報や以前のセッションの記憶) は古かったり誤っている可能性があるので信用しない。コマンドの使い方が分からなければ必ず `--help` / `man` / 公式 docs を確認する。コード編集も、対象コードや関連仕様が明らかになってから着手する。ただし、**今このセッション内で実際に実行して確認したコマンド・読み込んだファイルを、同じ状態で再度使うのは良い**。
+- **勝手に代替手段で進めない**。うまくいかなかったとき・難しいとき・当初のやり方が塞がれたとき、ユーザが指示していない代替アプローチに勝手に切り替えない。提案して ask するのは良いが、承認なしに進めない。
+- **不明点を残したまま作業しない**。分からない内容・不明な点はすべてユーザに ask する。曖昧なまま推測で埋めない。
 
-### ブランチ命名規則
+## 開発の流れ
 
-Conventional Commitに準じた形式:
+1. **worktree にいるか確認する**。`main` などのメインの working tree で直接作業しない。必要なら worktree を作る。
+2. **タスクにまつわる情報を集める**。既存コード、関連する docs / スキル、過去の PR / commit を確認する。
+3. **開発する**。バグ修正は先に再現テストを書き、一度 Failed することを確認してから直す。
+4. **PR 作成前チェックを通す**。**変更範囲に関わらず `pnpm check` (format/lint) は必ず流す**。
+   - **ブログの動作に影響するコード** (`src/`, `scripts/`, `contentlayer.config.ts`, `vite.config.ts`, `wrangler.jsonc`, `package.json` の deps, ワークフローなど) を変更した場合: 加えて `pnpm typecheck` も通ること。
+   - **ブログの動作に関係ないファイル** (`.claude/`, `CLAUDE.md`, `README.md`, `docs/`, `dev-assets/` など) しか変更していない場合: `pnpm check` のみで良い。typecheck はスキップ可。
+   - **E2E (`pnpm test:e2e`) は GitHub Actions で必ず流れるので、ローカルで事前に実行する必要はない**。手元で E2E を触りたい場面 (E2E 自体の変更・デバッグ) だけ任意で流す。
+   - 自動修正できるものは `pnpm check:fix`。
+5. **`/gh:pr` スキルで PR を作る**。
 
-```
-<type>/<short-description>
-```
+## スキル / ドキュメントのインデックス
 
-| type       | 用途                         |
-| ---------- | ---------------------------- |
-| `feat`     | 新機能追加                   |
-| `fix`      | バグ修正                     |
-| `refactor` | リファクタリング             |
-| `docs`     | ドキュメント変更             |
-| `chore`    | ビルド・設定・依存関係の変更 |
+必要になったら参照する。詳細はここには書かない (陳腐化を防ぐため)。
 
-例: `feat/add-dark-mode`, `fix/like-button-error`, `refactor/api-structure`
+- `.claude/skills/gh/` — `gh` CLI 操作のルート。`gh/pr/` に PR 作成・レビュー・マージのプロジェクト固有ルール (ラベル / テンプレート / VRT)。
+- `.github/pull_request_template.md` — PR テンプレート本体。
+- `README.md` — 公開向けの最小情報。
+- `package.json` の `scripts` — 使えるコマンド一覧の一次ソース (`pnpm run` で列挙可能)。
+- `wrangler.jsonc` / `.github/workflows/` — Cloudflare へのデプロイ設定と CI の一次ソース。
+- `contentlayer.config.ts` — 記事の Markdown 変換パイプラインの一次ソース。
 
-## PR作成前のルール
+技術詳細 (フレームワーク構成、ビルドパイプライン、デプロイフロー等) はこのファイルに書かず、上記の一次ソースを直接読む。
 
-**PRを作成する前に、必ず以下のコマンドを実行し、問題があれば修正すること。**
+## スキル作成方針
 
-```bash
-pnpm lint
-pnpm format:check
-```
+`.claude/skills/` に置くスキルは以下に従う。
 
-問題がある場合は `pnpm format` でフォーマットを修正し、lintエラーは `pnpm next lint --fix` で自動修正する。自動修正できないエラーは手動で修正する。
+- **CLI やコマンドの具体的な使い方は書かない**。それらは `<コマンド> --help` などで実行時に確認する。スキルには「どの help をどう見るか」の指針だけを書く。
+- **1 CLI / 1 コマンドにつき 1 スキル**。複数の CLI をまとめない。
+- **SKILL.md はインデックスとして保つ**。詳細はスキル内の別ファイル (`*.md`) に分割し、SKILL.md からリンクする。ベタ書きでコンテキストを圧迫しない。
+- **プロジェクト固有のルール** (テンプレート遵守、対象リポジトリの限定など) は書く。これは help では分からない。
+- **動的に変わりうる値 (ラベル、環境変数一覧、Secrets 名、依存バージョン、コマンド一覧など) は現在値のスナップショットを書かない**。「どこから取るか / どう調べるか」だけを書く。ドキュメント全体で同じ原則。
 
-## PR作成時のルール
+## CLAUDE.md 更新の方針
 
-**PRの作成には必ず `/gh-pr` スキルを使用すること。** 直接 `gh pr create` コマンドを実行してはならない。スキルにはラベル付けなどのルールが含まれている。
+このファイルは陳腐化させない。以下を守る。
 
-**PR作成時は `.github/pull_request_template.md` のテンプレートを必ず遵守すること。** 以下のセクションをすべて含める必要がある：
-
-- 概要
-- 変更内容
-- 関連Issue
-- テスト項目
-- VRT設定（スナップショット更新のチェックボックス）
-- スクリーンショット（任意）
-- 備考
-
-## コマンド
-
-```bash
-# 開発サーバー起動
-pnpm dev
-
-# ビルド
-pnpm build
-
-# Cloudflare Pages プレビュー
-pnpm preview
-
-# Cloudflare Pages デプロイ
-pnpm deploy
-
-# Lint
-pnpm lint
-
-# フォーマット
-pnpm format
-pnpm format:check
-
-# コンテンツ（Markdown）のビルド
-pnpm build:content
-
-# Cloudflare 環境変数の型生成
-pnpm cf-typegen
-```
-
-## アーキテクチャ
-
-Next.js 15 (App Router) + Contentlayer2 + Cloudflare Workers (OpenNext) のブログ。
-
-### 主要な構成
-
-- **コンテンツ管理**: `src/markdown/` にMarkdownファイルを配置。Contentlayer2で処理され、`contentlayer/generated` から型付きでインポート可能
-- **記事の定義**: `contentlayer.config.ts` でArticle/Aboutの2種類のドキュメントタイプを定義
-- **APIルート**: `src/app/api/[[...route]]/` でHonoを使用したAPIを提供
-- **データベース**: Cloudflare D1を使用（いいね機能など）。`src/db.ts` でServer Actionsとして実装
-- **ストレージ**: Cloudflare R2をCDNとキャッシュ用に使用
-
-### Cloudflare統合
-
-`@opennextjs/cloudflare` を使用してNext.jsをCloudflare Workers上で動作させている。環境変数やD1/R2へのアクセスは `getCloudflareContext()` 経由で取得する。
-
-## Active Technologies
-
-- TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS 3.4.19, @tailwindcss/typography 0.5.19, React 19.1.2
-- Cloudflare D1（いいね機能）、R2（CDN）
-- drizzle-orm, drizzle-kit（型安全なD1データベースアクセス）
-
-## 開発時のファイル管理
-
-**dev-assets/** ディレクトリは開発時の一時ファイルや参考資料を置くためのディレクトリです。
-
-- デザインファイル（AI生成UIなど）
-- 実装時の参考資料
-- その他リポジトリにコミットしたくない開発用ファイル
-
-このディレクトリは `.gitignore` に含まれており、リポジトリには含まれません。
-
-## Recent Changes
-
-- feat/introduce-drizzle: drizzle-ormを導入してD1データベースアクセスを型安全に
-- refactor/unify-design-system: TypeScript 5.9.2 / Next.js 15.4.10 + Tailwind CSS追加
+- **技術詳細・実装テクニック・具体的コマンド列は書かない**。それらは一次ソース (`package.json` scripts, config ファイル, スキル, docs) を参照させる。
+- **書くのは「基本方針」だけ**: プロジェクトが何であるか、絶対に守るべきルール、開発の流れ、インデックス、このファイル自体の更新方針。
+- 追加したくなったら「これは一次ソースに書けないか?」「スキルに移せないか?」をまず考える。移せるなら移してインデックスに載せる。
+- **動的に変わりうる値の現在値は書かない**。参照方法だけ書く。この原則はスキル・docs も含めた全ドキュメントに適用する。

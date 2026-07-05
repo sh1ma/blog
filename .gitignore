@@ -10,13 +10,13 @@
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/.playwright-mcp/
 
-# next.js
-/.next/
-/out/
+# Vite build output
+/dist
 
-# production
-/build
+# generated route tree
+src/routeTree.gen.ts
 
 # misc
 .DS_Store
@@ -35,7 +35,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 
 .contentlayer
@@ -50,7 +49,14 @@ tmp
 .open-next
 
 # git worktrees
-worktrees
+worktrees/
 
 # assets for development
 dev-assets
+
+# playwright snapshots (darwin/local only)
+*-darwin.png
+*-webkit.png
+
+# claude local settings (shared across worktrees via symlink)
+.claude/settings.local.json

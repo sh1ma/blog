@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.describe("トップページ", () => {
   test.beforeEach(async ({ page }) => {
@@ -21,5 +21,52 @@ test.describe("トップページ", () => {
     const firstArticle = articleList.first()
     await expect(firstArticle.locator("h3")).toBeVisible()
     await expect(firstArticle.locator("time")).toBeVisible()
+  })
+
+  test("記事カードのメタ情報が横並びで表示される", async ({ page }) => {
+    const firstArticle = page.locator("main article").first()
+
+    // メタ情報の親要素を取得
+    const metaInfo = firstArticle.locator(
+      "div.flex.flex-wrap.items-center.gap-3",
+    )
+    await expect(metaInfo).toBeVisible()
+
+    // カレンダーアイコン（日付）が表示される
+    const calendarIcon = metaInfo.locator('svg[class*="lucide-calendar"]')
+    await expect(calendarIcon).toBeVisible()
+
+    // 時計アイコン（読了時間）が表示される
+    const clockIcon = metaInfo.locator('svg[class*="lucide-clock"]')
+    await expect(clockIcon).toBeVisible()
+
+    // 2つのメタ情報が同じ行に表示されていることを確認
+    const calendarBox = await calendarIcon.boundingBox()
+    const clockBox = await clockIcon.boundingBox()
+
+    expect(calendarBox).not.toBeNull()
+    expect(clockBox).not.toBeNull()
+
+    // Y座標がほぼ同じ（±10px程度の許容範囲）であることを確認
+    if (calendarBox && clockBox) {
+      expect(Math.abs(calendarBox.y - clockBox.y)).toBeLessThan(10)
+    }
+  })
+
+  test("記事カード全体がクリック可能", async ({ page }) => {
+    const firstArticle = page.locator("main article").first()
+
+    // 記事タイトルを取得
+    const title = await firstArticle.locator("h3").textContent()
+
+    // カード全体（説明文など、以前はクリック不可能だった部分）をクリック
+    // カード要素自体をクリックすることで、カード全体がクリック可能になったことを確認
+    await firstArticle.click()
+
+    // 記事詳細ページに遷移することを確認
+    await expect(page).toHaveURL(/\/articles\/.+/)
+
+    const articleTitle = page.locator("article h1")
+    await expect(articleTitle).toHaveText(title || "")
   })
 })
