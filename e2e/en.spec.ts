@@ -22,42 +22,78 @@ test.describe("英語版ページ", () => {
     await expect(page.getByText("I'm a software engineer.")).toBeVisible()
   })
 
-  test("日本語版ホームのヘッダーに英語版への吊り下げバーがある", async ({
+  test("Read in English 吊り下げバーはどのページにも存在しない", async ({
     page,
   }) => {
+    for (const path of [
+      "/",
+      "/about",
+      "/en",
+      "/en/about",
+      "/articles/20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian",
+      "/en/articles/20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian",
+    ]) {
+      await page.goto(path)
+      await expect(page.getByTestId("language-tab")).toHaveCount(0)
+    }
+  })
+
+  test("デスクトップ nav に英語版へのリンクがある", async ({ page }) => {
     await page.goto("/")
-    const tab = page.getByTestId("language-tab")
-    await expect(tab).toBeVisible()
-    await expect(tab).toHaveText(/Read in English/)
-    await expect(tab).toHaveAttribute("href", "/en")
+    const link = page.getByTestId("desktop-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/English/)
+    await expect(link).toHaveAttribute("href", "/en")
   })
 
-  test("日本語版 About のヘッダーに英語版への吊り下げバーがある", async ({
-    page,
-  }) => {
-    await page.goto("/about")
-    const tab = page.getByTestId("language-tab")
-    await expect(tab).toBeVisible()
-    await expect(tab).toHaveAttribute("href", "/en/about")
-  })
-
-  test("英語版ホームのヘッダーに日本語版への吊り下げバーがある", async ({
-    page,
-  }) => {
+  test("デスクトップ nav の日本語版リンク (en→ja)", async ({ page }) => {
     await page.goto("/en")
-    const tab = page.getByTestId("language-tab")
-    await expect(tab).toBeVisible()
-    await expect(tab).toHaveText(/日本語版はこちら/)
-    await expect(tab).toHaveAttribute("href", "/")
+    const link = page.getByTestId("desktop-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/日本語/)
+    await expect(link).toHaveAttribute("href", "/")
   })
 
-  test("英語版 About のヘッダーに日本語版への吊り下げバーがある", async ({
+  test("日本語版ホームのモバイル nav に英語版へのリンクがある", async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+    const link = page.getByTestId("mobile-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/English/)
+    await expect(link).toHaveAttribute("href", "/en")
+  })
+
+  test("日本語版 About のモバイル nav に英語版へのリンクがある", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/about")
+    const link = page.getByTestId("mobile-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute("href", "/en/about")
+  })
+
+  test("英語版ホームのモバイル nav に日本語版へのリンクがある", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/en")
+    const link = page.getByTestId("mobile-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveText(/日本語/)
+    await expect(link).toHaveAttribute("href", "/")
+  })
+
+  test("英語版 About のモバイル nav に日本語版へのリンクがある", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
     await page.goto("/en/about")
-    const tab = page.getByTestId("language-tab")
-    await expect(tab).toBeVisible()
-    await expect(tab).toHaveAttribute("href", "/about")
+    const link = page.getByTestId("mobile-nav-language-link")
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute("href", "/about")
   })
 
   test("インデックス本文に翻訳バナーは表示されない", async ({ page }) => {
@@ -84,22 +120,24 @@ test.describe("英語版ページ", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
   })
 
-  test("言語切替タブ (ja→en) をクリックすると lang が en の HTML が読まれる", async ({
+  test("モバイル nav の英語版リンク (ja→en) をクリックすると lang が en の HTML が読まれる", async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
     await page.goto("/")
     await expect(page.locator("html")).toHaveAttribute("lang", "ja")
-    await page.getByTestId("language-tab").click()
+    await page.getByTestId("mobile-nav-language-link").click()
     await expect(page).toHaveURL(/\/en\/?$/)
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
   })
 
-  test("言語切替タブ (en→ja) をクリックすると lang が ja の HTML が読まれる", async ({
+  test("モバイル nav の日本語版リンク (en→ja) をクリックすると lang が ja の HTML が読まれる", async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
     await page.goto("/en")
     await expect(page.locator("html")).toHaveAttribute("lang", "en")
-    await page.getByTestId("language-tab").click()
+    await page.getByTestId("mobile-nav-language-link").click()
     await expect(page).toHaveURL(/\/$/)
     await expect(page.locator("html")).toHaveAttribute("lang", "ja")
   })

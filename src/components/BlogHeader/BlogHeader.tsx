@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
-import { ChevronLeft, Languages, PenLine } from "lucide-react"
+import { ChevronLeft, Link as LinkIcon, PenLine } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -151,35 +151,71 @@ export const BlogHeader = () => {
     return "border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
   }
 
+  const getMobileLinkClassName = (path: string) => {
+    const base =
+      "flex items-center self-stretch border-b-2 text-sm transition-colors"
+    if (isActive(path)) {
+      return `${base} border-brand-primary font-semibold text-brand-primary`
+    }
+    return `${base} border-transparent font-medium text-text-muted hover:text-brand-primary`
+  }
+
   const languageTarget = resolveLanguageTarget(pathname)
 
   return (
     <div
-      className={`sticky top-4 z-50 mb-8 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 lg:px-8 ${
+      className={`sticky top-4 z-50 mb-16 w-full px-4 transition-opacity duration-700 ease-out sm:px-6 md:mb-8 lg:px-8 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
       <div className="relative mx-auto max-w-3xl">
-        {languageTarget && (
-          <div
-            aria-hidden={isCompact}
-            className={`pointer-events-none absolute inset-x-0 top-full z-0 flex justify-start pl-6 transition-all duration-500 ease-out ${
-              isCompact
-                ? "-translate-y-[calc(100%+72px)] opacity-0"
-                : "translate-y-0 opacity-100"
-            }`}
+        <div
+          aria-hidden={isCompact}
+          className={`pointer-events-none absolute inset-x-0 top-full z-0 flex flex-col items-start transition-all duration-500 ease-out ${
+            isCompact
+              ? "-translate-y-[calc(100%+72px)] opacity-0"
+              : "translate-y-0 opacity-100"
+          }`}
+        >
+          <nav
+            data-testid="mobile-nav-tab"
+            className="pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-5 pt-3 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
           >
-            <a
-              href={languageTarget.href}
-              lang={languageTarget.lang}
-              data-testid="language-tab"
-              className="pointer-events-auto -mt-2 inline-flex items-center gap-1 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-2.5 pr-3 pt-2.5 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface"
-            >
-              <Languages size={12} />
-              {languageTarget.label}
-            </a>
-          </div>
-        )}
+            {isEnglish ? (
+              <>
+                <Link to="/en" className={getMobileLinkClassName("/en")}>
+                  Articles
+                </Link>
+                <Link
+                  to="/en/about"
+                  className={getMobileLinkClassName("/en/about")}
+                >
+                  About
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/" className={getMobileLinkClassName("/")}>
+                  Articles
+                </Link>
+                <Link to="/about" className={getMobileLinkClassName("/about")}>
+                  About
+                </Link>
+              </>
+            )}
+            {languageTarget && (
+              <a
+                href={languageTarget.href}
+                lang={languageTarget.lang}
+                data-testid="mobile-nav-language-link"
+                className="flex items-center gap-1 self-stretch border-b-2 border-transparent text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+              >
+                <LinkIcon size={12} />
+                {isEnglish ? "日本語" : "English"}
+              </a>
+            )}
+          </nav>
+        </div>
         <div
           className={`${glassSurface} relative z-10 ml-auto overflow-hidden transition-[width,height,border-radius] duration-500 ease-out ${
             isCompact ? "h-12 w-12 rounded-full" : "h-[72px] w-full rounded-2xl"
@@ -221,6 +257,17 @@ export const BlogHeader = () => {
                     About
                   </Link>
                 </>
+              )}
+              {languageTarget && (
+                <a
+                  href={languageTarget.href}
+                  lang={languageTarget.lang}
+                  data-testid="desktop-nav-language-link"
+                  className="inline-flex items-center gap-1 border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+                >
+                  <LinkIcon size={14} />
+                  {isEnglish ? "日本語" : "English"}
+                </a>
               )}
             </nav>
           </header>
