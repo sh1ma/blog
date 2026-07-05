@@ -73,4 +73,30 @@ test.describe("英語版ページ", () => {
       page.getByText("An English version of this article is available."),
     ).toHaveCount(0)
   })
+
+  test("日本語ページでは <html lang=\"ja\">", async ({ page }) => {
+    await page.goto("/")
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja")
+  })
+
+  test("英語ページでは <html lang=\"en\">", async ({ page }) => {
+    await page.goto("/en")
+    await expect(page.locator("html")).toHaveAttribute("lang", "en")
+  })
+
+  test("SPA 遷移 (ja→en) で lang が en に切り替わる", async ({ page }) => {
+    await page.goto("/")
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja")
+    await page.getByTestId("language-tab").click()
+    await expect(page).toHaveURL(/\/en$/)
+    await expect(page.locator("html")).toHaveAttribute("lang", "en")
+  })
+
+  test("SPA 遷移 (en→ja) で lang が ja に戻る", async ({ page }) => {
+    await page.goto("/en")
+    await expect(page.locator("html")).toHaveAttribute("lang", "en")
+    await page.getByTestId("language-tab").click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja")
+  })
 })

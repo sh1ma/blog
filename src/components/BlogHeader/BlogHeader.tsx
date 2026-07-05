@@ -19,7 +19,9 @@ type LanguageTarget = {
 const EN_LABEL = "Read in English"
 const JA_LABEL = "日本語版はこちら"
 
-const resolveLanguageTarget = (pathname: string): LanguageTarget | null => {
+const resolveLanguageTarget = (rawPath: string): LanguageTarget | null => {
+  const pathname =
+    rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath
   if (pathname === "/") {
     return { href: "/en", label: EN_LABEL, lang: "en" }
   }
