@@ -1,32 +1,31 @@
 ---
-  title: "Making Word Movement Work in iTerm2 with Option + Arrow Keys"
+  title: "Enabling Word-wise Cursor Movement in iTerm2 with Option + Arrow Keys"
   publishedAt: "2024-01-28"
 ---
 
-Even though I’ve used iTerm2 for many years, I had never properly configured word movement.  
-I really wanted to move by word with `Option + <arrow key>`, so this time I made it possible to move by word using the arrow keys together with Option.
+I've been using iTerm2 for years without ever bothering to set up word-wise movement.  
+I finally got tired of that and decided to bind `Option + <arrow key>` to move by word.
 
 ## How to Configure It
 
-There are two ways: change the “Global Keymap”, or configure it per iTerm2 profile.  
-I chose not to change the global keymap and instead only changed iTerm2’s default profile.  
-The method explained below changes only the default profile.
+There are two ways to do this: change the "Global Keymap", or configure it per iTerm2 profile.  
+I left the global keymap alone and only changed iTerm2's default profile. The steps below cover just the default profile.
 
-### 1. Go to the Keys tab from iTerm2 settings and open Key Mappings.
+### 1. Open Settings, go to the Keys tab, and select Key Mappings.
 
-![Screenshot of the screen after opening the Key Mappings tab in iTerm2](https://cdn.sh1ma.dev/20240128-1.png)
+![Screenshot of the Key Mappings tab in iTerm2](https://cdn.sh1ma.dev/20240128-1.png)
 
-It looks like this.
+You should see something like this.
 
-### 2, Press the “+” button at the bottom of the screen to add a new key mapping.
+### 2. Click the "+" button at the bottom to add a new key mapping.
 
-![Screenshot while assigning a shortcut for Option + → from the Key Mappings tab](https://cdn.sh1ma.dev/20240128-2.png)
+![Screenshot of assigning a shortcut for Option + → from the Key Mappings tab](https://cdn.sh1ma.dev/20240128-2.png)
 
-When you click the “Keyboard Shortcut” field, it waits for shortcut key input, so enter `Option + →`.
+Click the "Keyboard Shortcut" field; it will wait for input, so press `Option + →`.
 
-For Action, select “Send Escape Sequence” and enter `f`.  
-This means that when `Option + →` is pressed, it sends `Esc + f`. (In iTerm2, `Esc + f` is the default shortcut for word movement.)
+Set Action to "Send Escape Sequence" and enter `f`.  
+This makes iTerm2 send `Esc + f` when you press `Option + →`. (`Esc + f` is iTerm2's default shortcut for moving forward by word.)
 
-Using the same steps, set `Option + ←` to `Esc + b`.
+Do the same for `Option + ←`, mapping it to `Esc + b`.
 
-Once you save the settings, you’re done.
+Save your settings and you're done.

@@ -1,69 +1,68 @@
 ---
-  title: "I Got an Ordinary Driver’s License"
+  title: "I got my regular driver's license"
   publishedAt: "2024-02-29"
 ---
 
-The other day, [I joined a driving school camp and graduated successfully](/articles/20240201_driving_school).\_\_
-After that, I took the final written exam at the driver’s license center and passed successfully, so this is my report.
+The other day, [I attended a driving school camp and graduated](/articles/20240201_driving_school).\_\_
+After that, I went to the license center for the final written exam, passed it, and here's the report.
 
-## Until the Exam
+## Before the exam
 
-Apparently both the process leading up to the exam and the difficulty of the exam differ by region, but I took it in Kanagawa Prefecture.
+Apparently both the process leading up to the exam and its difficulty vary by region. I took mine in Kanagawa Prefecture.
 
-More detailed information than what I write here is written here:
+The definitive source is more detailed than anything I write here:
 
 [Exam Procedures for an Ordinary License (Designated School Graduates): For Those Taking the Written Exam for the First Time After Graduating from a Designated Driving School (Including Out-of-Prefecture Schools) / Kanagawa Prefectural Police](https://www.police.pref.kanagawa.jp/tetsuzuki/menkyo/mes83010.html)
 
-The exam is held in the morning and afternoon, with the morning session for graduates of driving schools within the prefecture and the afternoon session for graduates of driving schools outside the prefecture.
-Since I graduated from a driving school camp, I was a graduate of an out-of-prefecture driving school, so I took the afternoon exam.
+There are morning and afternoon sessions: the morning session is for graduates of in-prefecture driving schools, and the afternoon session is for graduates of out-of-prefecture schools.
+The driving school camp I attended was out of prefecture, so I ended up in the afternoon session.
 
-In Kanagawa Prefecture, you need to make a reservation to take the final written exam.  
-Reservations can be made online, though apparently they also accept phone reservations if you really cannot reserve online.
+In Kanagawa you also need to reserve a slot for the final written exam.  
+Reservations are done online, though apparently they'll accept phone bookings if online really isn't an option.
 
-If you enter “運転免許学科試験” in the search field on the page below, you can check available slots and make a reservation from there.
+Search for "運転免許学科試験" in the search field on the page below to see available slots and make a reservation.
 
 [e-kanagawa Electronic Application: Procedure Application List](https://dshinsei.e-kanagawa.lg.jp/140007-u/offer/offerList_initDisplay.action#application)
 
-More detailed information can be found below.
+More details here:
 
 [About Online Reservations for Written Exams / Kanagawa Prefectural Police](https://www.police.pref.kanagawa.jp/tetsuzuki/menkyo/mes83125.html)
 
-#### About “Application Form Number, etc.”
+#### About the "Application Form Number" field
 
-When making a reservation, there is a field for “申請書番号等”, and you can simply enter the “No. xxx” number written on your graduation certificate.
+The reservation form asks for "申請書番号等". Just enter the "No. xxx" number printed on your graduation certificate.
 
-## Exam Day
+## Exam day
 
-On exam day, you go to the driver’s license center, complete reception and the aptitude test, and then take the exam.
-What you need to bring is writing utensils, your resident certificate, and your graduation certificate.
+On exam day, you head to the license center, check in, take the aptitude test, and then sit the written exam.
+Bring writing implements, a copy of your resident record (juminhyo), and your graduation certificate.
 
-### Reception
+### Check-in
 
-Reception starts at 13:00, but I arrived at 12:30. There was already a line at that time, so it might be good to go a little earlier.
-When you show your graduation certificate at reception, they hand you an application form while giving an explanation, but they speak too quickly to understand, so it’s fine to ignore it.
-All the places you need to fill in and the explanations are written at the writing tables behind reception.
+Check-in opens at 13:00. I got there at 12:30 and there was already a line, so arriving a bit earlier might not be a bad idea.
+When you show your graduation certificate, they hand you an application form and rattle off an explanation, but they talk so fast it's unintelligible. Feel free to tune it out — the writing counters behind the reception desk have everything you need to fill in, along with instructions.
 
-### Aptitude Test
+### Aptitude test
 
-The aptitude test is only an eyesight test.  
-It’s the usual thing, like where the gap is in the ring ([Landolt ring](https://www.skk-net.com/health/me/c02_0202.html)).
+The aptitude test is just an eye test.  
+The usual "where's the gap in the ring?" thing ([Landolt ring](https://www.skk-net.com/health/me/c02_0202.html)).
 
-### Written Exam
+### Written exam
 
-Once the aptitude test is over, you are guided to the venue where you take the written exam.  
-When the time comes, an explanation of the written exam begins, and then the exam starts.
+Once the aptitude test is done, you're shown to the written exam hall.  
+At the appointed time they walk you through the exam rules, and then the exam begins.
 
-I’ll omit the exam contents, but it was easier than I expected. (I was nervous because I had scored 89 on a past-question-style set I solved right before.)
-You could submit the exam and leave after 30 minutes had passed.
+I'll skip the contents, but it was easier than I'd expected. (I'd scored 89 on a past-questions mock right before and had been sweating it.)
+You could hand in your paper and leave any time after the 30-minute mark.
 
-We had to wait nearly an hour for the results, and apparently because of a system issue? they announced them verbally.
-Numbers were called in order, and people whose numbers were called were taken outside. The people left in the room were the ones who passed.
+Results took nearly an hour, and apparently there was some kind of system issue, so they announced them verbally.
+They called out numbers one by one, and anyone whose number was called was taken outside. The people left in the room were the ones who'd passed.
 
-### After the Exam
+### After the exam
 
-After passing, you take the license photo, and then receive your driver’s license.
+Once you pass, you get your license photo taken and then receive the license itself.
 
-## Impressions
+## Reflections
 
-For now, I’m glad I passed.
-I was able to prove that even a socially maladjusted person like me can get a license.
+For now, I'm just glad I passed.
+Guess this proves even a social misfit like me can get a driver's license.

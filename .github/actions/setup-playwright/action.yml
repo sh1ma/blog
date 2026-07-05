@@ -22,13 +22,13 @@ runs:
     - name: Install Playwright browsers
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       shell: bash
-      env:
-        PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
       run: |
-        echo "Installing Playwright browsers..."
+        echo "Installing Playwright browsers with system deps..."
         pnpm exec playwright install chromium --with-deps
 
-    - name: Skip browser installation
+    - name: Install Playwright system deps only
       if: steps.playwright-cache.outputs.cache-hit == 'true'
       shell: bash
-      run: echo "Using cached Playwright browsers"
+      run: |
+        echo "Using cached Playwright browsers; installing system deps only..."
+        pnpm exec playwright install-deps chromium

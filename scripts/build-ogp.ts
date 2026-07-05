@@ -578,7 +578,11 @@ const buildArticleHtml = (
     /<title>[^<]*<\/title>/,
     `<title>${escapeHtml(title)}</title>`,
   )
-  return injectHead(withTitle, meta)
+  const withLang =
+    locale === "en"
+      ? withTitle.replace(/<html\s+lang="[^"]*"/, '<html lang="en"')
+      : withTitle
+  return injectHead(withLang, meta)
 }
 
 await mkdir(OG_DIR, { recursive: true })
@@ -610,4 +614,37 @@ for (const article of allArticles) {
   await writeFile(path.join(articleDir, "index.html"), html)
   htmlCount++
 }
-console.log(`Generated ${pngCount} OGP PNGs and ${htmlCount} article HTMLs`)
+const buildEnPageHtml = (shell: string, title: string, description: string) => {
+  const withLang = shell.replace(/<html\s+lang="[^"]*"/, '<html lang="en"')
+  const withTitle = withLang.replace(
+    /<title>[^<]*<\/title>/,
+    `<title>${escapeHtml(title)}</title>`,
+  )
+  const meta = [
+    `    <meta name="description" content="${escapeHtml(description)}" />`,
+  ].join("\n")
+  return injectHead(withTitle, meta)
+}
+
+const enPages = [
+  {
+    dir: path.join(DIST_DIR, "en"),
+    title: "blog.sh1ma.dev",
+    description: "sh1ma's blog",
+  },
+  {
+    dir: path.join(DIST_DIR, "en", "about"),
+    title: "About - blog.sh1ma.dev",
+    description: "About sh1ma",
+  },
+]
+for (const page of enPages) {
+  await mkdir(page.dir, { recursive: true })
+  await writeFile(
+    path.join(page.dir, "index.html"),
+    buildEnPageHtml(shell, page.title, page.description),
+  )
+  htmlCount++
+}
+
+console.log(`Generated ${pngCount} OGP PNGs and ${htmlCount} HTMLs`)

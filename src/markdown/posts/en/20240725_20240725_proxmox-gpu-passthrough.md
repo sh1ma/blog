@@ -1,12 +1,12 @@
 ---
-title: GPU Passthrough of an RTX3060 to a Proxmox VM
+title: Passing an RTX 3060 through to a Proxmox VM
 publishedAt: "2024-07-25"
 ---
 
-I have to write a blog post...  
-I’ve done various things recently, but it’s sad that I haven’t really recorded them on the blog.
+I really need to write more blog posts...  
+I've done all sorts of things lately but haven't written any of it down, which is a shame.
 
-This time I was able to run Ollama using a GPU on a Proxmox VM, so I’ll write down what I did as a memo.
+This time I got Ollama running on a GPU inside a Proxmox VM, so here are my notes on how I did it.
 
 ## Environment
 
@@ -14,46 +14,46 @@ This time I was able to run Ollama using a GPU on a Proxmox VM, so I’ll write 
 pve-manager/8.2.4/faa83925c9641325 (running kernel: 6.8.8-3-pve)
 ```
 
-Also an OC model RTX3060.
+Plus an OC-model RTX 3060.
 
-## Things to Do in Advance Outside Proxmox
+## Prerequisites outside of Proxmox
 
 - Enable IOMMU (Intel VT-d or AMD-Vi)
-  - You can enable it from the BIOS
+  - You can turn this on in the BIOS
 
 ## Steps
 
-### 1. First, Check Whether the GPU Is Inserted
+### 1. Check that the GPU is actually installed
 
-There might be cases where it isn’t recognized.
-`lspci{:sh}` is a command that lists PCI devices.
-`lspci -nn{:sh}` outputs device names and device IDs.
+It's possible the card isn't being detected at all, so let's confirm.
+`lspci{:sh}` lists PCI devices.
+`lspci -nn{:sh}` also prints device names alongside their device IDs.
 
 ```sh
 lspci -nn | grep -i nvidia
 ```
 
-It generally outputs something like the following.
+The output usually looks something like this:
 
 ```
 01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA106 [GeForce RTX 3060 Lite Hash Rate] [xxxx:xxxx] (rev a1)
 01:00.1 Audio device [0403]: NVIDIA Corporation GA106 High Definition Audio Controller [yyyy:yyyy] (rev a1)
 ```
 
-Make a note of `xxxx:xxxx` and `yyyy:yyyy` because they will be used later.
+Note down `xxxx:xxxx` and `yyyy:yyyy` — we'll need them later.
 
 ### 2. Enable IOMMU
 
-**(Optional) Check whether IOMMU is enabled**
+**(Optional) Check whether IOMMU is already enabled**
 
-The command for checking is as follows.
-`dmesg{:sh}` is a command that lets you see the kernel’s boot output. If information related to IOMMU does not appear there, it probably isn’t enabled.
+Use the command below to check.
+`dmesg{:sh}` prints the kernel's boot messages. If nothing IOMMU-related shows up in there, it probably isn't enabled.
 
 ```sh
 dmesg | grep -e DMAR -e IOMMU
 ```
 
-If you are using an AMD CPU, output like this appears.
+On an AMD CPU, you'll see something like this:
 
 ```
 [    3.358781] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
@@ -62,43 +62,43 @@ If you are using an AMD CPU, output like this appears.
 
 Reference: [PCI Passthrough - Proxmox VE](https://pve.proxmox.com/wiki/PCI_Passthrough#Verify_IOMMU_is_enabled)
 
-To do GPU passthrough to a VM, PCI passthrough is required, and to do PCI passthrough, IOMMU must be enabled. This allows devices on the host machine to be used from within the VM.  
-To enable IOMMU, you need to adjust kernel parameters, and that can be done by editing the bootloader configuration `/etc/default/grub`.
+GPU passthrough to a VM requires PCI passthrough, and PCI passthrough in turn requires IOMMU. Together they let a VM use devices attached to the host.  
+Enabling IOMMU means changing a kernel parameter, which we do by editing the bootloader config at `/etc/default/grub`.
 
-#### Main Topic
+#### The actual work
 
-Open `/etc/default/grub` in your favorite editor.
+Open `/etc/default/grub` in your editor of choice.
 
 ```sh
 vim /etc/default/grub
 ```
 
-Find the line that looks like the following.
+Find the line that looks like this:
 
 ```sh
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 ```
 
-You edit this part, but the setting differs depending on whether you are using an Intel CPU or an AMD CPU.  
-I am using an AMD CPU, so I configured it as follows.
+This is the line to edit, but the value differs between Intel and AMD CPUs.  
+I'm on an AMD CPU, so I set it like this:
 
 ```sh
 GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on"
 ```
 
-If you are using an Intel CPU, it is as follows.
+On an Intel CPU, use this instead:
 
 ```sh
 GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
 ```
 
-After changing and saving it, run the following command.
+Save the file, then run:
 
 ```sh
 update-grub
 ```
 
-Reboot once to apply the settings.
+Reboot once to apply the change.
 
 ```sh
 reboot
@@ -107,11 +107,11 @@ reboot
 Reference: [PCI Passthrough via OVMF - ArchWiki](https://wiki.archlinux.jp/index.php/OVMF_%E3%81%AB%E3%82%88%E3%82%8B_PCI_%E3%83%91%E3%82%B9%E3%82%B9%E3%83%AB%E3%83%BC#IOMMU_.E3.81.AE.E6.9C.89.E5.8A.B9.E5.8C.96).  
 Reference: [Kernel Parameters - ArchWiki](https://wiki.archlinux.jp/index.php/%E3%82%AB%E3%83%BC%E3%83%8D%E3%83%AB%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF)
 
-### 3. Loading VFIO Modules
+### 3. Load the VFIO modules
 
-Load the kernel modules called VFIO. Apparently, using VFIO allows devices to be handled safely even from unprivileged userspace (= inside the VM).
+Next, load the kernel modules known as VFIO. From what I gather, VFIO is what lets unprivileged userspace (i.e. the guest VM) drive the device safely.
 
-Add the following to `/etc/modules`.
+Add the following to `/etc/modules`:
 
 ```
 vfio
@@ -120,16 +120,15 @@ vfio_pci
 vfio_virqfd
 ```
 
-Then create the VFIO configuration file `/etc/modprobe.d/vfio.conf`.  
-Use the IDs obtained earlier with `lspci -nn | grep -i nvidia{:sh}` here.
-Replace “xxxx:xxxx” and “yyyy:yyyy” below and add it.
+Then create a VFIO config file at `/etc/modprobe.d/vfio.conf`.  
+Reuse the IDs you noted from `lspci -nn | grep -i nvidia{:sh}` earlier.
+Substitute your own values in for "xxxx:xxxx" and "yyyy:yyyy" below:
 
 ```
 options vfio-pci ids=xxxx:xxxx,yyyy:yyyy
 ```
 
-Next, disable the existing drivers. This prevents the host OS (Proxmox) from using the GPU and allows only the VM to use it.
-VM
+Next, blacklist the existing drivers so the host OS (Proxmox) stops using the GPU, leaving it to the VM.
 
 ```
 blacklist nouveau
@@ -138,56 +137,56 @@ blacklist nvidia-drm
 blacklist nvidia-modeset
 ```
 
-Update the `initramfs` information. `initramfs` is the initial RAM image, and because it contains information such as the GPU drivers from before the updates above, it needs to be updated.
+Regenerate the `initramfs`. It's the initial RAM image, and it still holds the old GPU driver configuration from before our changes, so it needs to be rebuilt.
 
 ```sh
 update-initramfs -u
 ```
 
-Finally, reboot and the host OS setup is done.
+Finally, reboot — that's it for the host OS setup.
 
 ```sh
 reboot
 ```
 
-### 4. Setting Up the VM
+### 4. Set up the VM
 
-#### Decide the Target VM
+#### Pick the target VM
 
-Create a new VM for GPU passthrough, or decide which existing VM to use. Apparently only one VM can use GPU passthrough.
+Either create a new VM for GPU passthrough or pick an existing one. As I understand it, only one VM can receive the GPU.
 
-Once decided, from the Proxmox Web UI, go to the VM settings, move to the “Hardware” tab, and select “Add PCI Device”. Select the Nvidia GPU.
+Once you've picked one, open its settings in the Proxmox Web UI, go to the "Hardware" tab, click "Add PCI Device", and select the Nvidia GPU.
 
-Check “All Functions” and save.
+Check "All Functions" and save.
 
-#### Install Drivers in the VM
+#### Install the driver inside the VM
 
-Run the following commands inside the VM.
+Inside the VM, run:
 
 ```sh
 apt update
 apt install nvidia-detect
 ```
 
-Install the Nvidia GPU driver shown there with `apt install`.  
-If installing `nvidia-driver`, it is as follows.
+Then `apt install` whichever Nvidia GPU driver `nvidia-detect` recommends.  
+If it says to install `nvidia-driver`, that looks like this:
 
 ```
 apt install nvidia-driver
 ```
 
-Reboot.
+Reboot:
 
 ```
 reboot
 ```
 
-If the installation completed correctly, the following command should be available.
+If everything installed correctly, `nvidia-smi` should now be available:
 
 ```
 nvidia-smi
 ```
 
-## Summary
+## Wrap-up
 
-I remember there were some points where I stumbled partway through, but I’m omitting them. This should mostly work.
+I vaguely remember tripping over a few things along the way, but I'm glossing over those. This should get you most of the way there.

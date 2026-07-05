@@ -19,7 +19,9 @@ type LanguageTarget = {
 const EN_LABEL = "Read in English"
 const JA_LABEL = "日本語版はこちら"
 
-const resolveLanguageTarget = (pathname: string): LanguageTarget | null => {
+const resolveLanguageTarget = (rawPath: string): LanguageTarget | null => {
+  const pathname =
+    rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath
   if (pathname === "/") {
     return { href: "/en", label: EN_LABEL, lang: "en" }
   }
@@ -191,15 +193,15 @@ export const BlogHeader = () => {
             )}
           </nav>
           {languageTarget && (
-            <Link
-              to={languageTarget.href}
+            <a
+              href={languageTarget.href}
               lang={languageTarget.lang}
               data-testid="language-tab"
               className="pointer-events-auto inline-flex items-center gap-1 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-2.5 pr-3 pt-2.5 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface md:-mt-2"
             >
               <Languages size={12} />
               {languageTarget.label}
-            </Link>
+            </a>
           )}
         </div>
         <div
