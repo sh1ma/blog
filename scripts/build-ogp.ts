@@ -557,10 +557,12 @@ const buildArticleHtml = (
   slug: string,
   title: string,
   description: string | undefined,
+  locale: "ja" | "en",
 ) => {
-  const url = `${SITE_URL}/articles/${slug}`
-  const ogImage = `${SITE_URL}/og/${slug}.png`
-  const desc = description ?? "ブログ記事"
+  const path = locale === "en" ? `articles/en/${slug}` : `articles/${slug}`
+  const url = `${SITE_URL}/${path}`
+  const ogImage = `${SITE_URL}/og/${locale === "en" ? `en/${slug}` : slug}.png`
+  const desc = description ?? (locale === "en" ? "Blog article" : "ブログ記事")
   const meta = [
     `    <meta property="og:type" content="article" />`,
     `    <meta property="og:title" content="${escapeHtml(title)}" />`,
@@ -580,23 +582,30 @@ const buildArticleHtml = (
 }
 
 await mkdir(OG_DIR, { recursive: true })
+await mkdir(path.join(OG_DIR, "en"), { recursive: true })
 const fonts = await loadFonts()
 const shell = await readFile(SHELL_HTML, "utf-8")
 
 let pngCount = 0
 let htmlCount = 0
 for (const article of allArticles) {
+  const locale = article.locale === "en" ? "en" : "ja"
   const publishedAt = dayjs(article.publishedAt).format("YYYY-MM-DD")
-  await renderPng(article.id, article.title, publishedAt, fonts)
+  const ogSlug = locale === "en" ? `en/${article.id}` : article.id
+  await renderPng(ogSlug, article.title, publishedAt, fonts)
   pngCount++
 
-  const articleDir = path.join(DIST_DIR, "articles", article.id)
+  const articleDir =
+    locale === "en"
+      ? path.join(DIST_DIR, "articles", "en", article.id)
+      : path.join(DIST_DIR, "articles", article.id)
   await mkdir(articleDir, { recursive: true })
   const html = buildArticleHtml(
     shell,
     article.id,
     article.title,
     article.description,
+    locale,
   )
   await writeFile(path.join(articleDir, "index.html"), html)
   htmlCount++

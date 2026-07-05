@@ -16,7 +16,9 @@ const feed = new Feed({
   copyright: `All rights reserved ${dayjs().format("YYYY")}, sh1ma`,
 })
 
-for (const article of allArticles) {
+const feedArticles = allArticles.filter((article) => article.locale === "ja")
+
+for (const article of feedArticles) {
   feed.addItem({
     title: article.title,
     description: article.description ?? "",
@@ -27,4 +29,4 @@ for (const article of allArticles) {
 
 await mkdir(OUT_DIR, { recursive: true })
 await writeFile(OUT_FILE, feed.rss2(), "utf-8")
-console.log(`Wrote ${OUT_FILE} (${allArticles.length} items)`)
+console.log(`Wrote ${OUT_FILE} (${feedArticles.length} items)`)

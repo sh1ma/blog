@@ -50,3 +50,51 @@ test.describe("記事ページ", () => {
     await expect(page.getByText("404")).toBeVisible()
   })
 })
+
+test.describe("英語版記事", () => {
+  const bilingualSlug = "20250510_toughpad-fz-g1-buttons-doesnt-work-on-mobian"
+
+  test("英語版が存在する記事の日本語版に英語版への導線が出る", async ({
+    page,
+  }) => {
+    await page.goto(`/articles/${bilingualSlug}`)
+    const notice = page.getByRole("link", { name: "Read in English" })
+    await expect(notice).toBeVisible()
+    await expect(notice).toHaveAttribute(
+      "href",
+      `/articles/en/${bilingualSlug}`,
+    )
+  })
+
+  test("英語版 URL でアクセスすると英語タイトルが表示される", async ({
+    page,
+  }) => {
+    await page.goto(`/articles/en/${bilingualSlug}`)
+    const title = page.locator("article h1")
+    await expect(title).toBeVisible()
+    await expect(title).toHaveText(
+      "Making the A1/A2 buttons of TOUGHPAD work on Mobian (Debian)",
+    )
+  })
+
+  test("英語版ページから日本語版への導線が出る", async ({ page }) => {
+    await page.goto(`/articles/en/${bilingualSlug}`)
+    const notice = page.getByRole("link", { name: "日本語で読む" })
+    await expect(notice).toBeVisible()
+    await expect(notice).toHaveAttribute("href", `/articles/${bilingualSlug}`)
+  })
+
+  test("英語版が無い記事の日本語版には英語版導線が出ない", async ({ page }) => {
+    await page.goto("/articles/20230102_helloworld")
+    await expect(
+      page.getByRole("link", { name: "Read in English" }),
+    ).toHaveCount(0)
+  })
+
+  test("英語版が無い slug で /articles/en/ にアクセスすると404", async ({
+    page,
+  }) => {
+    await page.goto("/articles/en/20230102_helloworld")
+    await expect(page.getByText("404")).toBeVisible()
+  })
+})
