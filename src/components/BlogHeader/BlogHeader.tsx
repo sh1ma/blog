@@ -1,6 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
-import { ChevronLeft, Languages, PenLine } from "lucide-react"
+import {
+  ChevronLeft,
+  Languages,
+  Link as LinkIcon,
+  PenLine,
+} from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -152,6 +157,8 @@ export const BlogHeader = () => {
   }
 
   const languageTarget = resolveLanguageTarget(pathname)
+  const isArticlePage =
+    pathname.startsWith("/articles/") || pathname.startsWith("/en/articles/")
 
   return (
     <div
@@ -170,7 +177,11 @@ export const BlogHeader = () => {
         >
           <nav
             data-testid="mobile-nav-tab"
-            className="pointer-events-auto -mt-2 flex w-[90%] items-center justify-center gap-6 self-center border-x border-b-0 border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
+            className={`pointer-events-auto -mt-2 flex w-[90%] items-center justify-center gap-6 self-center border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden ${
+              languageTarget && isArticlePage
+                ? "border-b-0"
+                : "rounded-b-lg"
+            }`}
           >
             {isEnglish ? (
               <>
@@ -191,8 +202,19 @@ export const BlogHeader = () => {
                 </Link>
               </>
             )}
+            {languageTarget && (
+              <a
+                href={languageTarget.href}
+                lang={languageTarget.lang}
+                data-testid="mobile-nav-language-link"
+                className="inline-flex items-center gap-1 border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+              >
+                <LinkIcon size={12} />
+                {isEnglish ? "日本語" : "English"}
+              </a>
+            )}
           </nav>
-          {languageTarget && (
+          {languageTarget && isArticlePage && (
             <a
               href={languageTarget.href}
               lang={languageTarget.lang}
