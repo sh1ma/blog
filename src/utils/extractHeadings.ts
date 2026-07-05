@@ -12,6 +12,10 @@ export function extractHeadings(html: string): TocItem[] {
     if (!idMatch) continue
     const id = idMatch[1]
     const text = match[3]
+      .replace(
+        /<a\b[^>]*class="[^"]*\bheading-link\b[^"]*"[^>]*>[\s\S]*?<\/a>/g,
+        "",
+      )
       .replace(/<[^>]*>/g, "")
       .replace(/\s+/g, " ")
       .trim()
