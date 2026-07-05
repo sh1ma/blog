@@ -3,32 +3,32 @@ title: "I Read Convenience Store Woman"
 publishedAt: "2024-07-31"
 ---
 
-I read it two or three weeks ago, though.
-I’m not good at expressing impressions about the flow or expression of a story, and I had no intention of doing that in the first place. I decided to write this article because I wanted to write down what I thought about while reading the book.
+I actually read it two or three weeks ago, but still.
+I'm not good at talking about a story's structure or prose, and I never planned to. I'm writing this post because I want to jot down what I was thinking about while reading the book.
 
-First, what I want to make clear is that the reason I thought I would read this book was not “because it won the Akutagawa Prize.” (That said, the reason I learned about the book was nothing other than “because it won the Akutagawa Prize.”)
+First, to be clear: the reason I decided to read this book was not "because it won the Akutagawa Prize." (Although the only reason I even knew about the book was, well, "because it won the Akutagawa Prize.")
 
-The reason I thought I would read this book was just because. That would be the end of it, but if I had to say, I was a little interested in why “a story about someone who works at a convenience store” would become a topic of conversation. Even if I had the chance to hear such a person’s story in real life, I probably wouldn’t be interested, and to me a convenience store feels like a place with little change and not much of a story worth telling, and also it was topical. It won the Akutagawa Prize. In the end, isn’t it because it won the Akutagawa Prize!
+Why did I decide to read it? No particular reason, really. If I had to name one, I was mildly curious why "a story about someone who works at a convenience store" became such a talking point. If I met someone like the protagonist in real life, I probably wouldn't be interested in their story, and to me a convenience store is a monotonous place without much of a narrative in it, and, well, it was in the news. It won the Akutagawa Prize. So in the end I guess it *is* because it won the Akutagawa Prize.
 
-I didn’t intend to write impressions along the story, but I feel like I can’t begin without introducing the story, so for now I’ll quote part of the synopsis.
+I wasn't planning to write impressions in step with the plot, but I don't feel like I can start without setting up the story, so let me quote part of the synopsis.
 
 > Keiko Furukura, a 36-year-old unmarried woman.
-> Even after graduating from university, she never found full-time employment, and this is her 18th year working part-time at a convenience store.  
-> She has never had a boyfriend.  
-> She has continued working at Smile Mart Hiiro Station Front since it opened, seeing changing coworkers come and go, and the store is now on its eighth manager.  
-> (omitted)  
-> The convenience store, with its perfect manual, is what makes me a normal “part” of the world.  
-> A shocking realist novel that questions modern existence and shakes the boundary between normal and abnormal.
+> Never took a full-time job after graduating from university; now in her 18th year of working part-time at a convenience store.  
+> Has never had a boyfriend.  
+> She's kept working at Smile Mart's Hiiro Station Front branch since it opened, watching coworkers come and go — the store is on its eighth manager.  
+> (...)  
+> The convenience store, with its perfect manual, is what turns me into a properly working "part" of the world.  
+> A shocking work of realism that interrogates modern existence and blurs the line between normal and abnormal.
 
-Source: [What Is “Normal”? Sayaka Murata’s Shocking Work Convenience Store Woman, Which Shakes Your Values | Book - Bungeishunju](https://books.bunshun.jp/ud/book/num/9784163906188)
+Source: [What Is "Normal"? Sayaka Murata's Shocking Work Convenience Store Woman, Which Shakes Your Values | Book - Bungeishunju](https://books.bunshun.jp/ud/book/num/9784163906188)
 
-It’s a little interesting that “36-year-old unmarried woman” is introduced as an attribute with impact. Is being unmarried at 36 not normal? In any case, within the story, “36, unmarried, and has never had a boyfriend” is treated as abnormal. It probably isn’t normal.
+I find it a little funny that "36-year-old unmarried woman" is presented as such a punchy set of attributes. Is being unmarried at 36 really not normal? In the story, at any rate, "36, unmarried, never had a boyfriend" is treated as abnormal. So I guess it isn't normal.
 
-At the beginning of the story, it is revealed that the protagonist, Keiko Furukura, was what you would call a “strange child” in childhood. There are several episodes that make you think, hmm, she certainly is a strange child, such as saying she should turn a dead bird into “yakitori (because her father likes it)” or pulling down the underwear of a teacher who had fallen into hysterics. As she reaches adolescence and learns that her family and the people around her expect her to be “normal,” she begins trying to behave normally by imitating other people.  
-If it were me, I would probably feel that the surrounding demand to “behave normally” is unreasonable, and I would think of it as a kind of oppression. Of course I would resist. But from Keiko Furukura, who is asked to be “normal,” I did not feel even the slightest rebelliousness or discomfort toward that oppression. I felt something in that like a lack of humanity, or that this itself was not normal. (However, across the work as a whole, I did not think she “lacked humanity.”)
+The novel opens by establishing that the protagonist, Keiko Furukura, was what you'd call a "weird kid." There are a few episodes that leave no doubt — like the time she suggested turning a dead bird into "yakitori (because Dad likes it)," or the time she pulled down the panties of a teacher who was having a hysterical fit. Yeah, definitely a weird kid. As she grows into adolescence and realizes her family and the people around her expect her to be "normal," she starts trying to act normal by imitating others.  
+If it were me, I'd feel the pressure to "act normal" was unreasonable, a form of oppression, and I'd push back against it. But from Keiko, who is being pushed to be "normal," I couldn't detect even the faintest resistance or discomfort toward that pressure. That, to me, felt like a lack of something human — like *that* was the part that wasn't normal. (That said, across the novel as a whole, I didn't come away thinking she "lacked humanity.")
 
-Looking at the work overall, the only time I could read genuine discomfort from Keiko was when the fact that she was living together with Shiraha, who had once worked with her, for “mutual convenience,” came to light in front of the other convenience store employees. They were supposed to be working together as one part-time team to sell products from a campaign, but everyone escalated a blunt topic related to Shiraha, who Keiko probably did not care about, and in response, the scene appears where Keiko shouts emotionally for the first time.
+Across the whole book, the only place I could clearly sense discomfort from Keiko was when her fellow convenience store employees found out that she was living with Shiraha (a former coworker) for "mutual convenience." They were supposed to be pulling together as a team to push a campaign product, but the conversation got hijacked and everyone kept escalating a blunt, gossipy topic about Shiraha — something Keiko probably couldn't care less about — and that's where the scene comes in where she snaps and shouts for the first time.
 
-After that, each time Keiko tells the people around her the fact that she is “living with a man,” they expand the topic on their own in the same way as before, but outside the convenience store scene mentioned above, she does not show discomfort. I thought that maybe she disliked the way the convenience store, a place she could control as part of it, was transforming into something uncontrollable.
+After that, every time Keiko tells someone she's "living with a man," they run with it and blow the topic up just like before, but outside of that convenience store scene she doesn't show discomfort. My read is that what she really didn't like was watching the convenience store — a space she could control by being part of it — start transforming into something she couldn't control.
 
-I’ve gotten tired, so I’ll stop writing for now around here. I might update this article again.
+I'm out of steam, so I'll stop here for now. I might update this post later.
