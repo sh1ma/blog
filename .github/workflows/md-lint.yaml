@@ -1,0 +1,62 @@
+name: Markdown Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/markdown/posts/**/*.md"
+      - ".textlintrc.json"
+      - ".vale.ini"
+      - ".vale/**"
+      - ".github/workflows/md-lint.yaml"
+  workflow_dispatch:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      ja: ${{ steps.filter.outputs.ja }}
+      ja_files: ${{ steps.filter.outputs.ja_files }}
+      en: ${{ steps.filter.outputs.en }}
+      en_files: ${{ steps.filter.outputs.en_files }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            ja:
+              - 'src/markdown/posts/*.md'
+            en:
+              - 'src/markdown/posts/en/**/*.md'
+
+  textlint:
+    needs: changes
+    if: needs.changes.outputs.ja == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.16.0
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: Run textlint on changed JA articles
+        run: pnpm exec textlint ${{ needs.changes.outputs.ja_files }}
+
+  vale:
+    needs: changes
+    if: needs.changes.outputs.en == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: errata-ai/vale-action@reviewdog
+        with:
+          files: ${{ needs.changes.outputs.en_files }}
+          fail_on_error: true
+          reporter: github-pr-check
