@@ -151,6 +151,15 @@ export const BlogHeader = () => {
     return "border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
   }
 
+  const getMobileLinkClassName = (path: string) => {
+    const base =
+      "flex items-center self-stretch border-b-2 text-sm transition-colors"
+    if (isActive(path)) {
+      return `${base} border-brand-primary font-semibold text-brand-primary`
+    }
+    return `${base} border-transparent font-medium text-text-muted hover:text-brand-primary`
+  }
+
   const languageTarget = resolveLanguageTarget(pathname)
   const isArticlePage =
     pathname.startsWith("/articles/") || pathname.startsWith("/en/articles/")
@@ -172,25 +181,28 @@ export const BlogHeader = () => {
         >
           <nav
             data-testid="mobile-nav-tab"
-            className={`pointer-events-auto -mt-2 flex w-[90%] items-center justify-center gap-6 self-center border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden ${
+            className={`pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center border border-t-0 border-white/50 bg-bg-surface/85 pl-5 pt-2 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden ${
               languageTarget && isArticlePage ? "border-b-0" : "rounded-b-lg"
             }`}
           >
             {isEnglish ? (
               <>
-                <Link to="/en" className={getLinkClassName("/en")}>
+                <Link to="/en" className={getMobileLinkClassName("/en")}>
                   Articles
                 </Link>
-                <Link to="/en/about" className={getLinkClassName("/en/about")}>
+                <Link
+                  to="/en/about"
+                  className={getMobileLinkClassName("/en/about")}
+                >
                   About
                 </Link>
               </>
             ) : (
               <>
-                <Link to="/" className={getLinkClassName("/")}>
+                <Link to="/" className={getMobileLinkClassName("/")}>
                   Articles
                 </Link>
-                <Link to="/about" className={getLinkClassName("/about")}>
+                <Link to="/about" className={getMobileLinkClassName("/about")}>
                   About
                 </Link>
               </>
@@ -200,7 +212,7 @@ export const BlogHeader = () => {
                 href={languageTarget.href}
                 lang={languageTarget.lang}
                 data-testid="mobile-nav-language-link"
-                className="inline-flex items-center gap-1 border-b-2 border-transparent pb-0.5 text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
+                className="flex items-center gap-1 self-stretch border-b-2 border-transparent text-sm font-medium text-text-muted transition-colors hover:text-brand-primary"
               >
                 <LinkIcon size={12} />
                 {isEnglish ? "日本語" : "English"}
