@@ -179,7 +179,7 @@ export const BlogHeader = () => {
         >
           <nav
             data-testid="mobile-nav-tab"
-            className="pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pl-5 pt-2 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
+            className="pointer-events-auto -mt-2 flex w-[90%] items-stretch justify-start gap-6 self-center rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-5 pt-3 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden"
           >
             {isEnglish ? (
               <>
