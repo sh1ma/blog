@@ -3,10 +3,14 @@ import { resolve } from "node:path"
 import { defineDocumentType, makeSource } from "contentlayer2/source-files"
 import type { Element, Root } from "hast"
 import rehypeAutoLinkHeadings from "rehype-autolink-headings"
+import rehypeKatex from "rehype-katex"
 import rehypePrettyCode, {
   type Options as RehypePrettyCodeOptions,
 } from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
+import { remarkAlert } from "remark-github-blockquote-alert"
+import remarkMath from "remark-math"
 import type { ThemeRegistrationRaw } from "shiki"
 import { visit } from "unist-util-visit"
 import { rehypeRichEmbeds } from "./lib/rehype-rich-embeds"
@@ -63,9 +67,11 @@ export default makeSource({
   contentDirPath: "./src/markdown/",
   documentTypes: [Article],
   markdown: {
+    remarkPlugins: [remarkGfm, remarkAlert, remarkMath],
     rehypePlugins: [
       rehypeRichEmbeds,
       rehypeSlug,
+      [rehypeKatex, { strict: false, output: "html" }],
       [
         rehypeAutoLinkHeadings,
         {
