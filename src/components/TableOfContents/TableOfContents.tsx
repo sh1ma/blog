@@ -20,9 +20,9 @@ export const TableOfContents = ({
   }
 
   return (
-    <div className="mb-10 border-b border-gray-200 pb-6">
+    <div className="mb-10 rounded-lg border border-border-subtle bg-bg-muted px-5 py-3">
       <details className="group" open={initialOpen}>
-        <summary className="flex cursor-pointer list-none items-center justify-between py-2 text-lg font-semibold text-text-primary transition-colors hover:text-brand-primary [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between py-1 text-lg font-semibold text-text-primary transition-colors hover:text-brand-primary [&::-webkit-details-marker]:hidden">
           目次
           <ChevronDown
             className="transition-transform group-open:rotate-180"
@@ -30,7 +30,7 @@ export const TableOfContents = ({
           />
         </summary>
 
-        <nav className="mt-4 pl-4 text-base leading-relaxed text-text-muted">
+        <nav className="mt-3 border-t border-border-subtle pt-3 pl-4 text-base leading-relaxed text-text-secondary">
           <ul className="list-none space-y-2">
             {headings.map((heading) => (
               <li
