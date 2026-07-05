@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { ExternalLink, Github, Sparkles } from "lucide-react"
+import { ExternalLink, Github, Sparkles, Twitter, Youtube } from "lucide-react"
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -87,6 +87,30 @@ const projects = [
     href: "https://github.com/sh1ma/iostrace",
     archived: false,
   },
+  {
+    name: "sh1ma/bwpk",
+    tagline: "Bitwarden の passkey を CLI から使う",
+    description:
+      "Bitwarden に保存した passkey (FIDO2/WebAuthn) をコマンドラインから利用するための CLI。マスターパスワードや TouchID で解錠できる。",
+    href: "https://github.com/sh1ma/bwpk",
+    archived: false,
+  },
+  {
+    name: "sh1ma/Angelic-Angel",
+    tagline: "Web Push でツイートをストリーミング受信するサーバー",
+    description:
+      "ブラウザが Web Push を受け取る仕組みを模倣し、その経路経由でツイートをストリーミング受信するサーバー。",
+    href: "https://github.com/sh1ma/Angelic-Angel",
+    archived: false,
+  },
+  {
+    name: "sh1ma/try-k3s-on-cf-workers-public",
+    tagline: "Cloudflare Workers Containers 上で k3s を動かす実験",
+    description:
+      "Cloudflare Workers Containers の中に single-node の k3s クラスタを立てて、Pod をデプロイして遊べるようにする実験プロジェクト。",
+    href: "https://github.com/sh1ma/try-k3s-on-cf-workers-public",
+    archived: false,
+  },
 ]
 
 function AboutPage() {
@@ -134,6 +158,34 @@ function AboutPage() {
               >
                 <Github size={14} />
                 @sh1ma
+              </a>
+            </dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="text-text-muted">X</dt>
+            <dd>
+              <a
+                href="https://x.com/sh1ma"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
+              >
+                <Twitter size={14} />
+                @sh1ma
+              </a>
+            </dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="text-text-muted">YouTube</dt>
+            <dd>
+              <a
+                href="https://www.youtube.com/@am1hs"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
+              >
+                <Youtube size={14} />
+                @am1hs
               </a>
             </dd>
           </div>
