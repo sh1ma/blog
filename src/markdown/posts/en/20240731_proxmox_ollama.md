@@ -1,31 +1,31 @@
 ---
-title: Installing Ollama + OpenWebUI on a Proxmox VM
+title: Running Ollama + Open WebUI on a Proxmox VM
 publishedAt: "2024-07-31"
 ---
 
-The other day I installed Ollama on a Proxmox VM with GPU passthrough and got as far as exposing it to the Web.
-I’ll write down what I did here while remembering it.
+The other day I installed Ollama on the Proxmox VM I'd set up with GPU passthrough and got as far as putting it on the web.
+Here's what I did, jotted down from memory.
 
-## What This Article Covers
+## What this post covers
 
-- Making the GPU available from docker containers
-- Starting [Ollama](https://github.com/ollama/ollama) and [OpenWebUI](https://github.com/open-webui/open-webui) with `docker compose`
+- Making the GPU visible from inside a Docker container
+- Bringing up [Ollama](https://github.com/ollama/ollama) and [Open WebUI](https://github.com/open-webui/open-webui) with `docker compose`
 
-## Assumptions
+## Prerequisites
 
-The VM OS is Debian Bookworm.
+The VM runs Debian Bookworm.
 
 ```
 Linux xx 6.1.0-23-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.99-1 (2024-07-15) x86_64 GNU/Linux
 ```
 
-## How to Do It
+## How to do it
 
 ### 1. Install Docker
 
-[Docker’s official site has instructions for installing Docker with apt](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository), but I’ll introduce them anyway.
+[The official Docker docs already cover installing via apt](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository), but I'll walk through it here too.
 
-If you pull the full command sequence from the official site first, it looks like this.
+Here's the full command sequence from the official docs up front:
 
 ```sh
 # Add Docker's official GPG key:
@@ -47,17 +47,17 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-**Explanation below**
+**Now the step-by-step version.**
 
-If `ca-certificates` and `curl` are not installed, add them with the following.
+If you don't have `ca-certificates` and `curl` already, install them:
 
 ```sh
 apt update
 sudo apt install -y ca-certificates curl
 ```
 
-Next, create the `/etc/apt/keyrings` directory and fetch the gpg key. Apparently these days putting keyrings under `/etc/apt/keyrings` seems to be the best approach.
-Reference: [Deprecation of apt-key and How to Handle keyrings](https://zenn.dev/kariya_mitsuru/articles/a950e0996fb703#fnref-48d3-2)
+Next, create the `/etc/apt/keyrings` directory and pull in the GPG key. As I understand it, `/etc/apt/keyrings` is the currently recommended place to put keyrings.
+Reference (Japanese): [apt-key の非推奨化と keyring の扱い方](https://zenn.dev/kariya_mitsuru/articles/a950e0996fb703#fnref-48d3-2)
 
 ```sh
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -65,7 +65,7 @@ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
-Add the repository. The following handles it nicely.
+Add the apt repository. The snippet below takes care of it:
 
 ```sh
 
@@ -76,19 +76,19 @@ echo \
 sudo apt-get update
 ```
 
-Finally, install the various docker components.
+Finally, install Docker itself along with its plugins:
 
 ```sh
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-After doing this much, the docker command should be available.
+At this point, the `docker` command should be available.
 
-### 2. Install and Configure NVIDIA Container Toolkit
+### 2. Install and configure the NVIDIA Container Toolkit
 
-Installing NVIDIA Container Toolkit allows Docker containers to use the host GPU, so I’ll install it. This time I’ll install it via apt. [The official documentation also has detailed steps](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt), but I’ll introduce them here too.
+The NVIDIA Container Toolkit is what lets Docker containers use the host's GPU, so let's install it. I'll go with apt here. [The official docs cover this in detail](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt), but I'll walk through it anyway.
 
-Set up the repository for installation with the command below.
+Set up the apt repository with the following:
 
 ```sh
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
@@ -97,57 +97,57 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
     sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 ```
 
-Install it.
+Install it:
 
 ```sh
 sudo apt update
 sudo apt install -y nvidia-container-toolkit
 ```
 
-You can check the installed command with the following.
+Confirm that the CLI is installed:
 
 ```sh
 sudo nvidia-ctk --version
 ```
 
-Once you confirm it is installed, run the following. This makes NVIDIA Container Runtime available from docker.
+Once you've verified that, run the following to hook the NVIDIA Container Runtime into Docker:
 
 ```sh
 sudo nvidia-ctk runtime configure --runtime=docker
 ```
 
-Finally, restart docker.
+Finally, restart Docker:
 
 ```sh
 sudo systemctl restart docker
 ```
 
-This completes the NVIDIA Container Toolkit setup.
+That's it for the NVIDIA Container Toolkit setup.
 
-### 3. Try Using Ollama and OpenWebUI
+### 3. Try out Ollama and Open WebUI
 
-You can run the Ollama Docker image with the following command.
+Run the Ollama Docker image like so:
 
 ```sh
 sudo docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
-To send a request to the api server and check whether Ollama is running, use the following.
+To check that Ollama is up, hit its API server:
 
 ```sh
 curl http://localhost:11434
 ```
 
-If it is running normally, a response like the following comes back.
+If it's running, you'll get back:
 
 ```
 Ollama is running
 ```
 
-At this point, no models are installed, so you cannot try an LLM yet.  
-To install models through a UI and try LLMs, next I’ll use `docker compose` to start it together with OpenWebUI.
+At this point no models are installed yet, so we can't actually try out an LLM.  
+So next, to install models and chat with them through a UI, I'll bring it up together with Open WebUI using `docker compose`.
 
-Save the following code as `compose.yaml` in an appropriate directory.
+Save the snippet below as `compose.yaml` somewhere convenient:
 
 ```yaml
 services:
@@ -181,20 +181,20 @@ volumes:
   open-webui:
 ```
 
-After saving it, run the following in that directory, and OpenWebUI should start on `0.0.0.0:8080`.
+Once saved, run this in that directory and Open WebUI should come up on `0.0.0.0:8080`:
 
 ```sh
 docker compose up
 ```
 
-If the following output appears in the logs here, you need to review the VM settings.
+If you see this in the logs, though, you'll need to revisit the VM settings:
 
 ```
 CPU does not have vector extensions
 ```
 
-This problem should be resolved by setting the `Type` field to `Host`. (Reference image below)
+Setting the CPU `Type` field to `Host` should sort this out. (See the screenshot below.)
 
 ![Proxmox VM CPU settings](https://cdn.sh1ma.dev/20240731_proxmox_ollama-1.png)
 
-That completes the setup. After that, if you access the VM’s IP from a web browser, you should be able to see OpenWebUI.
+That's the setup done. From here, hit the VM's IP in a browser and you should see Open WebUI.

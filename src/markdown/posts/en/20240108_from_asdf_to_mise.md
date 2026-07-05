@@ -3,13 +3,11 @@
   publishedAt: "2024-01-08"
 ---
 
-Until now, I had been using [asdf](https://asdf-vm.com/) to manage runtime versions for things like python and nodejs,
-and direnv to manage environment variables per directory,
-but recently I found a version management tool called [mise](https://mise.jdx.dev/) that looked pretty good, so I decided to install it.
+I've been using [asdf](https://asdf-vm.com/) to manage runtime versions for things like Python and Node.js, and direnv to manage per-directory environment variables. Recently I ran across a version manager called [mise](https://mise.jdx.dev/) that looks promising, so I decided to give it a try.
 
 ## Uninstalling asdf and direnv
 
-I had installed them with homebrew, so I uninstalled them with `brew uninstall`.
+I installed both with Homebrew, so I removed them with `brew uninstall`.
 
 ```bash
 brew uninstall asdf direnv
@@ -18,22 +16,22 @@ brew autoremove
 
 ## Installing mise
 
-The steps from [mise Getting Started](https://mise.jdx.dev/getting-started.html) seem to work as-is.
+The [mise Getting Started](https://mise.jdx.dev/getting-started.html) steps work as-is.
 
-For optional settings and details, the official documentation is more thorough.
+For optional configuration and the fine print, the official docs are the better reference.
 
 ```bash
 curl https://mise.jdx.dev/install.sh | sh
 ```
 
-Add the path to `.zshrc`.
+Then add mise to your PATH in `.zshrc`:
 
 ```sh
 eval "$(~/.local/bin/mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 ```
 
-After restarting the terminal, the `mise` command should be available. Check that it works.
+After restarting the terminal, `mise` should be on your PATH. Check that it works:
 
 ```bash
 mise -V
@@ -45,22 +43,22 @@ Output:
 2024.1.12 macos-arm64 (3750934 2024-01-07)
 ```
 
-Looks good.
+Nice.
 
 ## Using mise
 
-Let’s try using it right away.
+Let's take it for a spin.
 
-mise has the following two kinds of functionality.
+mise has two main features:
 
 - Runtime version management
-- Environment variable management per directory
+- Per-directory environment variables
 
-Both seem useful, so I’ll try them.
+Both sound useful, so I'll try each one.
 
-### Runtime Version Management
+### Runtime version management
 
-First, install the Node.js 20 series.
+First, install the Node.js 20 line.
 
 ```bash
 mise use --global node@20
@@ -73,22 +71,22 @@ Output:
 v20.10.0
 ```
 
-Hmm, nice. I’m happy that it installs automatically if you only specify the major version.  
-By the way, when I ran `mise use` in a directory with a `.tool-versions` file, it automatically installed the specified version if it was missing.
+Nice — I like that specifying just the major version is enough for it to install automatically.  
+As a bonus, when I ran `mise use` in a directory that already had a `.tool-versions` file, it auto-installed the versions listed there if they weren't present.
 
-## Environment Variable Management per Directory
+## Per-directory environment variables
 
-Next, I’ll try environment variable management per directory.  
-Unlike direnv, it seems you create a file called `.mise.toml` instead of `.envrc`. (There are also methods/settings for using .envrc, but I’ll omit them.)
+Next up, per-directory env vars.  
+Unlike direnv, you create a `.mise.toml` file instead of `.envrc`. (There's also a way to use `.envrc`, but I'll skip that here.)
 
-Enter an appropriate directory and create `.mise.toml`.
+Move into a scratch directory and create a `.mise.toml`:
 
 ```toml
 [env]
 HELLO = "WORLD"
 ```
 
-To enable it, it seems you need to run `mise trust`, similar to `direnv allow` in `direnv`.
+To activate it, you need to run `mise trust`, similar to `direnv allow`.
 
 ```bash
 mise trust
@@ -100,7 +98,7 @@ Output:
 mise trusted /Users/sh1ma/tmp/.mise.toml
 ```
 
-You can display environment variables with `mise env`.
+You can print the environment variables with `mise env`:
 
 ```bash
 mise env | grep HELLO
@@ -124,7 +122,7 @@ WORLD
 
 Looks good.
 
-## Summary
+## Wrap-up
 
-I wasn’t dissatisfied with asdf and direnv, but it feels cleaner to have consolidated two tools into one.  
-Oh, I need to remember to add `.mise.toml` to the `.gitignore` in my home directory.
+I wasn't unhappy with asdf and direnv, but collapsing two tools into one does feel tidier.  
+Oh — I need to remember to add `.mise.toml` to the `.gitignore` in my home directory.
