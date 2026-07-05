@@ -3,7 +3,7 @@
   "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits"],
   "reviewers": ["sh1ma"],
   "labels": ["automated", "chore"],
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 10,
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "packageRules": [
