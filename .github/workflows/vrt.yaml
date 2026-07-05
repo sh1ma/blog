@@ -8,6 +8,9 @@ on:
     paths:
       - "src/**"
       - "e2e/**"
+      - "lib/**"
+      - "themes/**"
+      - "public/**"
       - "playwright.config.ts"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -17,8 +20,10 @@ on:
       - "contentlayer.config.ts"
       - "tailwind.config.ts"
       - "postcss.config.cjs"
+      - "wrangler.jsonc"
       - "tsconfig*.json"
       - ".github/workflows/vrt.yaml"
+      - ".github/actions/setup-playwright/action.yml"
   workflow_dispatch:
     inputs:
       update_snapshots:
@@ -32,7 +37,6 @@ env:
   R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
 jobs:
   vrt:
