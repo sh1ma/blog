@@ -8,34 +8,34 @@ import { Tag } from "@/components/Tag/Tag"
 import { TranslationNotice } from "@/components/TranslationNotice/TranslationNotice"
 import { extractHeadings } from "@/utils/extractHeadings"
 
-export const Route = createFileRoute("/articles/$slug")({
-  component: ArticlePage,
+export const Route = createFileRoute("/en/articles/$slug")({
+  component: EnglishArticlePage,
   loader: ({ params }) => {
     const post = allArticles.find(
-      (p) => p.id === params.slug && p.locale === "ja",
-    )
-    if (!post) throw notFound()
-    const hasEnglishVersion = allArticles.some(
       (p) => p.id === params.slug && p.locale === "en",
     )
-    return { post, hasEnglishVersion }
+    if (!post) throw notFound()
+    const hasJapaneseVersion = allArticles.some(
+      (p) => p.id === params.slug && p.locale === "ja",
+    )
+    return { post, hasJapaneseVersion }
   },
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
           { title: loaderData.post.title },
-          { name: "description", content: "ブログ記事" },
+          { name: "description", content: "Blog article (English)" },
         ]
       : [{ title: "404" }],
   }),
 })
 
-function ArticlePage() {
-  const { post, hasEnglishVersion } = Route.useLoaderData()
+function EnglishArticlePage() {
+  const { post, hasJapaneseVersion } = Route.useLoaderData()
   const headings = extractHeadings(post.body.html)
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-8">
+    <article className="mx-auto w-full max-w-3xl px-4 py-8" lang="en">
       <header className="mb-10 border-b border-gray-200 pb-6">
         {post.tags && post.tags.length > 0 && (
           <div className="mb-4 flex gap-2">
@@ -57,13 +57,13 @@ function ArticlePage() {
           <span className="size-1 rounded-full bg-gray-300" />
           <span className="flex items-center gap-1">
             <Clock size={16} />
-            {post.readingTime}分
+            {post.readingTime} min
           </span>
         </div>
       </header>
 
-      {hasEnglishVersion && (
-        <TranslationNotice targetLocale="en" href={`/en/articles/${post.id}`} />
+      {hasJapaneseVersion && (
+        <TranslationNotice targetLocale="ja" href={`/articles/${post.id}`} />
       )}
 
       <TableOfContents headings={headings} initialOpen={false} />

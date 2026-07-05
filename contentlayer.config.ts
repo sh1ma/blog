@@ -38,7 +38,7 @@ const enableLineNumbers = () => (tree: Root) => {
 
 export const Article = defineDocumentType(() => ({
   name: "Article",
-  filePathPattern: `**/posts/*.md`,
+  filePathPattern: `**/posts/**/*.md`,
   fields: {
     title: { type: "string", required: true },
     publishedAt: { type: "date", required: true },
@@ -50,6 +50,11 @@ export const Article = defineDocumentType(() => ({
     id: {
       type: "string",
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, ""),
+    },
+    locale: {
+      type: "string",
+      resolve: (doc) =>
+        doc._raw.sourceFilePath.startsWith("posts/en/") ? "en" : "ja",
     },
     readingTime: {
       type: "number",
