@@ -161,7 +161,7 @@ export const BlogHeader = () => {
         {languageTarget && (
           <div
             aria-hidden={isCompact}
-            className={`pointer-events-none absolute inset-x-0 top-full z-0 flex justify-center transition-all duration-500 ease-out ${
+            className={`pointer-events-none absolute inset-x-0 top-full z-0 flex justify-start pl-6 transition-all duration-500 ease-out ${
               isCompact
                 ? "-translate-y-[calc(100%+72px)] opacity-0"
                 : "translate-y-0 opacity-100"
@@ -171,9 +171,9 @@ export const BlogHeader = () => {
               to={languageTarget.href}
               lang={languageTarget.lang}
               data-testid="language-tab"
-              className="pointer-events-auto -mt-2 inline-flex items-center gap-1.5 rounded-b-xl border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pl-3 pr-3.5 pt-3 text-xs font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface"
+              className="pointer-events-auto -mt-2 inline-flex items-center gap-1 rounded-b-lg border border-t-0 border-white/50 bg-bg-surface/85 pb-1 pl-2.5 pr-3 pt-2.5 text-[11px] font-medium text-brand-primary shadow-soft backdrop-blur-xl backdrop-saturate-150 transition-colors hover:bg-bg-surface"
             >
-              <Languages size={14} />
+              <Languages size={12} />
               {languageTarget.label}
             </Link>
           </div>
