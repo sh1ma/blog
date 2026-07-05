@@ -1,11 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
-import {
-  ChevronLeft,
-  Languages,
-  Link as LinkIcon,
-  PenLine,
-} from "lucide-react"
+import { ChevronLeft, Languages, Link as LinkIcon, PenLine } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -178,9 +173,7 @@ export const BlogHeader = () => {
           <nav
             data-testid="mobile-nav-tab"
             className={`pointer-events-auto -mt-2 flex w-[90%] items-center justify-center gap-6 self-center border border-t-0 border-white/50 bg-bg-surface/85 pb-1.5 pt-2.5 shadow-soft backdrop-blur-xl backdrop-saturate-150 md:hidden ${
-              languageTarget && isArticlePage
-                ? "border-b-0"
-                : "rounded-b-lg"
+              languageTarget && isArticlePage ? "border-b-0" : "rounded-b-lg"
             }`}
           >
             {isEnglish ? (
