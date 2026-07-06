@@ -29,7 +29,6 @@ for (const article of feedArticles) {
     title: article.title,
     description: article.description ?? "",
     link: `${SITE_URL}/articles/${article.id}`,
-    id: `${SITE_URL}/articles/${article.id}`,
     date: dayjs(article.publishedAt).toDate(),
   })
 }
