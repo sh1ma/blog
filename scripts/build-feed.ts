@@ -10,13 +10,19 @@ const OUT_FILE = path.join(OUT_DIR, "feed.xml")
 
 const feed = new Feed({
   title: "blog.sh1ma.dev",
+  description: "sh1maのブログです",
   feedLinks: { rss: `${SITE_URL}/feed.xml` },
   link: SITE_URL,
   id: SITE_URL,
+  language: "ja",
   copyright: `All rights reserved ${dayjs().format("YYYY")}, sh1ma`,
 })
 
-const feedArticles = allArticles.filter((article) => article.locale === "ja")
+const feedArticles = allArticles
+  .filter((article) => article.locale === "ja")
+  .sort(
+    (a, b) => dayjs(b.publishedAt).valueOf() - dayjs(a.publishedAt).valueOf(),
+  )
 
 for (const article of feedArticles) {
   feed.addItem({
