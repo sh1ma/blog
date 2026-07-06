@@ -42,16 +42,16 @@ export const ArticleCard = ({
           )}
         </div>
 
-        <div className="flex flex-1 flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
           {tags && tags.length > 0 && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <Tag key={tag} label={tag} size="sm" />
               ))}
             </div>
           )}
 
-          <h3 className="text-xl font-bold leading-tight text-brand-primary transition-colors group-hover:underline">
+          <h3 className="text-xl font-bold leading-tight break-words text-brand-primary transition-colors group-hover:underline">
             {title}
           </h3>
 
