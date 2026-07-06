@@ -6,11 +6,12 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm build:content && vite",
-    "build": "pnpm gen && tsc -b && vite build && pnpm build:feed && pnpm build:ogp",
+    "build": "pnpm gen && tsc -b && vite build && pnpm build:feed && pnpm build:sitemap && pnpm build:ogp",
     "gen": "pnpm build:content && pnpm build:routes",
     "build:content": "contentlayer2 build",
     "build:routes": "tsr generate",
     "build:feed": "tsx scripts/build-feed.ts",
+    "build:sitemap": "tsx scripts/build-sitemap.ts",
     "build:ogp": "tsx scripts/build-ogp.ts",
     "preview": "pnpm build && wrangler dev",
     "deploy": "pnpm build && wrangler deploy",
