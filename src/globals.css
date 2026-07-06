@@ -59,6 +59,7 @@
 html,
 body {
   @apply bg-bg-base;
+  overflow-x: clip;
   font-family:
     "Inter",
     "Noto Sans JP",
@@ -257,6 +258,12 @@ body {
 }
 .prose tbody tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.02);
+}
+
+/* インライン code の折り返し (長い URL / パスで overflow しないように) */
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* KaTeX 数式ブロックの横スクロール */
