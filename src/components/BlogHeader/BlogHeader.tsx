@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "contentlayer/generated"
-import { ChevronLeft, Link as LinkIcon, PenLine } from "lucide-react"
+import { ChevronLeft, Link as LinkIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const SCROLL_THRESHOLD = 80
@@ -227,9 +227,11 @@ export const BlogHeader = () => {
             }`}
           >
             <Link to="/" className="flex items-center gap-3">
-              <div className="bg-brand-primary/10 flex size-10 shrink-0 items-center justify-center rounded-lg text-brand-primary">
-                <PenLine className="text-3xl" />
-              </div>
+              <img
+                src="/anon-illust.jpeg"
+                alt=""
+                className="size-10 shrink-0 rounded-lg object-cover"
+              />
               <div className="whitespace-nowrap text-xl font-bold tracking-tight text-text-primary">
                 blog.<span className="text-brand-primary">sh1ma.dev</span>
               </div>
