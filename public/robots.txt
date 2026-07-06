@@ -1,2 +1,4 @@
 User-Agent: *
 Allow: /
+
+Sitemap: https://blog.sh1ma.dev/sitemap.xml

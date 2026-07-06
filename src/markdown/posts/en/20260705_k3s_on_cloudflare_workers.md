@@ -13,15 +13,27 @@ https://github.com/sh1ma/try-k3s-on-cf-workers-public
 
 https://x.com/mizchi/status/2070456349197299956
 
+> Would it be nice if k8s ran on Cloudflare?
+
 https://x.com/sh1ma/status/2070688160766640444
+
+> Rootless k3s might work. Want to try it.
 
 https://x.com/sh1ma/status/2072200706883543466
 
+> Got k3s running on Cloudflare Containers.
+
 https://x.com/sh1ma/status/2072224558871204290
+
+> Deployed nginx to the k3s cluster I set up on Cloudflare Containers.
 
 https://x.com/sh1ma/status/2072255101541163312
 
+> VOICEVOX runs.
+
 https://x.com/sh1ma/status/2072329617990693297
+
+> And in the end I got a Discord read-aloud bot using VOICEVOX to run on Cloudflare (driven from `kubectl`, so no Workers redeploys needed!).
 
 ## The big picture
 
