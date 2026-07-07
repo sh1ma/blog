@@ -18,6 +18,9 @@ export const Footer = () => {
           <p className="text-sm text-text-muted">
             © {currentYear} sh1ma. All rights reserved.
           </p>
+          <p className="mt-2 text-xs text-text-muted">
+            このサイトはアクセス解析のため Google Analytics を利用しています。
+          </p>
         </div>
 
         <div className="flex gap-6">
