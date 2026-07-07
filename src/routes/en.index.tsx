@@ -17,7 +17,7 @@ export const Route = createFileRoute("/en/")({
 function EnglishHomePage() {
   const articles = allArticles
     .filter((article) => article.locale === "en")
-    .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
+    .sort((a, b) => (a.sortKey < b.sortKey ? 1 : -1))
     .map((article) => ({
       id: article.id,
       title: article.title,

@@ -20,9 +20,7 @@ const feed = new Feed({
 
 const feedArticles = allArticles
   .filter((article) => article.locale === "ja")
-  .sort(
-    (a, b) => dayjs(b.publishedAt).valueOf() - dayjs(a.publishedAt).valueOf(),
-  )
+  .sort((a, b) => (a.sortKey < b.sortKey ? 1 : -1))
 
 for (const article of feedArticles) {
   feed.addItem({

@@ -3,7 +3,8 @@ import { allArticles } from "contentlayer/generated"
 import { ChevronLeft, Link as LinkIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
-const SCROLL_THRESHOLD = 80
+const SCROLL_COMPACT_THRESHOLD = 80
+const SCROLL_EXPAND_THRESHOLD = 40
 const HIDE_DELAY_MS = 3000
 const AUTO_COLLAPSE_DELAY_MS = 3000
 
@@ -76,7 +77,7 @@ export const BlogHeader = () => {
 
   const scheduleHide = useCallback(() => {
     clearHideTimer()
-    if (window.scrollY > SCROLL_THRESHOLD && !userExpandedRef.current) {
+    if (window.scrollY > SCROLL_COMPACT_THRESHOLD && !userExpandedRef.current) {
       hideTimerRef.current = setTimeout(() => setVisible(false), HIDE_DELAY_MS)
     }
   }, [clearHideTimer])
@@ -95,16 +96,21 @@ export const BlogHeader = () => {
 
   useEffect(() => {
     const onActivity = () => {
-      const s = window.scrollY > SCROLL_THRESHOLD
-      setScrolled(s)
-      if (!s && userExpandedRef.current) {
-        setUserExpanded(false)
-        userExpandedRef.current = false
-        if (collapseTimerRef.current) {
-          clearTimeout(collapseTimerRef.current)
-          collapseTimerRef.current = undefined
+      setScrolled((prev) => {
+        const y = window.scrollY
+        const next = prev
+          ? y > SCROLL_EXPAND_THRESHOLD
+          : y > SCROLL_COMPACT_THRESHOLD
+        if (!next && userExpandedRef.current) {
+          setUserExpanded(false)
+          userExpandedRef.current = false
+          if (collapseTimerRef.current) {
+            clearTimeout(collapseTimerRef.current)
+            collapseTimerRef.current = undefined
+          }
         }
-      }
+        return next
+      })
       setVisible(true)
       scheduleHide()
     }
