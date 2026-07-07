@@ -49,7 +49,7 @@ tmp
 .open-next
 
 # git worktrees
-worktrees/
+/worktrees/
 
 # assets for development
 dev-assets

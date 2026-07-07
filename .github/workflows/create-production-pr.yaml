@@ -52,20 +52,24 @@ jobs:
             echo "PR #$EXISTING_PR already exists"
           else
             # PRを作成
+            BODY=$(cat <<'EOF'
+          ## 本番デプロイ
+
+          このPRをマージすると本番環境へのデプロイが実行されます。
+
+          ### チェックリスト
+          - [ ] staging環境で動作確認済み
+          - [ ] すべてのテストがパス
+          - [ ] 破壊的変更がないことを確認
+
+          ---
+          *このPRは自動生成されました*
+          EOF
+          )
             gh pr create \
               --base deploy \
               --head main \
               --title "本番デプロイ: $(date +'%Y-%m-%d %H:%M:%S')" \
-              --body "## 本番デプロイ
-
-このPRをマージすると本番環境へのデプロイが実行されます。
-
-### チェックリスト
-- [ ] staging環境で動作確認済み
-- [ ] すべてのテストがパス
-- [ ] 破壊的変更がないことを確認
-
----
-*このPRは自動生成されました*" \
-              --label "production"
+              --body "$BODY" \
+              --label "release"
           fi

@@ -6,12 +6,12 @@ import { allArticles } from "../.contentlayer/generated/index.mjs"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
 const OUT_DIR = path.resolve("./dist")
-const OUT_FILE = path.join(OUT_DIR, "feed.xml")
+const OUT_FILE = path.join(OUT_DIR, "feed")
 
 const feed = new Feed({
   title: "blog.sh1ma.dev",
   description: "sh1maのブログです",
-  feedLinks: { rss: `${SITE_URL}/feed.xml` },
+  feedLinks: { rss: `${SITE_URL}/feed` },
   link: SITE_URL,
   id: SITE_URL,
   language: "ja",
