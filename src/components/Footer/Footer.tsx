@@ -1,4 +1,4 @@
-import { Github, PenLine } from "lucide-react"
+import { Github, PenLine, Rss } from "lucide-react"
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -29,6 +29,13 @@ export const Footer = () => {
             aria-label="GitHub"
           >
             <Github className="size-5" />
+          </a>
+          <a
+            href="/feed"
+            className="text-text-muted transition-all duration-300 hover:-translate-y-1 hover:text-brand-primary"
+            aria-label="RSS"
+          >
+            <Rss className="size-5" />
           </a>
         </div>
       </div>
