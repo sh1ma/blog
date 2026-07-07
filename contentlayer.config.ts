@@ -44,11 +44,30 @@ export const Article = defineDocumentType(() => ({
     thumbnail: { type: "string", required: false },
     description: { type: "string", required: false },
     tags: { type: "list", of: { type: "string" }, required: false },
+    priority: { type: "number", required: false },
   },
   computedFields: {
     id: {
       type: "string",
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, ""),
+    },
+    sortKey: {
+      type: "string",
+      resolve: (doc) => {
+        const filename = doc._raw.sourceFileName.replace(/\.md$/, "")
+        const filenamePriorityMatch = filename.match(/^\d{8}_(\d+)_/)
+        const filenamePriority = filenamePriorityMatch
+          ? Number(filenamePriorityMatch[1])
+          : 0
+        const effectivePriority =
+          typeof doc.priority === "number" ? doc.priority : filenamePriority
+        const paddedPriority = String(effectivePriority).padStart(6, "0")
+        const publishedAt =
+          typeof doc.publishedAt === "string"
+            ? doc.publishedAt
+            : new Date(doc.publishedAt).toISOString().slice(0, 10)
+        return `${publishedAt}#${paddedPriority}`
+      },
     },
     locale: {
       type: "string",

@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 絶対に守るべきルール
 
+- **一度公開済みの記事の URL は絶対に変えてはいけない**。これは最重要事項。`src/markdown/posts/` 配下の公開済み記事のファイル名 (slug) やディレクトリ構成を変更する行為、およびルーティング設定 (`src/pages/` など) を変えて既存記事のパスが変わる行為は禁止。誤字修正・タイトル変更等で URL を変えたくなっても、既存 URL は必ず維持する。どうしても URL を変える必要があると判断した場合は、勝手に進めず必ずユーザに ask する。
 - **常に日本語で応答する**。
 - **依存追加は必ず `pnpm add` / `pnpm add -D` を使う**。`package.json` を直接編集して依存を書き込むのは禁止。
 - **Lint 無効化コメント (`biome-ignore`, `eslint-disable` 等) は書かない**。エラーは黙らせず、コードを直して解消する。
