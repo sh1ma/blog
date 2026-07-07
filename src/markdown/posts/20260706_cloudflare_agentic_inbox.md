@@ -1,6 +1,7 @@
 ---
   title: "Cloudflareに独自ドメインのメールクライアントを構築した"
   publishedAt: "2026-07-06"
+  priority: 2
   description: "Cloudflare公式OSSの agentic-inbox を使って、独自ドメインでメールを送受信できるセルフホストなメールクライアントを Cloudflare Workers 上に構築してみたレポート。"
   tags: ["Cloudflare", "Workers", "Email Routing", "OSS"]
 ---
