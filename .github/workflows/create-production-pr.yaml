@@ -71,5 +71,5 @@ jobs:
               --head main \
               --title "本番デプロイ: $(date +'%Y-%m-%d %H:%M:%S')" \
               --body "$BODY" \
-              --label "production"
+              --label "release"
           fi
