@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PR_CREATE_TOKEN }}
 
       - name: Setup Git
         run: |
@@ -34,7 +35,7 @@ jobs:
 
       - name: Create PR from main to deploy
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PR_CREATE_TOKEN }}
         run: |
           # mainブランチに切り替え
           git checkout main
