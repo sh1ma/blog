@@ -10,12 +10,16 @@ tags: ["Cloudflare", "R2", "Rclone"]
 
 今回はCloudflare R2とRcloneを共有フォルダとしてマウントし、MacOSのFinderから操作できるようにしてみた記事です。
 
+https://x.com/sh1ma/status/2075519775388930305?s=20
+
 ## TL;DR
 
 - RcloneとR2を組み合わせることにより仮想的にOSにマウントできた。 
 - MacOSにマウントしたR2のリソースをFinderで表示・操作することができた。
 - macFUSEを入れなくても `rclone nfsmount` を使えばmacOS標準のNFSクライアントでマウントできる。
 - Finderからマウントすると `.DS_Store` / `._*` がバケットに書き込まれるので、 `defaults write com.apple.desktopservices DSDontWriteNetworkStores true` で抑制しておくと良い。
+
+[Rclone · Cloudflare R2 docs](https://developers.cloudflare.com/r2/examples/rclone/)
 
 ## 経緯（興味ある人だけどうぞ）
 
