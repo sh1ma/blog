@@ -91,7 +91,7 @@ body {
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
-  min-height: 120px;
+  min-height: 140px;
 }
 .link-card:hover {
   border-color: var(--border-brand);
@@ -140,8 +140,9 @@ body {
 }
 .link-card__thumb {
   flex: 0 0 auto;
-  width: 200px;
+  width: 260px;
   max-width: 40%;
+  aspect-ratio: 1.91 / 1;
   background: var(--bg-muted);
   display: flex;
   align-items: center;
@@ -157,8 +158,8 @@ body {
 
 @media (max-width: 640px) {
   .link-card__thumb {
-    width: 120px;
-    max-width: 35%;
+    width: 140px;
+    max-width: 38%;
   }
 }
 
