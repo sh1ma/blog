@@ -55,8 +55,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.4",
-    "@cloudflare/vite-plugin": "^1.43.0",
-    "@playwright/test": "^1.57.0",
+    "@cloudflare/vite-plugin": "^1.45.1",
+    "@playwright/test": "^1.61.1",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@tanstack/react-query-devtools": "^5.101.2",
@@ -64,18 +64,18 @@
     "@tanstack/router-cli": "^1.167.21",
     "@tanstack/router-plugin": "^1.168.23",
     "@types/hast": "^3.0.5",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.13.3",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
-    "lint-staged": "^16.2.7",
-    "satori": "^0.19.0",
+    "lint-staged": "^16.4.0",
+    "satori": "^0.28.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.1",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "vite": "^6.4.3",
-    "wrangler": "^4.107.0"
+    "wrangler": "^4.112.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css}": "biome check --write --no-errors-on-unmatched"
