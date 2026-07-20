@@ -43,7 +43,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "rehype-katex": "^7.0.1",
-    "rehype-pretty-code": "^0.14.1",
+    "rehype-pretty-code": "^0.14.4",
     "rehype-stringify": "^10.0.1",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
