@@ -145,7 +145,7 @@ function buildLinkCard(data: OgpData): Element {
       href: data.url,
       className: ["link-card"],
       target: "_blank",
-      rel: "noopener noreferrer",
+      rel: ["noopener", "noreferrer"],
     },
     children,
   }
