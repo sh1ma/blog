@@ -54,7 +54,7 @@
     "typescript": "5.9.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
+    "@biomejs/biome": "^2.5.4",
     "@cloudflare/vite-plugin": "^1.43.0",
     "@playwright/test": "^1.57.0",
     "@resvg/resvg-js": "^2.6.2",
