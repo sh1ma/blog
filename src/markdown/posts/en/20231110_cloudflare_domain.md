@@ -1,6 +1,6 @@
 ---
-  title: "Pointing a Cloudflare-Managed Domain at Vercel Causes a Redirect Loop"
-  publishedAt: "2023-11-10"
+title: "Pointing a Cloudflare-Managed Domain at Vercel Causes a Redirect Loop"
+publishedAt: "2023-11-10"
 ---
 
 I ran into trouble when I tried to point `blog.sh1ma.dev`, a subdomain of `sh1ma.dev` (managed by Cloudflare), at my blog deployed on Vercel.  

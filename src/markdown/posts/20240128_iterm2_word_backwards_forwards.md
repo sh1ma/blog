@@ -1,6 +1,6 @@
 ---
-  title: "iTerm2でOption+矢印キーを使って単語移動を出来るようにする"
-  publishedAt: "2024-01-28"
+title: "iTerm2でOption+矢印キーを使って単語移動を出来るようにする"
+publishedAt: "2024-01-28"
 ---
 
 私は長年iTerm2を使っているのにまともに単語移動を設定してきませんでした。  

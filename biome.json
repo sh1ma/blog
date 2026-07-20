@@ -11,7 +11,7 @@
       "!**/node_modules",
       "!**/.next",
       "!**/.open-next",
-      "!**/.contentlayer",
+      "!**/.content-collections",
       "!**/.wrangler",
       "!**/dist",
       "!**/dev-assets",

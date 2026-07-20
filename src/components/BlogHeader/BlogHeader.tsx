@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { allArticles } from "contentlayer/generated"
+import { allArticles } from "content-collections"
 import { ChevronLeft, Link as LinkIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 

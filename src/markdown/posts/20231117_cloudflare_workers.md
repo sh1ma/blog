@@ -1,6 +1,6 @@
 ---
-  title: "Cloudflare WorkersでWASIが使えるらしいので試した"
-  publishedAt: "2023-11-17"
+title: "Cloudflare WorkersでWASIが使えるらしいので試した"
+publishedAt: "2023-11-17"
 ---
 
 [Cloudflare WorkersでWASIが使えるらしいという記事](https://blog.cloudflare.com/announcing-wasi-on-workers/)

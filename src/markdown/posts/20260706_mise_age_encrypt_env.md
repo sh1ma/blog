@@ -1,8 +1,8 @@
 ---
-  title: "mise + age で環境変数を暗号化する"
-  publishedAt: "2026-07-06"
-  description: "mise が experimental で持っている age 暗号化機能で環境変数を扱ってみた話。実運用では x25519 の鍵ファイルより SSH 公開鍵を recipient にしたほうが楽。"
-  tags: ["mise", "age", "セキュリティ"]
+title: "mise + age で環境変数を暗号化する"
+publishedAt: "2026-07-06"
+description: "mise が experimental で持っている age 暗号化機能で環境変数を扱ってみた話。実運用では x25519 の鍵ファイルより SSH 公開鍵を recipient にしたほうが楽。"
+tags: ["mise", "age", "セキュリティ"]
 ---
 
 こんにちは。前回の[記事](https://blog.sh1ma.dev/20260705_k3s_on_cloudflare_workers.md)はAIでベタ書きしていたんですがこの記事は丹精込めて自分自身で書こうと思います。

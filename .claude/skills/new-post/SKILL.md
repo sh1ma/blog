@@ -19,7 +19,7 @@ description: このブログ (`sh1ma/blog`) の新規記事のボイラープレ
   - `YYYYMMDD`: 発行日 (デフォルトは実行日)。
   - `N`: **同日投稿の連番**。同日既存記事の最大 N + 1 を script が自動で決める。同日に既存記事がなければ 1。
   - `slug`: URL / 記事 id となる部分。ASCII 小文字・数字・`_` のみ。
-- 一覧ページの並び順制御は「path の N」で決まるが、`contentlayer.config.ts` の実装により **frontmatter に `priority` があればそちらが優先**される (公開後に順序だけ変えたいときは frontmatter で調整する)。
+- 一覧ページの並び順制御は「path の N」で決まるが、`content-collections.ts` の実装により **frontmatter に `priority` があればそちらが優先**される (公開後に順序だけ変えたいときは frontmatter で調整する)。
 
 **重要**: 一度公開した記事の path は変えない (URL が変わるため)。既存ファイルのリネームは絶対にしない。
 

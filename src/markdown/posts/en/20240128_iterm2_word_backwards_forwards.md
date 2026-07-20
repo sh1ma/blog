@@ -1,6 +1,6 @@
 ---
-  title: "Enabling Word-wise Cursor Movement in iTerm2 with Option + Arrow Keys"
-  publishedAt: "2024-01-28"
+title: "Enabling Word-wise Cursor Movement in iTerm2 with Option + Arrow Keys"
+publishedAt: "2024-01-28"
 ---
 
 I've been using iTerm2 for years without ever bothering to set up word-wise movement.  

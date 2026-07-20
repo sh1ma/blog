@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { allArticles } from "contentlayer/generated"
+import { allArticles } from "content-collections"
 import dayjs from "dayjs"
 import { Calendar, Clock, ImageOff } from "lucide-react"
 import { Tag } from "@/components/Tag/Tag"

@@ -1,4 +1,3 @@
-import type { Markdown } from "contentlayer2/core"
 import { useEffect, useRef } from "react"
 
 const TWITTER_WIDGET_SRC = "https://platform.twitter.com/widgets.js"
@@ -92,7 +91,11 @@ function attachCopyButtons(root: HTMLElement): () => void {
   }
 }
 
-export const MarkdownContent = ({ post }: { post: { body: Markdown } }) => {
+export const MarkdownContent = ({
+  post,
+}: {
+  post: { body: { html: string } }
+}) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const html = post.body.html
 

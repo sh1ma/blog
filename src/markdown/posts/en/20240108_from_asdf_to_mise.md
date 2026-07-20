@@ -1,6 +1,6 @@
 ---
-  title: "Moving from asdf and direnv to mise"
-  publishedAt: "2024-01-08"
+title: "Moving from asdf and direnv to mise"
+publishedAt: "2024-01-08"
 ---
 
 I've been using [asdf](https://asdf-vm.com/) to manage runtime versions for things like Python and Node.js, and direnv to manage per-directory environment variables. Recently I ran across a version manager called [mise](https://mise.jdx.dev/) that looks promising, so I decided to give it a try.

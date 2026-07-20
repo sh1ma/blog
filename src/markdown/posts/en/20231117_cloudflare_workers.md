@@ -1,6 +1,6 @@
 ---
-  title: "Trying out WASI on Cloudflare Workers"
-  publishedAt: "2023-11-17"
+title: "Trying out WASI on Cloudflare Workers"
+publishedAt: "2023-11-17"
 ---
 
 I came across [an article saying Cloudflare Workers now supports WASI](https://blog.cloudflare.com/announcing-wasi-on-workers/).
