@@ -23,15 +23,15 @@
       "groupName": "vite"
     },
     {
-      "description": "Contentlayer / markdown 変換系",
+      "description": "Content Collections / markdown 変換系",
       "matchPackageNames": [
-        "contentlayer2",
+        "/^@content-collections//",
         "/^rehype-/",
         "/^remark/",
         "shiki",
         "feed"
       ],
-      "groupName": "contentlayer-markdown"
+      "groupName": "content-collections-markdown"
     },
     {
       "description": "OGP 生成 (satori + resvg)",

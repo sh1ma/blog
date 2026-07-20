@@ -1,6 +1,6 @@
 ---
-  title: "I Started a Blog"
-  publishedAt: "2023-11-09"
+title: "I Started a Blog"
+publishedAt: "2023-11-09"
 ---
 
 I started a blog.  

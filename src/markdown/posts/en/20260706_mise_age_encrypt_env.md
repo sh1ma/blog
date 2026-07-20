@@ -1,8 +1,8 @@
 ---
-  title: "Encrypting environment variables with mise + age"
-  publishedAt: "2026-07-06"
-  description: "Notes on trying out mise's experimental age-based encryption for environment variables. In practice, using an SSH public key as the recipient is easier than managing an x25519 key file."
-  tags: ["mise", "age", "Security"]
+title: "Encrypting environment variables with mise + age"
+publishedAt: "2026-07-06"
+description: "Notes on trying out mise's experimental age-based encryption for environment variables. In practice, using an SSH public key as the recipient is easier than managing an x25519 key file."
+tags: ["mise", "age", "Security"]
 ---
 
 Hi. My [previous post](https://blog.sh1ma.dev/20260705_k3s_on_cloudflare_workers.md) was written mostly by AI, but I want to write this one carefully by hand.

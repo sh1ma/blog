@@ -1,8 +1,8 @@
 ---
-  title: "Cloudflare Workers Containers に k3s を載せてみた"
-  publishedAt: "2026-07-05"
-  description: "Firecracker microVM 1 台の中に k3s single-node クラスタを詰め込み、Worker を薄い gateway として前段に置く構成の技術解説。"
-  tags: ["Cloudflare", "Kubernetes", "k3s", "Cloudflare Workers"]
+title: "Cloudflare Workers Containers に k3s を載せてみた"
+publishedAt: "2026-07-05"
+description: "Firecracker microVM 1 台の中に k3s single-node クラスタを詰め込み、Worker を薄い gateway として前段に置く構成の技術解説。"
+tags: ["Cloudflare", "Kubernetes", "k3s", "Cloudflare Workers"]
 ---
 
 Cloudflare Workers Containers の上に **k3s の single-node クラスタ**を丸ごと立てて、`kubectl` で普通に触れる状態まで持っていけました。この記事ではその構成がどうやって動いているかを説明します。

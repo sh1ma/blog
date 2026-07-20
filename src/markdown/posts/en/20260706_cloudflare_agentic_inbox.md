@@ -1,9 +1,9 @@
 ---
-  title: "Running a Custom-Domain Email Client on Cloudflare"
-  publishedAt: "2026-07-06"
-  priority: 2
-  description: "A hands-on report on standing up a self-hosted, custom-domain email client on Cloudflare Workers using Cloudflare's official agentic-inbox OSS project."
-  tags: ["Cloudflare", "Workers", "Email Routing", "OSS"]
+title: "Running a Custom-Domain Email Client on Cloudflare"
+publishedAt: "2026-07-06"
+priority: 2
+description: "A hands-on report on standing up a self-hosted, custom-domain email client on Cloudflare Workers using Cloudflare's official agentic-inbox OSS project."
+tags: ["Cloudflare", "Workers", "Email Routing", "OSS"]
 ---
 
 I hand-wrote this article too. (The English version is translated by Claude Code — please bear with me.)

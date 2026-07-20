@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router"
-import { allArticles } from "contentlayer/generated"
+import { allArticles } from "content-collections"
 import dayjs from "dayjs"
 import { Calendar, Clock } from "lucide-react"
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"

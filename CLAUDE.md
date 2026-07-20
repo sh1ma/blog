@@ -23,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. **タスクにまつわる情報を集める**。既存コード、関連する docs / スキル、過去の PR / commit を確認する。
 3. **開発する**。バグ修正は先に再現テストを書き、一度 Failed することを確認してから直す。
 4. **PR 作成前チェックを通す**。**変更範囲に関わらず `pnpm check` (format/lint) は必ず流す**。
-   - **ブログの動作に影響するコード** (`src/`, `scripts/`, `contentlayer.config.ts`, `vite.config.ts`, `wrangler.jsonc`, `package.json` の deps, ワークフローなど) を変更した場合: 加えて `pnpm typecheck` も通ること。
+   - **ブログの動作に影響するコード** (`src/`, `scripts/`, `content-collections.ts`, `vite.config.ts`, `wrangler.jsonc`, `package.json` の deps, ワークフローなど) を変更した場合: 加えて `pnpm typecheck` も通ること。
    - **ブログの動作に関係ないファイル** (`.claude/`, `CLAUDE.md`, `README.md`, `docs/`, `dev-assets/` など) しか変更していない場合: `pnpm check` のみで良い。typecheck はスキップ可。
    - **E2E (`pnpm test:e2e`) は GitHub Actions で必ず流れるので、ローカルで事前に実行する必要はない**。手元で E2E を触りたい場面 (E2E 自体の変更・デバッグ) だけ任意で流す。
    - 自動修正できるものは `pnpm check:fix`。
@@ -38,7 +38,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `README.md` — 公開向けの最小情報。
 - `package.json` の `scripts` — 使えるコマンド一覧の一次ソース (`pnpm run` で列挙可能)。
 - `wrangler.jsonc` / `.github/workflows/` — Cloudflare へのデプロイ設定と CI の一次ソース。
-- `contentlayer.config.ts` — 記事の Markdown 変換パイプラインの一次ソース。
+- `content-collections.ts` — 記事の Markdown 変換パイプラインの一次ソース。
 
 技術詳細 (フレームワーク構成、ビルドパイプライン、デプロイフロー等) はこのファイルに書かず、上記の一次ソースを直接読む。
 

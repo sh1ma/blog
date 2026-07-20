@@ -3,7 +3,7 @@ import path from "node:path"
 import { Resvg } from "@resvg/resvg-js"
 import dayjs from "dayjs"
 import satori from "satori"
-import { allArticles } from "../.contentlayer/generated/index.mjs"
+import { allArticles } from "../.content-collections/generated/index.js"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
 const DIST_DIR = path.resolve("./dist")

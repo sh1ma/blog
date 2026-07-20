@@ -1,6 +1,6 @@
 ---
-  title: "I got my regular driver's license"
-  publishedAt: "2024-02-29"
+title: "I got my regular driver's license"
+publishedAt: "2024-02-29"
 ---
 
 The other day, [I attended a driving school camp and graduated](/articles/20240201_driving_school).\_\_

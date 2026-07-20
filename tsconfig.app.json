@@ -21,8 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "contentlayer/generated": ["./.contentlayer/generated"],
+      "content-collections": ["./.content-collections/generated"],
     },
   },
-  "include": ["src", ".contentlayer/generated"],
+  "include": ["src", ".content-collections/generated"],
 }

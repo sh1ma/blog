@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { allArticles } from "contentlayer/generated"
+import { allArticles } from "content-collections"
 import dayjs from "dayjs"
 import { ArticleCard } from "@/components/ArticleCard/ArticleCard"
 
