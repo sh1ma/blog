@@ -17,7 +17,7 @@ tags: ["Cloudflare", "Cloudflare Containers", "GitHub Actions"]
 
 - Cloudflare Containersを使ってGitHub ActionsのSelf-Hosted Runnerを立てた
 - 大抵の場面でSelf-Hosted Runner on Cloudflare Containersに料金・スペックの優位性はないことがわかった。
-- とはいえCloudflare Containersは使用したリソース分のみ課金なので、すでにWorkersのPaid Plan（現在$5/月）を契約していて、かつ短時間・小リソースのジョブを大量に回すなら一考の余地はあるかも。
+- とはいえCloudflare Containersは使用したリソース分のみ課金なので、すでにWorkersのPaid Plan（現在\$5/月）を契約していて、かつ短時間・小リソースのジョブを大量に回すなら一考の余地はあるかも。
 
 ## GitHub ActionsのSelf-Hosted Runnerって？
 
@@ -49,7 +49,7 @@ https://docs.github.com/en/actions/reference/runners/self-hosted-runners#ephemer
 
 | 実行環境 | vCPU | メモリ | ディスク | 備考 |
 |---|---|---|---|---|
-| GitHub `ubuntu-latest` (private) | 2 | 8 GB | 14 GB SSD | $0.006/分・分単位切り上げ |
+| GitHub `ubuntu-latest` (private) | 2 | 8 GB | 14 GB SSD | \$0.006/分・分単位切り上げ |
 | GitHub `ubuntu-latest` (public) | 4 | 16 GB | 14 GB SSD | **無料・無制限** |
 | CF lite | 1/16 | 256 MiB | 2 GB | 動作確認済み（遅い） |
 | CF basic | 1/4 | 1 GiB | 4 GB | 動作確認済み・推奨最小構成 |
@@ -182,7 +182,7 @@ jobs:
 | ジョブ結果 | success | success |
 | webhook 受信 → ジョブ開始 | 約 11 秒 | 約 13 秒 |
 | ジョブ実行時間 | 23 秒 | 74 秒 |
-| 1 ジョブあたり概算コスト | ≈ $0.00018 | ≈ $0.00015 |
+| 1 ジョブあたり概算コスト | ≈ \$0.00018 | ≈ \$0.00015 |
 
 キュー投入からジョブ開始まで、コールドスタート込みで約 11〜13 秒。GitHub-hosted runner の起動待ちと同じくらいの感覚です。
 
@@ -196,42 +196,56 @@ jobs:
 
 前提となる公式単価はこうです (2026-07-20 時点)。
 
-- **Cloudflare Containers** (Workers Paid $5/月 が前提): vCPU $0.000020/vCPU秒、メモリ $0.0000025/GiB秒、ディスク $0.00000007/GB秒。**秒課金・実行中のみ**。無料枠は 375 vCPU分、25 GiB時、200 GB時/月
-- **GitHub Actions** (hosted、private リポジトリ): Linux 2コア $0.006/分。**ジョブごとに分単位へ切り上げ**。無料枠は Free 2,000分/月、Pro/Team 3,000分/月。public リポジトリは無料・無制限
+- **Cloudflare Containers** (Workers Paid \$5/月 が前提): vCPU \$0.000020/vCPU秒、メモリ \$0.0000025/GiB秒、ディスク \$0.00000007/GB秒。**10ms 単位課金・実行中のみ**。無料枠は 375 vCPU分、25 GiB時、200 GB時/月
+- **GitHub Actions** (hosted、private リポジトリ): Linux 2コア \$0.006/分。**ジョブごとに分単位へ切り上げ**。無料枠は Free 2,000分/月、Pro/Team 3,000分/月。public リポジトリは無料・無制限
 
-インスタンスタイプ別に $/分 へ換算して比較すると次のようになります。
+ここで効いてくるのが [2025-11-21 の料金改定](https://developers.cloudflare.com/changelog/post/2025-11-21-new-cpu-pricing/)です。CPU 課金は割当 vCPU ではなく**実際の CPU 使用量ベース**に変わっています (メモリとディスクは従来どおり割当ベース)。つまり CPU をフルに使わないジョブほど安くなります。
 
-| CF インスタンス | スペック | $/分 | GitHub 2コア ($0.006/分) 比 |
-|---|---|---|---|
-| lite | 1/16 vCPU, 256MiB | $0.000121 | 約 1/50 |
-| basic | 1/4 vCPU, 1GiB | $0.000467 | 約 1/13 |
-| standard-1 | 1/2 vCPU, 4GiB | $0.001234 | 約 1/4.9 |
-| standard-3 | 2 vCPU, 8GiB | $0.003667 | 約 1/1.6 |
+インスタンスタイプ別に \$/分 へ換算して比較すると次のようになります。CPU 100% の列が上限値で、実コストはこれ以下になります。
 
-GitHub の ubuntu-latest (private) は 2 vCPU / 8GB RAM なので、スペック同等の比較対象は standard-3。それでも **CF の方が約 39% 安い**うえ、CF は秒課金・GitHub は分切り上げなので、短いジョブほど差が広がります。
+| CF インスタンス | スペック | \$/分 (CPU100%) | \$/分 (CPU20%) | GitHub 2コア (\$0.006/分) 比 |
+|---|---|---|---|---|
+| lite | 1/16 vCPU, 256MiB | \$0.000121 | \$0.000061 | 約 1/50〜1/98 |
+| basic | 1/4 vCPU, 1GiB | \$0.000467 | \$0.000227 | 約 1/13〜1/26 |
+| standard-1 | 1/2 vCPU, 4GiB | \$0.001234 | \$0.000754 | 約 1/4.9〜1/8.0 |
+| standard-3 | 2 vCPU, 8GiB | \$0.003667 | \$0.001747 | 約 1/1.6〜1/3.4 |
+
+GitHub の ubuntu-latest (private) は 2 vCPU / 8GB RAM なので、スペック同等の比較対象は standard-3。CPU をフルに使うビルドでも **CF の方が約 39% 安く**、I/O 待ち中心で CPU 使用率 20% 程度のジョブなら**約 71% 安い**。さらに CF は 10ms 単位課金・GitHub は分切り上げなので、短いジョブほど差が広がります。
 
 ### CF Containers が優位になるケース
 
-1. **private リポジトリで無料枠を使い切っている**: 超過分は同等スペックで約 39% 安。軽いジョブを basic に落とせれば 1/13
-2. **短時間ジョブが大量にある**: GitHub は 1 分に切り上げるので、10 秒のジョブ 1,000 本なら GitHub $6.00 vs CF basic 約 $0.08 で約 75 倍差
+1. **private リポジトリで無料枠を使い切っている**: 超過分は同等スペックで 39〜71% 安。軽いジョブを basic に落とせれば 1/13〜1/26
+2. **短時間ジョブが大量にある**: GitHub は 1 分に切り上げるので、10 秒のジョブ 1,000 本なら GitHub \$6.00 vs CF basic 約 \$0.08 で約 75 倍差
 3. **低スペックで足りるジョブ** (lint、通知など)
 4. **Workers Paid を既に契約している**: 無料枠 375 vCPU分/月で basic 相当 1,500 分/月が追加費用ゼロ
 
 ### GitHub-hosted のままでいいケース
 
 1. **public リポジトリ**: hosted runner が無料・無制限なので勝ち目なし
-2. **無料枠 (2,000分/月) 以内の利用**: GitHub $0 に対して CF は Workers Paid $5/月 の固定費で負ける
+2. **無料枠 (2,000分/月) 以内の利用**: GitHub \$0 に対して CF は Workers Paid \$5/月 の固定費で負ける
 3. **Docker が必要なジョブ**: Firecracker microVM 内でネスト仮想化ができず docker daemon が動かないので、コンテナビルド系 CI は不向き
 4. **プリインストールツール前提のジョブ**: hosted runner の膨大なツールチェーンはないので、セットアップ時間がそのまま課金時間になる
 
-損益分岐の目安は、**GitHub の無料枠を使い切ったうえで月 1,500〜2,000 分以上**使うなら CF が安くなる、というあたりです。
+### 損益分岐
+
+損益分岐は前提の置き方で 2 通りあります。
+
+1. **単一アカウントの総額で比較する場合** (GitHub Free の無料枠 2,000 分が丸ごと使える場合): GitHub は 2,000 分まで \$0、CF は \$5/月の固定費から始まるので、逆転は **CPU 100% のジョブで約 6,980 分/月、CPU 20% のジョブで約 3,830 分/月** (standard-3、両者の無料枠込みで計算)
+2. **限界費用で比較する場合** (無料枠を他のワークロードで消化済み・Workers Paid 契約済みの場合): 1 分あたり GitHub \$0.006 vs CF standard-3 \$0.00367 (CPU100%)〜\$0.00175 (CPU20%) なので、**使った瞬間から CF が 39〜71% 安い**
+
+![月間 CI 使用量と月額料金の比較グラフ。GitHub Free は無料枠 2,000 分を超えると傾き \$0.006/分で増え、Cloudflare standard-3 は \$5/月の固定費から始まる。交点 (損益分岐) は CPU 100% で約 6,980 分/月、CPU 20% で約 3,830 分/月](https://cdn.sh1ma.dev/20260720_1_cloudflare_containers_github_self_hosted_runners/ci-cost-vs-usage.ja.png)
+
+総額ベースでワークロード別に置いてみると、無料枠に収まる少量利用 (1,000 分/月) では GitHub \$0 vs CF \$5〜 で GitHub の勝ち、3,000 分/月でもまだ GitHub の勝ち (\$6.00 vs \$15.28)、10,000 分/月の規模になると CF が逆転 (\$48.00 vs \$40.95)、という結果になりました。CPU 使用率が低いジョブならさらに差が開きます。
+
+![ワークロード別の月額総額比較の棒グラフ。無料枠と固定費を織り込んだ総額で、1,000 分/月と 3,000 分/月は GitHub が安く、10,000 分/月で Cloudflare が逆転する](https://cdn.sh1ma.dev/20260720_1_cloudflare_containers_github_self_hosted_runners/ci-cost-cases.ja.png)
 
 ## まとめ
 
 - Cloudflare Containers 上で GitHub Actions の self-hosted runner は普通に動く
 - webhook 駆動 + `--ephemeral` で「ジョブが来たときだけ課金」にできる
 - lite は安く見えて遅いのでジョブ単価は basic とほぼ同じ。basic が実用最小構成
-- private リポジトリで無料枠を使い切る規模 (月 1,500〜2,000 分以上) なら GitHub-hosted より安い。public リポジトリや Docker ビルド前提の CI には向かない
+- 2025-11 から CPU は実使用量課金なので、CPU を持て余すジョブほど安い (同等スペック比で 39〜71% 安)
+- ただし総額で見ると、GitHub の無料枠と Workers Paid \$5/月 が効くので、逆転するのは月 4,000〜7,000 分規模から。public リポジトリや Docker ビルド前提の CI には向かない
 
 
 
