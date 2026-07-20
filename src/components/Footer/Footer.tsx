@@ -1,7 +1,10 @@
+import { useLocation } from "@tanstack/react-router"
 import { Github, PenLine, Rss } from "lucide-react"
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
+  const { pathname } = useLocation()
+  const isEnglish = pathname === "/en" || pathname.startsWith("/en/")
 
   return (
     <footer className="border-t border-gray-200 bg-bg-surface">
@@ -18,8 +21,13 @@ export const Footer = () => {
           <p className="text-sm text-text-muted">
             © {currentYear} sh1ma. All rights reserved.
           </p>
-          <p className="mt-2 text-xs text-text-muted">
-            このサイトはアクセス解析のため Google Analytics を利用しています。
+          <p
+            className="mt-2 text-xs text-text-muted"
+            lang={isEnglish ? "en" : "ja"}
+          >
+            {isEnglish
+              ? "This site uses Google Analytics for access analytics."
+              : "このサイトはアクセス解析のため Google Analytics を利用しています。"}
           </p>
         </div>
 
