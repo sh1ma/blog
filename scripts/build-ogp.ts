@@ -558,12 +558,20 @@ const buildArticleHtml = (
   title: string,
   description: string | undefined,
   locale: "ja" | "en",
+  hasTranslation: boolean,
 ) => {
   const path = locale === "en" ? `en/articles/${slug}` : `articles/${slug}`
   const url = `${SITE_URL}/${path}`
   const ogImage = `${SITE_URL}/og/${locale === "en" ? `en/${slug}` : slug}.png`
   const desc = description ?? (locale === "en" ? "Blog article" : "ブログ記事")
+  const hreflangLinks = hasTranslation
+    ? [
+        `    <link rel="alternate" hreflang="ja" href="${SITE_URL}/articles/${slug}" />`,
+        `    <link rel="alternate" hreflang="en" href="${SITE_URL}/en/articles/${slug}" />`,
+      ]
+    : []
   const meta = [
+    ...hreflangLinks,
     `    <meta property="og:type" content="article" />`,
     `    <meta property="og:title" content="${escapeHtml(title)}" />`,
     `    <meta property="og:description" content="${escapeHtml(desc)}" />`,
@@ -604,12 +612,16 @@ for (const article of allArticles) {
       ? path.join(DIST_DIR, "en", "articles", article.id)
       : path.join(DIST_DIR, "articles", article.id)
   await mkdir(articleDir, { recursive: true })
+  const hasTranslation = allArticles.some(
+    (other) => other.id === article.id && other.locale !== article.locale,
+  )
   const html = buildArticleHtml(
     shell,
     article.id,
     article.title,
     article.description,
     locale,
+    hasTranslation,
   )
   await writeFile(path.join(articleDir, "index.html"), html)
   htmlCount++
