@@ -1,6 +1,6 @@
 ---
-  title: "I Went to a Driving School Camp"
-  publishedAt: "2023-02-25"
+title: "I Went to a Driving School Camp"
+publishedAt: "2023-02-25"
 ---
 
 I signed up for a driving school camp to get a regular Class 1 driver's license. I went with [Sohgoh Driving School](https://www.sohgoh.co.jp/).

@@ -1,10 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits"],
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    "schedule:weekends"
+  ],
+  "timezone": "Asia/Tokyo",
   "reviewers": ["sh1ma"],
   "labels": ["automated", "chore"],
-  "prConcurrentLimit": 10,
-  "prHourlyLimit": 3,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "packageRules": [
     {
@@ -23,15 +29,15 @@
       "groupName": "vite"
     },
     {
-      "description": "Contentlayer / markdown 変換系",
+      "description": "Content Collections / markdown 変換系",
       "matchPackageNames": [
-        "contentlayer2",
+        "/^@content-collections//",
         "/^rehype-/",
         "/^remark/",
         "shiki",
         "feed"
       ],
-      "groupName": "contentlayer-markdown"
+      "groupName": "content-collections-markdown"
     },
     {
       "description": "OGP 生成 (satori + resvg)",

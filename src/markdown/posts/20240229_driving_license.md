@@ -1,6 +1,6 @@
 ---
-  title: "普通自動車免許を取得した"
-  publishedAt: "2024-02-29"
+title: "普通自動車免許を取得した"
+publishedAt: "2024-02-29"
 ---
 
 先日[合宿免許に参加して無事卒業できた](/articles/20240201_driving_school)。\_\_

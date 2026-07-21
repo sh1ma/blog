@@ -1,6 +1,6 @@
 ---
-  title: "asdf, direnvをやめてmiseに移行する"
-  publishedAt: "2024-01-08"
+title: "asdf, direnvをやめてmiseに移行する"
+publishedAt: "2024-01-08"
 ---
 
 これまで[asdf](https://asdf-vm.com/)でpythonやnodejsのランタイムのバージョン管理、

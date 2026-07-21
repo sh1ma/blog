@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises"
 import path from "node:path"
 import dayjs from "dayjs"
 import { Feed } from "feed"
-import { allArticles } from "../.contentlayer/generated/index.mjs"
+import { allArticles } from "../.content-collections/generated/index.js"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
 const OUT_DIR = path.resolve("./dist")
