@@ -134,6 +134,19 @@ https://x.com/sh1ma/status/2073952805287825555
 > About mise's `age` encryption for secrets: the docs show a setup where you drop `age.txt` (the private key) into your home directory, as in the image — but you should absolutely not do that.
 > Use SSH Key recipients instead (i.e. use your SSH private key as the decryption key).
 
+#### 2026-07-21 update: a note on reusing a signing SSH key for encryption
+
+Adding this section based on feedback from [@haruyama](https://x.com/haruyama/status/2074296776295887031) ([and follow-up](https://x.com/haruyama/status/2074448338519568753)).
+
+This post recommends reusing your SSH key as an `age` recipient, but there is a broader question worth being aware of: is it actually OK to use a key intended for signing to also perform encryption?
+
+- `age`'s author, Filippo Valsorda, has himself acknowledged in [FiloSottile/age#540](https://github.com/FiloSottile/age/discussions/540) that "Key reuse across signatures and encryption is indeed not safe and requires analysis." He says he did perform an analysis when designing `age`, but has not published those notes. He also notes that the papers he cites "don't apply 1:1" to how `age` uses HKDF. In other words, **there is no publicly available proof that reuse is safe**; it's essentially "trust me, I looked at it."
+- Elsewhere in that discussion, another participant (cipriancraciun) argues that RSA-OAEP padding and a domain separation label (`age-encryption.org/v1/ssh-rsa`) prevent cross-protocol interactions. That's a reasonable argument, but it comes from a community member, not from the author.
+- Filippo's own article, [Using Ed25519 signing keys for encryption](https://words.filippo.io/using-ed25519-keys-for-encryption/), explains that Ed25519 keys can be mathematically converted to X25519 keys. That shows reuse is *implementable*; it does not by itself guarantee that reuse is safe in practice.
+- Given all of the above, some people take the more cautious position that signing keys and encryption keys should be kept separate as a matter of principle, and consider SSH-key reuse for `age` "not sufficiently vetted" (see [@haruyama's posts](https://x.com/haruyama/status/2074296776295887031) [again](https://x.com/haruyama/status/2074448338519568753)).
+
+No concrete attack against this reuse is known at the moment, but there is also no explicit guarantee of safety. If you want strict separation between signing and encryption keys, one option is to generate a dedicated `age` key pair (ideally passphrase-protected) instead.
+
 ### When using a passphrase-protected SSH key, register the passphrase in a secret store like Keychain
 
 Being prompted for the passphrase every time you decrypt is a pain.
