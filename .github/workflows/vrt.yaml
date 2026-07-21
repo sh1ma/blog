@@ -167,7 +167,7 @@ jobs:
 
       - name: Comment on PR
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const updateMode = '${{ steps.check-update.outputs.update_snapshots }}' === 'true';
