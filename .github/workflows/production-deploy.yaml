@@ -1,22 +1,9 @@
 name: Production Deploy
 
 on:
-  push:
-    branches:
-      - deploy
-    paths:
-      - "src/**"
-      - "public/**"
-      - "scripts/**"
-      - "index.html"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "vite.config.ts"
-      - "content-collections.ts"
-      - "tailwind.config.ts"
-      - "postcss.config.cjs"
-      - "wrangler.jsonc"
-      - "tsconfig*.json"
+  release:
+    types:
+      - published
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
@@ -29,6 +16,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
