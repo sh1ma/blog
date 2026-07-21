@@ -86,6 +86,7 @@
   },
   "vulnerabilityAlerts": {
     "labels": ["security"],
-    "automerge": false
+    "automerge": false,
+    "schedule": ["at any time"]
   }
 }
