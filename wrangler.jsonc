@@ -5,6 +5,7 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "not_found_handling": "single-page-application",
+    "html_handling": "drop-trailing-slash",
   },
   "vars": {
     "NODE_VERSION": "24.16.0",

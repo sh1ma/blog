@@ -571,6 +571,7 @@ const buildArticleHtml = (
       ]
     : []
   const meta = [
+    `    <link rel="canonical" href="${url}" />`,
     ...hreflangLinks,
     `    <meta property="og:type" content="article" />`,
     `    <meta property="og:title" content="${escapeHtml(title)}" />`,

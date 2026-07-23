@@ -58,7 +58,7 @@ const buildSitemapXml = (entries: UrlEntry[]): string => {
 const staticEntries: UrlEntry[] = [
   { loc: resolveUrl("/") },
   { loc: resolveUrl("/about") },
-  { loc: resolveUrl("/en/") },
+  { loc: resolveUrl("/en") },
   { loc: resolveUrl("/en/about") },
 ]
 
