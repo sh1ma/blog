@@ -36,7 +36,7 @@
     "@tanstack/react-router": "^1.170.18",
     "dayjs": "^1.11.21",
     "dayjs-plugin-utc": "^0.1.2",
-    "feed": "^5.2.1",
+    "feed": "^6.0.0",
     "katex": "^0.18.1",
     "lucide-react": "^0.577.0",
     "react": "19.2.7",
