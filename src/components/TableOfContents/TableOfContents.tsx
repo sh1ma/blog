@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react"
+import { LuChevronDown } from "react-icons/lu"
 
 export type TocItem = {
   id: string
@@ -24,7 +24,7 @@ export const TableOfContents = ({
       <details className="group" open={initialOpen}>
         <summary className="flex cursor-pointer list-none items-center justify-between py-1 text-lg font-semibold text-text-primary transition-colors hover:text-brand-primary [&::-webkit-details-marker]:hidden">
           目次
-          <ChevronDown
+          <LuChevronDown
             className="transition-transform group-open:rotate-180"
             size={20}
           />

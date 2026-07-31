@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { Calendar, Clock, ImageOff } from "lucide-react"
+import { LuCalendar, LuClock, LuImageOff } from "react-icons/lu"
 import { Tag } from "../Tag/Tag"
 
 type ArticleCardProps = {
@@ -36,7 +36,7 @@ export const ArticleCard = ({
             />
           ) : (
             <div className="flex size-full flex-col items-center justify-center bg-gray-100 text-gray-400">
-              <ImageOff size={24} />
+              <LuImageOff size={24} />
               <span className="mt-1 text-xs">No Image</span>
             </div>
           )}
@@ -63,12 +63,12 @@ export const ArticleCard = ({
 
           <div className="flex flex-wrap items-center gap-3 text-sm text-text-muted">
             <span className="flex items-center gap-1">
-              <Calendar size={16} />
+              <LuCalendar size={16} />
               <time dateTime={publishedAt}>{publishedAt}</time>
             </span>
             <span className="size-1 rounded-full bg-gray-300" />
             <span className="flex items-center gap-1">
-              <Clock size={16} />
+              <LuClock size={16} />
               <span>{readingTime}分</span>
             </span>
           </div>

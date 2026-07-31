@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router"
 import { allArticles } from "content-collections"
 import dayjs from "dayjs"
-import { Calendar, Clock } from "lucide-react"
+import { LuCalendar, LuClock } from "react-icons/lu"
 import { MarkdownContent } from "@/components/MarkdownContent/MarkdownContent"
 import { TableOfContents } from "@/components/TableOfContents/TableOfContents"
 import { Tag } from "@/components/Tag/Tag"
@@ -51,12 +51,12 @@ function ArticlePage() {
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-text-muted">
           <span className="flex items-center gap-1">
-            <Calendar size={16} />
+            <LuCalendar size={16} />
             {dayjs(post.publishedAt).format("YYYY-MM-DD")}
           </span>
           <span className="size-1 rounded-full bg-gray-300" />
           <span className="flex items-center gap-1">
-            <Clock size={16} />
+            <LuClock size={16} />
             {post.readingTime}分
           </span>
         </div>
