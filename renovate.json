@@ -79,6 +79,11 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["automated", "chore", "major-update"]
+    },
+    {
+      "description": "js-yaml は 4.0.0 で safeLoad が削除され、gray-matter@4 (記事の frontmatter 解析に使用) が動かなくなるため 3.x に固定する。脆弱性は 3.15.0 で修正済みで、pnpm overrides もその下限を保証している",
+      "matchPackageNames": ["js-yaml"],
+      "allowedVersions": "<4"
     }
   ],
   "lockFileMaintenance": {
