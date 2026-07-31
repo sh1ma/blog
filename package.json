@@ -59,7 +59,7 @@
     "@content-collections/core": "^0.15.2",
     "@content-collections/markdown": "^0.1.4",
     "@content-collections/vite": "^0.3.0",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@tanstack/react-query-devtools": "^5.101.4",
