@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { ExternalLink, Github, Sparkles, Twitter, Youtube } from "lucide-react"
+import { LuExternalLink, LuSparkles } from "react-icons/lu"
+import { SiGithub, SiX, SiYoutube } from "react-icons/si"
 
 export const Route = createFileRoute("/en/about")({
   component: EnglishAboutPage,
@@ -126,7 +127,7 @@ function EnglishAboutPage() {
           />
           <div>
             <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-brand-primary-light/20 px-3 py-1 text-xs font-medium text-brand-primary">
-              <Sparkles size={14} />
+              <LuSparkles size={14} />
               <span>About me</span>
             </div>
             <h2 className="text-4xl font-bold tracking-tight text-text-primary">
@@ -156,7 +157,7 @@ function EnglishAboutPage() {
                 rel="noreferrer noopener"
                 className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
               >
-                <Github size={14} />
+                <SiGithub size={14} />
                 @sh1ma
               </a>
             </dd>
@@ -170,7 +171,7 @@ function EnglishAboutPage() {
                 rel="noreferrer noopener"
                 className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
               >
-                <Twitter size={14} />
+                <SiX size={14} />
                 @sh1ma
               </a>
             </dd>
@@ -184,7 +185,7 @@ function EnglishAboutPage() {
                 rel="noreferrer noopener"
                 className="inline-flex items-center gap-1 font-medium text-brand-primary hover:underline"
               >
-                <Youtube size={14} />
+                <SiYoutube size={14} />
                 @am1hs
               </a>
             </dd>
@@ -237,7 +238,7 @@ function EnglishAboutPage() {
                 className="group flex flex-col gap-2 rounded-xl bg-bg-surface p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-hover"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <Github
+                  <SiGithub
                     size={18}
                     className="text-text-muted group-hover:text-brand-primary"
                   />
@@ -249,7 +250,7 @@ function EnglishAboutPage() {
                       Archived
                     </span>
                   )}
-                  <ExternalLink
+                  <LuExternalLink
                     size={14}
                     className="text-text-muted opacity-0 transition-opacity group-hover:opacity-100"
                   />

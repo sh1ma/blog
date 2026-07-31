@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { allArticles } from "content-collections"
-import { ChevronLeft, Link as LinkIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { LuLink as LinkIcon, LuChevronLeft } from "react-icons/lu"
 
 const SCROLL_COMPACT_THRESHOLD = 80
 const SCROLL_EXPAND_THRESHOLD = 40
@@ -290,7 +290,7 @@ export const BlogHeader = () => {
                 : "pointer-events-none opacity-0"
             }`}
           >
-            <ChevronLeft />
+            <LuChevronLeft />
           </button>
         </div>
       </div>

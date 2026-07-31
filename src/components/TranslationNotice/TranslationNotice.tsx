@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { Languages } from "lucide-react"
+import { LuLanguages } from "react-icons/lu"
 
 type TranslationNoticeProps = {
   targetLocale: "ja" | "en"
@@ -27,7 +27,7 @@ export const TranslationNotice = ({
       className="mb-6 flex items-center gap-3 rounded-lg border border-brand-primary/20 bg-brand-primary-light/10 px-4 py-3 text-sm text-text-primary"
       lang={targetLocale}
     >
-      <Languages size={18} className="shrink-0 text-brand-primary" />
+      <LuLanguages size={18} className="shrink-0 text-brand-primary" />
       <span className="flex-1">{text}</span>
       <Link
         to={href}

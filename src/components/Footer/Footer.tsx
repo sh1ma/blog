@@ -1,5 +1,6 @@
 import { useLocation } from "@tanstack/react-router"
-import { Github, PenLine, Rss } from "lucide-react"
+import { LuPenLine } from "react-icons/lu"
+import { SiGithub, SiRss } from "react-icons/si"
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -12,7 +13,7 @@ export const Footer = () => {
         <div className="text-center md:text-left">
           <div className="mb-2 flex items-center justify-center gap-2 md:justify-start">
             <div className="bg-brand-primary/10 flex size-6 items-center justify-center rounded-md text-brand-primary">
-              <PenLine size={16} />
+              <LuPenLine size={16} />
             </div>
             <span className="text-lg font-bold text-text-primary">
               blog.<span className="text-brand-primary">sh1ma.dev</span>
@@ -39,14 +40,14 @@ export const Footer = () => {
             className="text-text-muted transition-all duration-300 hover:-translate-y-1 hover:text-brand-primary"
             aria-label="GitHub"
           >
-            <Github className="size-5" />
+            <SiGithub className="size-5" />
           </a>
           <a
             href="/feed"
             className="text-text-muted transition-all duration-300 hover:-translate-y-1 hover:text-brand-primary"
             aria-label="RSS"
           >
-            <Rss className="size-5" />
+            <SiRss className="size-5" />
           </a>
         </div>
       </div>
