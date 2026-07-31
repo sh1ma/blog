@@ -3,8 +3,13 @@ overrides:
   "@types/react-dom": 19.2.3
   js-yaml@<3.15.0: ^3.15.0
 
-onlyBuiltDependencies:
-  - protobufjs
-  - workerd
-  - esbuild
-  - "@biomejs/biome"
+allowBuilds:
+  protobufjs: true
+  workerd: true
+  esbuild: true
+  "@biomejs/biome": true
+
+# 公開直後の版を踏まないよう minimumReleaseAge (デフォルト 1440 分) を厳格に守る。
+# strict にしないと、条件を満たさない版が minimumReleaseAgeExclude に自動追加されて
+# ポリシーが骨抜きになる。
+minimumReleaseAgeStrict: true
