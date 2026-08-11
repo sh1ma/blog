@@ -32,12 +32,14 @@ test.describe("トップページ", () => {
     )
     await expect(metaInfo).toBeVisible()
 
+    // react-icons はアイコン名を class に出さないため、項目の中身で特定する
+
     // カレンダーアイコン（日付）が表示される
-    const calendarIcon = metaInfo.locator('svg[class*="lucide-calendar"]')
+    const calendarIcon = metaInfo.locator("span:has(time) svg")
     await expect(calendarIcon).toBeVisible()
 
     // 時計アイコン（読了時間）が表示される
-    const clockIcon = metaInfo.locator('svg[class*="lucide-clock"]')
+    const clockIcon = metaInfo.locator("span:has(time) ~ span svg")
     await expect(clockIcon).toBeVisible()
 
     // 2つのメタ情報が同じ行に表示されていることを確認
