@@ -42,6 +42,7 @@
         "useSelfClosingElements": "off"
       },
       "suspicious": {
+        "noDeprecatedImports": "error",
         "noExplicitAny": "warn",
         "noAssignInExpressions": "off",
         "noImplicitAnyLet": "off"
