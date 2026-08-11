@@ -35,7 +35,6 @@ function loadTwitterWidgets(container: HTMLElement) {
   const script = document.createElement("script")
   script.src = TWITTER_WIDGET_SRC
   script.async = true
-  script.charset = "utf-8"
   script.addEventListener("load", hydrate, { once: true })
   document.body.appendChild(script)
 }
