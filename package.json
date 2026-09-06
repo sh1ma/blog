@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.12",
-    "@cloudflare/vite-plugin": "^1.54.2",
+    "@cloudflare/vite-plugin": "^1.54.4",
     "@content-collections/cli": "^0.1.9",
     "@content-collections/core": "^0.15.2",
     "@content-collections/markdown": "^0.1.4",
@@ -78,7 +78,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "vite": "^8.2.2",
-    "wrangler": "^4.127.1",
+    "wrangler": "^4.129.0",
     "zod": "^4.5.4"
   },
   "lint-staged": {
