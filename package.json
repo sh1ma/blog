@@ -53,7 +53,7 @@
     "typescript": "7.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.12",
+    "@biomejs/biome": "^2.5.13",
     "@cloudflare/vite-plugin": "^1.54.4",
     "@content-collections/cli": "^0.1.9",
     "@content-collections/core": "^0.15.2",
