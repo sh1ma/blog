@@ -21,28 +21,28 @@ type Language = {
 
 const languages: Language[] = [
   {
-    name: "Python",
-    level: 5,
-    liking: "love",
-    note: "My strongest language. I'm used to writing it and comfortable with it, and I like that I can actually use it.",
-  },
-  {
-    name: "Rust",
-    level: 4,
-    liking: "love",
-    note: "I write it at work. It feels really nice to use, so I might come to love it.",
-  },
-  {
     name: "TypeScript",
-    level: 4,
+    level: 5,
     liking: "like",
-    note: "I use it both at work and on this blog. Not quite as much as Python, but I do like it.",
+    note: "I use it both at work and on this blog, and it's the language I write the most these days.",
   },
   {
     name: "Go",
+    level: 4,
+    liking: "like",
+    note: "I've used it at work. Lately I often write my personal CLI tools in Go, and I've grown to like it.",
+  },
+  {
+    name: "Python",
+    level: 5,
+    liking: "love",
+    note: "My strongest language. I'm used to writing it and comfortable with it, and I like that I can actually use it. I still reach for it for small scripts and research tools.",
+  },
+  {
+    name: "Rust",
     level: 3,
-    liking: "dislike",
-    note: "I've used it at work. Not really my favorite.",
+    liking: "love",
+    note: "I write it in my personal projects. It feels really nice to use, so I might come to love it.",
   },
 ]
 
