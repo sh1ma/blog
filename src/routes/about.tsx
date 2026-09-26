@@ -12,39 +12,57 @@ export const Route = createFileRoute("/about")({
   }),
 })
 
+// GitHub 上の個人リポジトリ (フォーク除く) から集計した値 (2026 年 9 月時点)
+// - share: 直近 1 年の自分のコミット数を、各リポジトリの言語別バイト比で按分した割合
+// - repos: 直近 1 年に更新があり、その言語が 20% 以上を占めるリポジトリ数
+// - since: その言語が 20% 以上を占めるリポジトリのうち最も古いものの作成年
 type Language = {
   name: string
-  level: 1 | 2 | 3 | 4 | 5
-  liking: "love" | "like" | "neutral" | "dislike"
+  share: number
+  repos: number
+  since: number
   note: string
 }
 
 const languages: Language[] = [
   {
-    name: "Python",
-    level: 5,
-    liking: "love",
-    note: "一番得意な言語。書き慣れていて、使えるから好き。",
-  },
-  {
-    name: "Rust",
-    level: 4,
-    liking: "love",
-    note: "仕事で書いている。かなり使い心地がいいので好きになりそう。",
-  },
-  {
     name: "TypeScript",
-    level: 4,
-    liking: "like",
-    note: "仕事でもこのブログでも使っている。Python ほどではないけれど好きな部類。",
+    share: 73,
+    repos: 15,
+    since: 2020,
+    note: "個人開発のメイン。このブログをはじめ、Web アプリや Cloudflare Workers 上のツールはだいたい TypeScript で書いている。",
   },
   {
     name: "Go",
-    level: 3,
-    liking: "dislike",
-    note: "仕事で使ったことがある。あんまり好きじゃない。",
+    share: 12,
+    repos: 15,
+    since: 2023,
+    note: "CLI ツールはだいたい Go。bwpk や image2webp、get-tweet など、ちょっとしたツールを作るときによく使う。",
+  },
+  {
+    name: "Python",
+    share: 5,
+    repos: 7,
+    since: 2019,
+    note: "昔はメインで、pyne や apywrapper を書いていた。最近は解析用のスクリプトや herdr-auto-title のような小さいツールで使う程度。",
+  },
+  {
+    name: "JavaScript",
+    share: 5,
+    repos: 3,
+    since: 2020,
+    note: "主に frida のスクリプトとして使う。iostrace など iOS の解析まわり。",
+  },
+  {
+    name: "Rust",
+    share: 1,
+    repos: 1,
+    since: 2020,
+    note: "仕事では書いているが、個人開発ではたまに触る程度。Angelic-Angel や crabapple など。",
   },
 ]
+
+const otherLanguages = ["C", "Swift", "Kotlin", "Objective-C"]
 
 const hobbies = [
   {
@@ -193,12 +211,19 @@ function AboutPage() {
         </dl>
       </section>
 
-      <Section title="Skills" subtitle="よく使うプログラミング言語">
+      <Section title="Skills" subtitle="個人開発で使っている言語">
+        <p className="mb-4 text-sm leading-relaxed text-text-muted">
+          GitHub の個人リポジトリの直近 1
+          年のコミットから集計した、言語ごとの割合です (2026 年 9 月時点)。
+        </p>
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {languages.map((lang) => (
             <LanguageCard key={lang.name} language={lang} />
           ))}
         </ul>
+        <p className="mt-4 text-sm text-text-secondary">
+          ほかに {otherLanguages.join(" / ")} もちょっとだけ書いています。
+        </p>
       </Section>
 
       <Section title="Hobbies" subtitle="趣味">
@@ -290,32 +315,21 @@ function Section({
   )
 }
 
-const likingLabel: Record<Language["liking"], string> = {
-  love: "好き",
-  like: "好き",
-  neutral: "普通",
-  dislike: "そんなに",
-}
-
-const likingClass: Record<Language["liking"], string> = {
-  love: "bg-accent-pink/15 text-accent-pink",
-  like: "bg-brand-primary-light/20 text-brand-primary",
-  neutral: "bg-bg-muted text-text-muted",
-  dislike: "bg-accent-yellow/20 text-accent-yellow",
-}
-
 function LanguageCard({ language }: { language: Language }) {
   return (
     <li className="flex flex-col gap-3 rounded-xl bg-bg-surface p-5 shadow-soft">
       <div className="flex items-center justify-between gap-2">
         <h4 className="text-lg font-bold text-text-primary">{language.name}</h4>
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${likingClass[language.liking]}`}
-        >
-          {likingLabel[language.liking]}
+        <span className="rounded-full bg-bg-muted px-2 py-0.5 text-xs font-medium text-text-muted">
+          {language.since} 年〜
         </span>
       </div>
-      <ProficiencyMeter level={language.level} />
+      <div className="flex flex-col gap-1">
+        <UsageBar share={language.share} />
+        <p className="text-xs text-text-muted">
+          コミットの {language.share}% ・ {language.repos} リポジトリ
+        </p>
+      </div>
       <p className="text-sm leading-relaxed text-text-secondary">
         {language.note}
       </p>
@@ -323,17 +337,16 @@ function LanguageCard({ language }: { language: Language }) {
   )
 }
 
-function ProficiencyMeter({ level }: { level: Language["level"] }) {
+function UsageBar({ share }: { share: number }) {
   return (
-    <div className="flex gap-1" title={`習熟度 ${level} / 5`}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          className={`h-1.5 flex-1 rounded-full ${
-            n <= level ? "bg-brand-primary" : "bg-bg-muted"
-          }`}
-        />
-      ))}
+    <div
+      className="h-1.5 w-full rounded-full bg-bg-muted"
+      title={`直近 1 年のコミットの ${share}%`}
+    >
+      <div
+        className="h-full rounded-full bg-brand-primary"
+        style={{ width: `${share}%` }}
+      />
     </div>
   )
 }
