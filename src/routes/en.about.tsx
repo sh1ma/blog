@@ -12,39 +12,57 @@ export const Route = createFileRoute("/en/about")({
   }),
 })
 
+// GitHub 上の個人リポジトリ (フォーク除く) から集計した値 (2026 年 9 月時点)
+// - share: 直近 1 年の自分のコミット数を、各リポジトリの言語別バイト比で按分した割合
+// - repos: 直近 1 年に更新があり、その言語が 20% 以上を占めるリポジトリ数
+// - since: その言語が 20% 以上を占めるリポジトリのうち最も古いものの作成年
 type Language = {
   name: string
-  level: 1 | 2 | 3 | 4 | 5
-  liking: "love" | "like" | "neutral" | "dislike"
+  share: number
+  repos: number
+  since: number
   note: string
 }
 
 const languages: Language[] = [
   {
-    name: "Python",
-    level: 5,
-    liking: "love",
-    note: "My strongest language. I'm used to writing it and comfortable with it, and I like that I can actually use it.",
-  },
-  {
-    name: "Rust",
-    level: 4,
-    liking: "love",
-    note: "I write it at work. It feels really nice to use, so I might come to love it.",
-  },
-  {
     name: "TypeScript",
-    level: 4,
-    liking: "like",
-    note: "I use it both at work and on this blog. Not quite as much as Python, but I do like it.",
+    share: 73,
+    repos: 15,
+    since: 2020,
+    note: "My main language for side projects. This blog, web apps, and tools on Cloudflare Workers are mostly written in TypeScript.",
   },
   {
     name: "Go",
-    level: 3,
-    liking: "dislike",
-    note: "I've used it at work. Not really my favorite.",
+    share: 12,
+    repos: 15,
+    since: 2023,
+    note: "My go-to for CLI tools. Small utilities like bwpk, image2webp, and get-tweet are written in Go.",
+  },
+  {
+    name: "Python",
+    share: 5,
+    repos: 7,
+    since: 2019,
+    note: "It used to be my main language — I wrote pyne and apywrapper in it. These days I mostly use it for analysis scripts and small tools like herdr-auto-title.",
+  },
+  {
+    name: "JavaScript",
+    share: 5,
+    repos: 3,
+    since: 2020,
+    note: "Mostly for frida scripts, around iOS analysis — iostrace, for example.",
+  },
+  {
+    name: "Rust",
+    share: 1,
+    repos: 1,
+    since: 2020,
+    note: "I write it at work, but only touch it occasionally in side projects, such as Angelic-Angel and crabapple.",
   },
 ]
+
+const otherLanguages = ["C", "Swift", "Kotlin", "Objective-C"]
 
 const hobbies = [
   {
@@ -193,12 +211,19 @@ function EnglishAboutPage() {
         </dl>
       </section>
 
-      <Section title="Skills" subtitle="Programming languages I often use">
+      <Section title="Skills" subtitle="Languages I use in side projects">
+        <p className="mb-4 text-sm leading-relaxed text-text-muted">
+          Share of each language, based on my commits to personal GitHub
+          repositories over the past year (as of September 2026).
+        </p>
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {languages.map((lang) => (
             <LanguageCard key={lang.name} language={lang} />
           ))}
         </ul>
+        <p className="mt-4 text-sm text-text-secondary">
+          I also write a little {otherLanguages.join(" / ")}.
+        </p>
       </Section>
 
       <Section title="Hobbies" subtitle="What I enjoy">
@@ -290,32 +315,21 @@ function Section({
   )
 }
 
-const likingLabel: Record<Language["liking"], string> = {
-  love: "Love",
-  like: "Like",
-  neutral: "Neutral",
-  dislike: "Not really",
-}
-
-const likingClass: Record<Language["liking"], string> = {
-  love: "bg-accent-pink/15 text-accent-pink",
-  like: "bg-brand-primary-light/20 text-brand-primary",
-  neutral: "bg-bg-muted text-text-muted",
-  dislike: "bg-accent-yellow/20 text-accent-yellow",
-}
-
 function LanguageCard({ language }: { language: Language }) {
   return (
     <li className="flex flex-col gap-3 rounded-xl bg-bg-surface p-5 shadow-soft">
       <div className="flex items-center justify-between gap-2">
         <h4 className="text-lg font-bold text-text-primary">{language.name}</h4>
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${likingClass[language.liking]}`}
-        >
-          {likingLabel[language.liking]}
+        <span className="rounded-full bg-bg-muted px-2 py-0.5 text-xs font-medium text-text-muted">
+          Since {language.since}
         </span>
       </div>
-      <ProficiencyMeter level={language.level} />
+      <div className="flex flex-col gap-1">
+        <UsageBar share={language.share} />
+        <p className="text-xs text-text-muted">
+          {language.share}% of commits · {language.repos} repos
+        </p>
+      </div>
       <p className="text-sm leading-relaxed text-text-secondary">
         {language.note}
       </p>
@@ -323,17 +337,16 @@ function LanguageCard({ language }: { language: Language }) {
   )
 }
 
-function ProficiencyMeter({ level }: { level: Language["level"] }) {
+function UsageBar({ share }: { share: number }) {
   return (
-    <div className="flex gap-1" title={`Proficiency ${level} / 5`}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          className={`h-1.5 flex-1 rounded-full ${
-            n <= level ? "bg-brand-primary" : "bg-bg-muted"
-          }`}
-        />
-      ))}
+    <div
+      className="h-1.5 w-full rounded-full bg-bg-muted"
+      title={`${share}% of commits in the past year`}
+    >
+      <div
+        className="h-full rounded-full bg-brand-primary"
+        style={{ width: `${share}%` }}
+      />
     </div>
   )
 }
