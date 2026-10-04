@@ -25,7 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 4. **PR 作成前チェックを通す**。**変更範囲に関わらず `pnpm check` (format/lint) は必ず流す**。
    - **ブログの動作に影響するコード** (`src/`, `scripts/`, `content-collections.ts`, `vite.config.ts`, `cloudflare.config.ts`, `package.json` の deps, ワークフローなど) を変更した場合: 加えて `pnpm typecheck` も通ること。
    - **ブログの動作に関係ないファイル** (`.claude/`, `CLAUDE.md`, `README.md`, `docs/`, `dev-assets/` など) しか変更していない場合: `pnpm check` のみで良い。typecheck はスキップ可。
-   - **E2E (`pnpm test:e2e`) は GitHub Actions で必ず流れるので、ローカルで事前に実行する必要はない**。手元で E2E を触りたい場面 (E2E 自体の変更・デバッグ) だけ任意で流す。
+   - **E2E / VRT は PR では skip しているので、ローカルで事前に実行する必要はない**。手元で E2E を触りたい場面 (E2E 自体の変更・デバッグ) だけ任意で流す。skip の状態は `.github/workflows/` の各ワークフローの job の `if` を見る。
    - 自動修正できるものは `pnpm check:fix`。
 5. **`/gh:pr` スキルで PR を作る**。
 

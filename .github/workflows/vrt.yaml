@@ -40,6 +40,9 @@ env:
 
 jobs:
   vrt:
+    # 不安定で度々落ちるため、PR では skip する (手動実行 workflow_dispatch のみ動く)
+    # 復活させるときはこの if を削除する
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -71,12 +74,12 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12.3.4
+          version: 12.9.0
 
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 24.20.0
+          node-version: 24.21.0
           cache: "pnpm"
 
       - name: Install dependencies

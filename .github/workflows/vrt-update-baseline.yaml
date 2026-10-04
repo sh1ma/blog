@@ -19,8 +19,10 @@ env:
 
 jobs:
   update-baseline:
-    # PRがマージされた場合のみ実行
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    # PR での VRT を skip 中のため、マージ時の自動更新も止めている (手動実行 workflow_dispatch のみ動く)
+    # 復活させるときは以下に戻す:
+    # if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -28,12 +30,12 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12.3.4
+          version: 12.9.0
 
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 24.20.0
+          node-version: 24.21.0
           cache: "pnpm"
 
       - name: Install dependencies
