@@ -71,7 +71,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "lint-staged": "^17.5.1",
+    "lint-staged": "^17.6.0",
     "satori": "^0.35.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
