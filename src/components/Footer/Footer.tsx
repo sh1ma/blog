@@ -27,8 +27,8 @@ export const Footer = () => {
             lang={isEnglish ? "en" : "ja"}
           >
             {isEnglish
-              ? "This site uses Google Analytics for access analytics."
-              : "このサイトはアクセス解析のため Google Analytics を利用しています。"}
+              ? "This site uses Cloudflare Web Analytics for access analytics."
+              : "このサイトはアクセス解析のため Cloudflare Web Analytics を利用しています。"}
           </p>
         </div>
 
