@@ -49,12 +49,14 @@ jobs:
           for name in $SNAPSHOTS; do
             snapshot="${name}-chromium-linux.png"
             # PRのスナップショットをダウンロード
-            pnpm wrangler r2 object get ${{ env.R2_BUCKET }}/snapshots/pr-${PR_NUM}/${snapshot} --file /tmp/${snapshot} --remote || {
+            # cf r2 objects get は本文を stdout に書くため、失敗時はリダイレクトで生じた空ファイルを消す
+            pnpm exec cf r2 objects get snapshots/pr-${PR_NUM}/${snapshot} --bucket-name ${{ env.R2_BUCKET }} > /tmp/${snapshot} || {
+              rm -f /tmp/${snapshot}
               echo "Snapshot ${snapshot} not found for PR #${PR_NUM}, skipping..."
               continue
             }
             # ベースラインとしてアップロード
-            pnpm wrangler r2 object put ${{ env.R2_BUCKET }}/baselines/${snapshot} --file /tmp/${snapshot} --remote
+            pnpm exec cf r2 objects put baselines/${snapshot} --bucket-name ${{ env.R2_BUCKET }} --file /tmp/${snapshot} --content-type image/png
             echo "Updated baseline: ${snapshot}"
           done
 

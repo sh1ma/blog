@@ -5,7 +5,7 @@ import { Feed } from "feed"
 import { allArticles } from "../.content-collections/generated/index.js"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
-const OUT_DIR = path.resolve("./dist")
+const OUT_DIR = path.resolve("./.cloudflare/output/v0/workers/default/assets")
 
 type LocaleFeedConfig = {
   locale: "ja" | "en"
