@@ -29,11 +29,11 @@ JSON で欲しいフィールドは `gh pr view --json <TAB>` 相当のヒント
 - **PR 作成には必ずラベルを付ける** (CI でチェックされる)。使えるラベルは [`labels.md`](./labels.md) を参照。
 - **PR 作成時は assignee を `sh1ma` に設定する**。
 - **PR 本文は [`.github/pull_request_template.md`](../../../.github/pull_request_template.md) のセクションをすべて埋める** (概要 / 変更内容 / 関連 Issue / テスト項目 / VRT 設定 / スクリーンショット / 備考)。空セクションで作成しない。
-- **PR 作成前チェックを通してから作成する**: `pnpm check` / `pnpm typecheck` / `pnpm test:e2e`。
+- **PR 作成前チェックを通してから作成する**: 何を流すかはリポジトリ直下の `CLAUDE.md`「開発の流れ」に従う。
 
 ## VRT の扱い
 
-PR には VRT (Visual Regression Test) が自動で走る。UI に意図的な変更を入れた場合の扱いを [`vrt.md`](./vrt.md) にまとめている。UI 変更を伴う PR では必ず読む。
+VRT (Visual Regression Test) は現在 PR では skip している (手動実行のみ)。UI に意図的な変更を入れた場合の扱いを [`vrt.md`](./vrt.md) にまとめている。UI 変更を伴う PR では必ず読む。
 
 ## 実行フロー (PR 作成時)
 
