@@ -1,6 +1,8 @@
 # VRT (Visual Regression Test) の扱い
 
-PR には `.github/workflows/vrt.yaml` により VRT が自動実行される。R2 (`blog-vrt`) にあるベースラインと PR ビルドのスクリーンショットを比較し、差分を PR にコメントする。
+`.github/workflows/vrt.yaml` は R2 (`blog-vrt`) にあるベースラインと PR ビルドのスクリーンショットを比較し、差分を PR にコメントする。
+
+> **現在 VRT は PR では skip している** (不安定で度々落ちるため)。`vrt.yaml` / `vrt-update-baseline.yaml` の job の `if` で `workflow_dispatch` (手動実行) のときだけ動くようにしている。以下の手順は VRT を復活させたときのもの。
 
 ## 意図しない差分が出た場合
 

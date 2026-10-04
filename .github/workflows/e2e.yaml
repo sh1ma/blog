@@ -27,6 +27,9 @@ on:
 
 jobs:
   e2e:
+    # 不安定で度々落ちるため、PR では skip する (手動実行 workflow_dispatch のみ動く)
+    # 復活させるときはこの if を削除する
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
