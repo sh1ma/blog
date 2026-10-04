@@ -37,4 +37,4 @@ jobs:
         run: pnpm build
 
       - name: Deploy to production
-        run: pnpm exec wrangler deploy
+        run: pnpm exec cf deploy --prebuilt --mode production

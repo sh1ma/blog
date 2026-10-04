@@ -3,7 +3,7 @@ import path from "node:path"
 import { allArticles } from "../.content-collections/generated/index.js"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
-const OUT_DIR = path.resolve("./dist")
+const OUT_DIR = path.resolve("./.cloudflare/output/v0/workers/default/assets")
 const OUT_FILE = path.join(OUT_DIR, "sitemap.xml")
 
 type AlternateLink = {

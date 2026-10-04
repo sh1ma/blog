@@ -38,7 +38,7 @@ yarn-error.log*
 
 
 .content-collections
-.wrangler
+.cloudflare
 
 analyze
 

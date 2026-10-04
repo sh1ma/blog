@@ -21,7 +21,7 @@
     },
     {
       "description": "Cloudflare 関連ツール",
-      "matchPackageNames": ["wrangler", "@cloudflare/vite-plugin"],
+      "matchPackageNames": ["cf", "@cloudflare/vite-plugin"],
       "groupName": "cloudflare"
     },
     {

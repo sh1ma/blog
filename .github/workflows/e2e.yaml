@@ -19,7 +19,7 @@ on:
       - "content-collections.ts"
       - "tailwind.config.ts"
       - "postcss.config.cjs"
-      - "wrangler.jsonc"
+      - "cloudflare.config.ts"
       - "tsconfig*.json"
       - ".github/workflows/e2e.yaml"
       - ".github/actions/setup-playwright/action.yml"

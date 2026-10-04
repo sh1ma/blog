@@ -6,17 +6,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm gen && tsc -b && vite build && pnpm build:feed && pnpm build:sitemap && pnpm build:ogp",
+    "build": "pnpm gen && tsc -b && cf build && pnpm build:feed && pnpm build:sitemap && pnpm build:ogp",
     "gen": "pnpm build:content && pnpm build:routes",
     "build:content": "content-collections build",
     "build:routes": "tsr generate",
     "build:feed": "tsx scripts/build-feed.ts",
     "build:sitemap": "tsx scripts/build-sitemap.ts",
     "build:ogp": "tsx scripts/build-ogp.ts",
-    "preview": "pnpm build && wrangler dev",
-    "deploy": "pnpm build && wrangler deploy",
-    "versions:upload": "pnpm build && wrangler versions upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "preview": "pnpm build && vite preview",
+    "deploy": "pnpm build && cf deploy --prebuilt --mode production",
+    "versions:upload": "pnpm build && cf workers versions create --prebuilt --mode production",
+    "cf-typegen": "cf workers types",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format": "biome format --write .",
@@ -28,7 +28,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "test:e2e:server": "pnpm build && wrangler dev --port 8787"
+    "test:e2e:server": "pnpm build && vite preview --port 8787"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.20",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
-    "@cloudflare/vite-plugin": "^1.62.5",
+    "@cloudflare/vite-plugin": "^2.0.0-beta.sha-52b0dc0e9",
     "@content-collections/cli": "^0.1.9",
     "@content-collections/core": "^0.15.3",
     "@content-collections/markdown": "^0.1.4",
@@ -71,6 +71,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "cf": "1.0.0-beta.12",
     "lint-staged": "^17.6.0",
     "satori": "^0.35.0",
     "tailwindcss": "^4.3.3",
@@ -78,7 +79,6 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "vite": "^8.3.2",
-    "wrangler": "^4.147.0",
     "zod": "^4.6.5"
   },
   "lint-staged": {

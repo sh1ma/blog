@@ -15,7 +15,7 @@ on:
       - "content-collections.ts"
       - "tailwind.config.ts"
       - "postcss.config.cjs"
-      - "wrangler.jsonc"
+      - "cloudflare.config.ts"
       - "tsconfig*.json"
 
 env:
@@ -53,7 +53,7 @@ jobs:
 
       - name: Deploy to staging
         run: |
-          pnpm exec wrangler versions upload --preview-alias staging
+          pnpm exec cf workers versions create --prebuilt --mode production --preview-alias staging
 
           STAGING_URL="https://staging-${{ env.WORKER_NAME }}.${{ env.WORKERS_SUBDOMAIN }}.workers.dev"
           echo "Deployed to: ${STAGING_URL}"

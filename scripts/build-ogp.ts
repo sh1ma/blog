@@ -6,7 +6,7 @@ import satori from "satori"
 import { allArticles } from "../.content-collections/generated/index.js"
 
 const SITE_URL = process.env.SITE_URL ?? "https://blog.sh1ma.dev"
-const DIST_DIR = path.resolve("./dist")
+const DIST_DIR = path.resolve("./.cloudflare/output/v0/workers/default/assets")
 const OG_DIR = path.join(DIST_DIR, "og")
 const SHELL_HTML = path.join(DIST_DIR, "index.html")
 const WIDTH = 1200

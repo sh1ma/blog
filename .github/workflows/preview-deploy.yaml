@@ -16,7 +16,7 @@ on:
       - "content-collections.ts"
       - "tailwind.config.ts"
       - "postcss.config.cjs"
-      - "wrangler.jsonc"
+      - "cloudflare.config.ts"
       - "tsconfig*.json"
 
 env:
@@ -101,7 +101,7 @@ jobs:
       - name: Deploy preview
         id: deploy
         run: |
-          pnpm exec wrangler versions upload --preview-alias ${{ steps.preview.outputs.alias }}
+          pnpm exec cf workers versions create --prebuilt --mode production --preview-alias ${{ steps.preview.outputs.alias }}
           echo "preview_url=${{ steps.preview.outputs.preview_url }}" >> $GITHUB_OUTPUT
 
       - name: Update comment on success

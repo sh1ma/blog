@@ -16,5 +16,10 @@
     "esModuleInterop": true,
     "types": ["node"],
   },
-  "include": ["vite.config.ts", "content-collections.ts", "lib/**/*.ts"],
+  "include": [
+    "vite.config.ts",
+    "content-collections.ts",
+    "cloudflare.config.ts",
+    "lib/**/*.ts",
+  ],
 }
